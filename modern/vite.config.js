@@ -6,7 +6,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 /* eslint-disable no-template-curly-in-string */
 export default defineConfig(() => ({
   server: {
-    port: 3000,
+    // port: 3000,
     proxy: {
       '/api/socket': 'ws://ec2-18-143-114-161.ap-southeast-1.compute.amazonaws.com:8082', //localhost , ec2-18-143-114-161.ap-southeast-1.compute.amazonaws.com
       '/api': 'http://ec2-18-143-114-161.ap-southeast-1.compute.amazonaws.com:8082',
