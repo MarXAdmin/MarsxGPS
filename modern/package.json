@@ -2,6 +2,7 @@
   "name": "traccar",
   "version": "5.12.1",
   "type": "module",
+  "homepage":"https://marsx-gps-xi.vercel.app" ,
   "private": true,
   "dependencies": {
     "@emotion/react": "^11.11.3",
