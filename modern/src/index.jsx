@@ -1,8 +1,10 @@
+import React from 'react';
+import ReactDOM from 'react-dom';
+
 import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import { Provider } from 'react-redux';
@@ -19,8 +21,7 @@ import AppThemeProvider from './AppThemeProvider';
 
 preloadImages();
 
-const root = createRoot(document.getElementById('root'));
-root.render(
+ReactDOM.render(
   <ErrorBoundary>
     <Provider store={store}>
       <LocalizationProvider>
@@ -39,4 +40,27 @@ root.render(
       </LocalizationProvider>
     </Provider>
   </ErrorBoundary>,
+  document.getElementById('root')
 );
+
+// const root = createRoot(document.getElementById('root'));
+// root.render(
+//   <ErrorBoundary>
+//     <Provider store={store}>
+//       <LocalizationProvider>
+//         <StyledEngineProvider injectFirst>
+//           <AppThemeProvider>
+//             <CssBaseline />
+//             <ServerProvider>
+//               <BrowserRouter>
+//                 <Navigation />
+//               </BrowserRouter>
+//               <ErrorHandler />
+//               <NativeInterface />
+//             </ServerProvider>
+//           </AppThemeProvider>
+//         </StyledEngineProvider>
+//       </LocalizationProvider>
+//     </Provider>
+//   </ErrorBoundary>,
+// );
