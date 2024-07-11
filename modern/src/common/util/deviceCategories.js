@@ -20,6 +20,7 @@ export default [
   'trolleybus',
   'truck',
   'van',
+  'suv',
   'scooter',
   'excavator',
   'truckcrane',

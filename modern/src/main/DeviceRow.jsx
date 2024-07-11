@@ -4,12 +4,6 @@ import makeStyles from '@mui/styles/makeStyles';
 import {
   IconButton, Tooltip, Avatar, ListItemAvatar, ListItemText, ListItemButton,
 } from '@mui/material';
-import BatteryFullIcon from '@mui/icons-material/BatteryFull';
-import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
-import Battery60Icon from '@mui/icons-material/Battery60';
-import BatteryCharging60Icon from '@mui/icons-material/BatteryCharging60';
-import Battery20Icon from '@mui/icons-material/Battery20';
-import BatteryCharging20Icon from '@mui/icons-material/BatteryCharging20';
 import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 import ErrorIcon from '@mui/icons-material/Error';
 import dayjs from 'dayjs';
@@ -142,6 +136,13 @@ const DeviceRow = ({ data, index, style }) => {
                   ) : (
                     <EngineIcon width={20} height={20} className={position.attributes.output === 1? classes.error : classes.neutral} />
                   )}
+                </IconButton>
+              </Tooltip>
+            )}
+            {position.attributes.hasOwnProperty('ignition') && position.attributes.output === 1 && position.attributes.ignition && (  
+              <Tooltip title={`${t('alarmViolation')}`}>
+                <IconButton size="small">
+                  <ErrorIcon fontSize="small" className={classes.error} />
                 </IconButton>
               </Tooltip>
             )}

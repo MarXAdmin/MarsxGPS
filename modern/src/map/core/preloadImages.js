@@ -27,6 +27,7 @@ import tramSvg from '../../resources/images/icon/tram.svg';
 import trolleybusSvg from '../../resources/images/icon/trolleybus.svg';
 import truckSvg from '../../resources/images/icon/truck.svg';
 import vanSvg from '../../resources/images/icon/van.svg';
+import suvSvg from '../../resources/images/icon/suv.svg';
 import excavatorSvg from '../../resources/images/icon/excavator.svg';
 import truckcraneSvg from '../../resources/images/icon/truckcrane.svg';
 import graderSvg from '../../resources/images/icon/grader.svg';
@@ -71,6 +72,7 @@ export const mapIcons = {
   trolleybus: trolleybusSvg,
   truck: truckSvg,
   van: vanSvg,
+  suv: suvSvg,
   excavator: excavatorSvg,
   truckcrane: truckcraneSvg,
   grader: graderSvg,
