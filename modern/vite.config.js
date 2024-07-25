@@ -14,7 +14,18 @@ export default defineConfig(() => ({
   },
   build: {
     outDir: '../modern/dist',
+    rollupOptions: {
+      output: {
+        assetFileNames: 'assets/[name].[hash].[ext]'
+      }
+    }
   },
+  resolve: {
+    alias: {
+      '@': '/src',
+    },
+  },
+  assetsInclude: ['**/*.png', '**/*.jpg', '**/*.jpeg', '**/*.gif', '**/*.svg'],
   plugins: [
     svgr(),
     react(),
