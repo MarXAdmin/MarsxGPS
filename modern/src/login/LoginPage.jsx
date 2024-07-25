@@ -192,12 +192,9 @@ const LoginPage = () => {
   return (
     <LoginLayout>
       <div className={classes.container}>
-        {useMediaQuery(theme.breakpoints.down('lg'))
-          ? <LogoImage color={theme.palette.primary.main} /> :
-          <div className={classes.logoGPS}>
-            <img src='./src/resources/images/logoGPS.png' alt='login' />
-          </div>
-        }
+        <div className={classes.logoGPS}>
+          <LogoImage color={theme.palette.primary.main} />
+        </div>
         <div className={classes.title}>
           <div>{t('welcomeLoginPage')}<span>MARTAIN</span></div>
           {languageEnabled && (
