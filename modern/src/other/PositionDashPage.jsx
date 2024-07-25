@@ -321,7 +321,7 @@ const PositionDashPage = () => {
               >
                 {t('eventIgnitionOn')} 
               </Typography>
-              <LineChartAttributesToday attr='index' min={0} max={1.5} interpola='step' yaxistick={false} ></LineChartAttributesToday>
+              <LineChartAttributesToday attr='ignition' min={0} max={1.5} interpola='step' yaxistick={false} ></LineChartAttributesToday>
             </Box>
 
             {/**Hours today */}

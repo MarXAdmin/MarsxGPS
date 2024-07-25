@@ -20,6 +20,8 @@ const useStyles = makeStyles((theme) => ({
   desktopRoot: {
     height: '100%',
     display: 'flex',
+    background: '#1F2937',
+
   },
   mobileRoot: {
     height: '100%',
@@ -42,6 +44,10 @@ const useStyles = makeStyles((theme) => ({
     flexDirection: 'column',
     overflowY: 'auto',
   },
+  titlePage: {
+    background: '#1F2937',
+    color: '#FFF'
+  }
 }));
 
 const PageTitle = ({ breadcrumbs }) => {
@@ -81,8 +87,8 @@ const PageLayout = ({ menu, breadcrumbs, children }) => {
         className={classes.desktopDrawer}
         classes={{ paper: classes.desktopDrawer }}
       >
-        <Toolbar>
-          <IconButton color="inherit" edge="start" sx={{ mr: 2 }} onClick={() => navigate('/')}>
+        <Toolbar className={classes.titlePage}>
+          <IconButton color="inherit" edge="start" sx={{ mr: 10 }} onClick={() => navigate('/')}>
             <ArrowBackIcon />
           </IconButton>
           <PageTitle breadcrumbs={breadcrumbs} />

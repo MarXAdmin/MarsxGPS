@@ -24,7 +24,7 @@ import MapPositions from '../map/MapPositions';
 import MapCamera from '../map/MapCamera';
 import scheduleReport from './common/scheduleReport';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
-import { useDownloadExcel  } from 'react-export-table-to-excel';
+import { useDownloadExcel } from 'react-export-table-to-excel';
 import Tooltip from '@mui/material/Tooltip';
 
 const columnsArray = [
@@ -40,6 +40,7 @@ const EventReportPage = () => {
   const navigate = useNavigate();
   const classes = useReportStyles();
   const t = useTranslation();
+
 
   const devices = useSelector((state) => state.devices.items);
   const geofences = useSelector((state) => state.geofences.items);
@@ -158,7 +159,7 @@ const EventReportPage = () => {
 
   const tableRef = useRef(null);
 
-  const {onDownload}  = useDownloadExcel({
+  const { onDownload } = useDownloadExcel({
     currentTableRef: tableRef.current,
     filename: 'EventReport',
     sheet: 'EventReport'
@@ -194,6 +195,7 @@ const EventReportPage = () => {
                       setEventTypes(values);
                     }}
                     multiple
+                    className={classes.selectFieldStyle}
                   >
                     {allEventTypes.map(([key, string]) => (
                       <MenuItem key={key} value={key}>{t(string)}</MenuItem>
@@ -205,7 +207,7 @@ const EventReportPage = () => {
             </ReportFilter>
           </div>
           <Table ref={tableRef} stickyHeader aria-label="sticky table">
-            <TableHead>
+            <TableHead className={classes.tableStyle}>
               <TableRow>
                 <TableCell className={classes.columnAction}>
                   <Tooltip title="Download to excel">
@@ -213,11 +215,11 @@ const EventReportPage = () => {
                       <ArrowCircleDownIcon />
                     </IconButton>
                   </Tooltip>
-                </TableCell> 
+                </TableCell>
                 {columns.map((key) => (<TableCell key={key}>{t(columnsMap.get(key))}</TableCell>))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tableStyle}>
               {!loading ? items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className={classes.columnAction} padding="none">

@@ -21,6 +21,9 @@ import { useAttributePreference } from '../common/util/preferences';
 dayjs.extend(relativeTime);
 
 const useStyles = makeStyles((theme) => ({
+  modelText: {
+    color: '#000000'
+  },
   icon: {
     width: '25px',
     height: '25px',
@@ -55,7 +58,7 @@ const DeviceRow = ({ data, index, style }) => {
   const item = data[index];
   const position = useSelector((state) => state.session.positions[item.id]);
 
-  const events = useSelector((state) => state.events.items.filter((e) =>  e.deviceId === item.id));
+  const events = useSelector((state) => state.events.items.filter((e) => e.deviceId === item.id));
   const eventid = events[0];
 
   const devicePrimary = useAttributePreference('devicePrimary', 'name');
@@ -80,11 +83,11 @@ const DeviceRow = ({ data, index, style }) => {
     switch (item.status) {
       case 'online':
       case 'unknown':
-        return 'green';
+        return '#22C55E';
       case 'offline':
-        return 'red';
+        return '#EF4444';
       default:
-        return 'gray';
+        return '#999999';
     }
   };
 
@@ -97,15 +100,14 @@ const DeviceRow = ({ data, index, style }) => {
       >
         <ListItemAvatar>
           <Avatar style={{ background: getStatusColorIcon(item) }} >
-            {/** src={"/api/media/9172961569/device.jpeg"} */}
             <img className={classes.icon} src={mapIcons[mapIconKey(item.category)]} alt="" />
           </Avatar>
         </ListItemAvatar>
         <ListItemText
           primary={item[devicePrimary]}
-          primaryTypographyProps={{ noWrap: true }}
+          primaryTypographyProps={{ sx: { color: 'black' }, noWrap: true }}
           secondary={secondaryText()}
-          secondaryTypographyProps={{ noWrap: true }}
+          secondaryTypographyProps={{ sx: { color: '#999' }, noWrap: true }}
         />
         {position && (
           <>
@@ -117,9 +119,9 @@ const DeviceRow = ({ data, index, style }) => {
               </Tooltip>
             )}
             {/**Add Events Maintenance */}
-            {eventid &&  (
+            {eventid && (
               <>
-                { (eventid.hasOwnProperty('type') && eventid.type === "maintenance" && eventid.deviceId === item.id) && (
+                {(eventid.hasOwnProperty('type') && eventid.type === "maintenance" && eventid.deviceId === item.id) && (
                   <Tooltip title={`${eventid.attributes.message}`}>
                     <IconButton size="small">
                       <BuildCircleIcon fontSize="medium" className={classes.warning} />
@@ -129,17 +131,17 @@ const DeviceRow = ({ data, index, style }) => {
               </>
             )}
             {position.attributes.hasOwnProperty('ignition') && (
-              <Tooltip title={position.attributes.output === 1 ? (t('commandEngineStop')) : (`${t('positionIgnition')}: ${formatBoolean(position.attributes.ignition, t)}`) }>
+              <Tooltip title={position.attributes.output === 1 ? (t('commandEngineStop')) : (`${t('positionIgnition')}: ${formatBoolean(position.attributes.ignition, t)}`)}>
                 <IconButton size="small">
                   {position.attributes.ignition ? (
-                    <EngineIcon width={25} height={25} className={position.attributes.output === 1? classes.error : classes.success} />
+                    <EngineIcon width={25} height={25} className={position.attributes.output === 1 ? classes.error : classes.success} />
                   ) : (
-                    <EngineIcon width={20} height={20} className={position.attributes.output === 1? classes.error : classes.neutral} />
+                    <EngineIcon width={20} height={20} className={position.attributes.output === 1 ? classes.error : classes.neutral} />
                   )}
                 </IconButton>
               </Tooltip>
             )}
-            {position.attributes.hasOwnProperty('ignition') && position.attributes.output === 1 && position.attributes.ignition && (  
+            {position.attributes.hasOwnProperty('ignition') && position.attributes.output === 1 && position.attributes.ignition && (
               <Tooltip title={`${t('alarmViolation')}`}>
                 <IconButton size="small">
                   <ErrorIcon fontSize="small" className={classes.error} />

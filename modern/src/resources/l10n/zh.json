@@ -593,5 +593,7 @@
     "categoryScooter": "小型摩托车",
     "categoryExcavator": "挖土機",
     "maintenanceStart": "开启",
-    "maintenancePeriod": "时段"
+    "maintenancePeriod": "时段",
+    "welcomeLoginPage":"欢迎来到"
+
 }

@@ -7,7 +7,7 @@ import {
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
-import { useDownloadExcel  } from 'react-export-table-to-excel';
+import { useDownloadExcel } from 'react-export-table-to-excel';
 import Tooltip from '@mui/material/Tooltip';
 import ReportFilter from './components/ReportFilter';
 import { useTranslation } from '../common/components/LocalizationProvider';
@@ -26,6 +26,8 @@ import TableShimmer from '../common/components/TableShimmer';
 import MapCamera from '../map/MapCamera';
 import MapGeofence from '../map/MapGeofence';
 import scheduleReport from './common/scheduleReport';
+import * as XLSX from 'xlsx';
+
 
 const RouteReportPage = () => {
   const navigate = useNavigate();
@@ -37,7 +39,7 @@ const RouteReportPage = () => {
   const devices = useSelector((state) => state.devices.items);
 
   const [available, setAvailable] = useState([]);
-  const [columns, setColumns] = useState(['fixTime', 'address', 'hours', 'ignition', 'power','fuel']);
+  const [columns, setColumns] = useState(['fixTime', 'address', 'hours', 'ignition', 'power', 'fuel']);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -100,11 +102,12 @@ const RouteReportPage = () => {
 
   const tableRef = useRef(null);
 
-  const { onDownload } = useDownloadExcel({
-    currentTableRef: tableRef.current,
-    filename: 'RouteReport',
-    sheet: 'RouteReport'
-  });
+  const downloadExcel = () => {
+    const ws = XLSX.utils.table_to_sheet(tableRef.current);
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, 'RouteReport');
+    XLSX.writeFile(wb, 'RouteReport.xlsx');
+  };
 
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportRoute']}>
@@ -140,20 +143,20 @@ const RouteReportPage = () => {
             </ReportFilter>
           </div>
           <Table ref={tableRef} stickyHeader aria-label="sticky table" >
-            <TableHead>
+            <TableHead className={classes.tableStyle}>
               <TableRow>
                 <TableCell className={classes.columnAction}>
                   <Tooltip title="Download to excel">
-                    <IconButton size="small" color="info" aria-label="download to excel" onClick={onDownload}>
+                    <IconButton size="small" color="info" aria-label="download to excel" onClick={downloadExcel}>
                       <ArrowCircleDownIcon />
                     </IconButton>
                   </Tooltip>
-                </TableCell> 
+                </TableCell>
                 <TableCell>{t('sharedDevice')}</TableCell>
                 {columns.map((key) => (<TableCell key={key}>{positionAttributes[key]?.name || key}</TableCell>))}
               </TableRow>
             </TableHead>
-            <TableBody>
+            <TableBody className={classes.tableStyle}>
               {!loading ? items.slice(0, 4000).map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className={classes.columnAction} padding="none">

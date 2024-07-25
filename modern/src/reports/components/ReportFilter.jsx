@@ -11,10 +11,12 @@ import SplitButton from '../../common/components/SplitButton';
 import SelectField from '../../common/components/SelectField';
 import { useRestriction } from '../../common/util/permissions';
 
+
 const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignoreDevice, multiDevice, includeGroups }) => {
   const classes = useReportStyles();
   const dispatch = useDispatch();
   const t = useTranslation();
+
 
   const readonly = useRestriction('readonly');
 
@@ -118,8 +120,10 @@ const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignore
         <>
           <div className={classes.filterItem}>
             <FormControl fullWidth>
-              <InputLabel>{t('reportPeriod')}</InputLabel>
-              <Select label={t('reportPeriod')} value={period} onChange={(e) => dispatch(reportsActions.updatePeriod(e.target.value))}>
+              {/* <InputLabel>{t('reportPeriod')}</InputLabel> */}
+              <Select
+                className={classes.selectFieldStyle}
+                label={t('reportPeriod')} value={period} onChange={(e) => dispatch(reportsActions.updatePeriod(e.target.value))}>
                 <MenuItem value="today">{t('reportToday')}</MenuItem>
                 <MenuItem value="yesterday">{t('reportYesterday')}</MenuItem>
                 <MenuItem value="thisWeek">{t('reportThisWeek')}</MenuItem>
@@ -183,6 +187,7 @@ const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignore
             color="secondary"
             disabled={disabled}
             onClick={() => handleClick('json')}
+            className={classes.btnShow}
           >
             <Typography variant="button" noWrap>{t('reportShow')}</Typography>
           </Button>

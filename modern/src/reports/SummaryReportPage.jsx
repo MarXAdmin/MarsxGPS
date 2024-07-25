@@ -18,7 +18,7 @@ import { useCatch } from '../reactHelper';
 import useReportStyles from './common/useReportStyles';
 import TableShimmer from '../common/components/TableShimmer';
 import scheduleReport from './common/scheduleReport';
-import { useDownloadExcel  } from 'react-export-table-to-excel';
+import { useDownloadExcel } from 'react-export-table-to-excel';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import Tooltip from '@mui/material/Tooltip';
 
@@ -50,6 +50,7 @@ const SummaryReportPage = () => {
   const [daily, setDaily] = useState(false);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+
 
   const handleSubmit = useCatch(async ({ deviceIds, groupIds, from, to, type }) => {
     const query = new URLSearchParams({ from, to, daily });
@@ -106,11 +107,11 @@ const SummaryReportPage = () => {
         return formatSpeed(item[key], speedUnit, t);
       case 'engineHours':
         return formatNumericHours(item[key], t);
-        //const hours = Math.floor(item[key] / 3600000);
-        //const minutes = Math.floor((item[key] % 3600000) / 60000);
-        //return `${hours}:${minutes}`;
+      //const hours = Math.floor(item[key] / 3600000);
+      //const minutes = Math.floor((item[key] % 3600000) / 60000);
+      //return `${hours}:${minutes}`;
       case 'spentFuel':
-        return item[key].toFixed(1) ; //formatVolume(item[key], volumeUnit, t);
+        return item[key].toFixed(1); //formatVolume(item[key], volumeUnit, t);
       default:
         return item[key];
     }
@@ -118,7 +119,7 @@ const SummaryReportPage = () => {
 
   const tableRef = useRef(null);
 
-  const {onDownload}  = useDownloadExcel({
+  const { onDownload } = useDownloadExcel({
     currentTableRef: tableRef.current,
     filename: 'SummaryReport',
     sheet: 'SummaryReport'
@@ -132,7 +133,9 @@ const SummaryReportPage = () => {
           <div className={classes.filterItem}>
             <FormControl fullWidth>
               <InputLabel>{t('sharedType')}</InputLabel>
-              <Select label={t('sharedType')} value={daily} onChange={(e) => setDaily(e.target.value)}>
+              <Select label={t('sharedType')}
+                className={classes.selectFieldStyle}
+                value={daily} onChange={(e) => setDaily(e.target.value)}>
                 <MenuItem value={false}>{t('reportSummary')}</MenuItem>
                 <MenuItem value>{t('reportDaily')}</MenuItem>
               </Select>
@@ -141,7 +144,7 @@ const SummaryReportPage = () => {
           <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
         </ReportFilter>
       </div>
-      <Table ref={tableRef} stickyHeader aria-label="sticky table">
+      <Table ref={tableRef} stickyHeader aria-label="sticky table" className={classes.tableStyle}>
         <TableHead>
           <TableRow>
             <TableCell className={classes.columnAction}>
@@ -150,7 +153,7 @@ const SummaryReportPage = () => {
                   <ArrowCircleDownIcon />
                 </IconButton>
               </Tooltip>
-            </TableCell> 
+            </TableCell>
             <TableCell>{t('sharedDevice')}</TableCell>
             {columns.map((key) => (<TableCell key={key}>{t(columnsMap.get(key))}</TableCell>))}
           </TableRow>
