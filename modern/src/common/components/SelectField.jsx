@@ -3,6 +3,8 @@ import {
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useEffectAsync } from '../../reactHelper';
+import { useTranslation } from '../../common/components/LocalizationProvider';
+import useSelectStyle from '../../reports/common/useReportStyles'
 
 const SelectField = ({
   label,
@@ -16,8 +18,11 @@ const SelectField = ({
   data,
   keyGetter = (item) => item.id,
   titleGetter = (item) => item.name,
+  isInputLabel
 }) => {
+  const t = useTranslation();
   const [items, setItems] = useState(data);
+  const classes = useSelectStyle();
 
   const getOptionLabel = (option) => {
     if (typeof option !== 'object') {
@@ -42,12 +47,17 @@ const SelectField = ({
       <FormControl fullWidth={fullWidth}>
         {multiple ? (
           <>
-            <InputLabel>{label}</InputLabel>
+            {value && value.length === 0 ? (
+              <InputLabel>{t('deviceTitle')}</InputLabel>
+            ) : (
+              <></>
+            )}
             <Select
               label={label}
               multiple
               value={value}
               onChange={onChange}
+              className={classes.selectFieldStyle}
             >
               {items.map((item) => (
                 <MenuItem key={keyGetter(item)} value={keyGetter(item)}>{titleGetter(item)}</MenuItem>
@@ -56,6 +66,7 @@ const SelectField = ({
           </>
         ) : (
           <Autocomplete
+            className={classes.autocompleteFieldStyle}
             size="small"
             options={items}
             getOptionLabel={getOptionLabel}
@@ -66,6 +77,7 @@ const SelectField = ({
             value={value}
             onChange={(_, value) => onChange({ target: { value: value ? keyGetter(value) : emptyValue } })}
             renderInput={(params) => <TextField {...params} label={label} />}
+
           />
         )}
       </FormControl>

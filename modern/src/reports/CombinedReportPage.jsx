@@ -23,6 +23,7 @@ const CombinedReportPage = () => {
   const classes = useReportStyles();
   const t = useTranslation();
 
+
   const devices = useSelector((state) => state.devices.items);
 
   const hours12 = usePreference('twelveHourFormat');
@@ -78,7 +79,7 @@ const CombinedReportPage = () => {
           <div className={classes.header}>
             <ReportFilter handleSubmit={handleSubmit} showOnly multiDevice includeGroups />
           </div>
-          <Table stickyHeader aria-label="sticky table">
+          <Table stickyHeader aria-label="sticky table" className={classes.tableStyle}>
             <TableHead>
               <TableRow>
                 <TableCell>{t('sharedDevice')}</TableCell>

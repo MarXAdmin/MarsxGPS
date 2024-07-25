@@ -28,7 +28,13 @@ const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
-    gap: theme.spacing(2),
+    gap: '24px',
+    '& .MuiOutlinedInput-root': {
+      borderRadius: '26px'
+    },
+    '& button': {
+      borderRadius: '26px',
+    }
   },
   extraContainer: {
     display: 'flex',
@@ -41,6 +47,33 @@ const useStyles = makeStyles((theme) => ({
     cursor: 'pointer',
     textAlign: 'center',
     marginTop: theme.spacing(2),
+  },
+  logoGPS: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '& img': {
+      width: '64px'
+    }
+  },
+  title: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    '& span': {
+      margin: '0 4px',
+      color: '#EF5713',
+      fontWeight: '700'
+    },
+  },
+  titleLogin: {
+    fontWeight: '500',
+    fontSize: '2rem'
+  },
+  iconOnly: {
+    '& img': {
+      borderRadius: '50%'
+    }
   },
 }));
 
@@ -62,7 +95,7 @@ const LoginPage = () => {
 
   const registrationEnabled = useSelector((state) => state.session.server.registration);
   const languageEnabled = useSelector((state) => !state.session.server.attributes['ui.disableLoginLanguage']);
-  const changeEnabled = useSelector((state) => !state.session.server.attributes.disableChange);
+  // const changeEnabled = useSelector((state) => !state.session.server.attributes.disableChange);
   const emailEnabled = useSelector((state) => state.session.server.emailEnabled);
   const openIdEnabled = useSelector((state) => state.session.server.openIdEnabled);
   const openIdForced = useSelector((state) => state.session.server.openIdEnabled && state.session.server.openIdForce);
@@ -149,19 +182,66 @@ const LoginPage = () => {
     return (<LinearProgress />);
   }
 
+  const [selectedLanguage, setSelectedLanguage] = useState(language);
+
+  const handleChange = (event) => {
+    setSelectedLanguage(event.target.value);
+    setLanguage(event.target.value);
+  };
+
   return (
     <LoginLayout>
-      <div className={classes.options}>
-        {nativeEnvironment && changeEnabled && (
-          <Tooltip title={t('settingsServer')}>
-            <IconButton onClick={() => navigate('/change-server')}>
-              <ElectricalServicesIcon />
-            </IconButton>
-          </Tooltip>
-        )}
-      </div>
       <div className={classes.container}>
-        {useMediaQuery(theme.breakpoints.down('lg')) && <LogoImage color={theme.palette.primary.main} />}
+        {useMediaQuery(theme.breakpoints.down('lg'))
+          ? <LogoImage color={theme.palette.primary.main} /> :
+          <div className={classes.logoGPS}>
+            <img src='./src/resources/images/logoGPS.png' alt='login' />
+          </div>
+        }
+        <div className={classes.title}>
+          <div>{t('welcomeLoginPage')}<span>MARTAIN</span></div>
+          {languageEnabled && (
+            <Select
+              sx={{
+                boxShadow: "none",
+                background: 'transparent',
+                ".MuiOutlinedInput-notchedOutline": { border: 0 },
+                "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                {
+                  border: 0,
+                },
+                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
+                {
+                  border: 0,
+                },
+              }}
+              value={selectedLanguage}
+              onChange={handleChange}
+              inputProps={{ 'aria-label': 'Without label' }}
+              renderValue={(selected) => {
+                const selectedItem = languageList.find((item) => item.code === selected);
+                return selectedItem ? (
+                  <Box component="span" className={classes.iconOnly} >
+                    <ReactCountryFlag countryCode={selectedItem.country} svg />
+                  </Box>
+                ) : (
+                  <div>
+                  </div>
+                );
+              }}
+            >
+              {languageList.map((it) => (
+                <MenuItem key={it.code} value={it.code}>
+                  <Box component="span" sx={{ marginRight: '8px' }}>
+                    <ReactCountryFlag countryCode={it.country} svg />
+                  </Box>
+                  {it.name}
+                </MenuItem>
+              ))}
+            </Select>
+          )}
+        </div>
+        <div className={classes.titleLogin}>{t('loginTitle')}</div>
         <TextField
           required
           error={failed}
@@ -202,8 +282,12 @@ const LoginPage = () => {
           onClick={handlePasswordLogin}
           onKeyUp={handleSpecialKey}
           variant="contained"
-          color="secondary"
+          // color="secondary"
           disabled={!email || !password || (codeEnabled && !code)}
+          sx={{
+            backgroudColor: '#EF5713',
+            color: '#FFF'
+          }}
         >
           {t('loginLogin')}
         </Button>
@@ -211,35 +295,11 @@ const LoginPage = () => {
           <Button
             onClick={() => handleOpenIdLogin()}
             variant="contained"
-            color="secondary"
           >
             {t('loginOpenId')}
           </Button>
         )}
         <div className={classes.extraContainer}>
-          <Button
-            className={classes.registerButton}
-            onClick={() => navigate('/register')}
-            disabled={!registrationEnabled}
-            color="secondary"
-          >
-            {t('loginRegister')}
-          </Button>
-          {languageEnabled && (
-            <FormControl fullWidth>
-              <InputLabel>{t('loginLanguage')}</InputLabel>
-              <Select label={t('loginLanguage')} value={language} onChange={(e) => setLanguage(e.target.value)}>
-                {languageList.map((it) => (
-                  <MenuItem key={it.code} value={it.code}>
-                    <Box component="span" sx={{ mr: 1 }}>
-                      <ReactCountryFlag countryCode={it.country} svg />
-                    </Box>
-                    {it.name}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
         </div>
         {emailEnabled && (
           <Link
@@ -261,7 +321,7 @@ const LoginPage = () => {
           </IconButton>
         )}
       />
-    </LoginLayout>
+    </LoginLayout >
   );
 };
 

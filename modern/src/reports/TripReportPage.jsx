@@ -26,7 +26,7 @@ import MapCamera from '../map/MapCamera';
 import MapGeofence from '../map/MapGeofence';
 import scheduleReport from './common/scheduleReport';
 import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
-import { useDownloadExcel  } from 'react-export-table-to-excel';
+import { useDownloadExcel } from 'react-export-table-to-excel';
 import Tooltip from '@mui/material/Tooltip';
 
 
@@ -160,7 +160,7 @@ const TripReportPage = () => {
 
   const tableRef = useRef(null);
 
-  const {onDownload}  = useDownloadExcel({
+  const { onDownload } = useDownloadExcel({
     currentTableRef: tableRef.current,
     filename: 'TripReport',
     sheet: 'TripReport'
@@ -189,7 +189,7 @@ const TripReportPage = () => {
               <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
             </ReportFilter>
           </div>
-          <Table ref={tableRef} stickyHeader aria-label="sticky table">
+          <Table ref={tableRef} stickyHeader aria-label="sticky table" className={classes.tableStyle}>
             <TableHead>
               <TableRow>
                 <TableCell className={classes.columnAction}>
@@ -198,7 +198,7 @@ const TripReportPage = () => {
                       <ArrowCircleDownIcon />
                     </IconButton>
                   </Tooltip>
-                </TableCell> 
+                </TableCell>
                 {columns.map((key) => (<TableCell key={key}>{t(columnsMap.get(key))}</TableCell>))}
               </TableRow>
             </TableHead>

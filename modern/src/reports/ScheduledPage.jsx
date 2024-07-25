@@ -13,6 +13,11 @@ import TableShimmer from '../common/components/TableShimmer';
 import RemoveDialog from '../common/components/RemoveDialog';
 
 const useStyles = makeStyles((theme) => ({
+  fontStyle: {
+    '& .MuiTableCell-root': {
+      color: '#FFF'
+    }
+  },
   columnAction: {
     width: '1%',
     paddingRight: theme.spacing(1),
@@ -63,7 +68,7 @@ const ScheduledPage = () => {
 
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['settingsTitle', 'reportScheduled']}>
-      <Table>
+      <Table className={classes.fontStyle}>
         <TableHead>
           <TableRow>
             <TableCell>{t('sharedType')}</TableCell>

@@ -42,6 +42,7 @@ const useStyles = makeStyles((theme) => ({
   header: {
     pointerEvents: 'auto',
     zIndex: 6,
+    background: '#1F2937',
   },
   footer: {
     pointerEvents: 'auto',
@@ -59,6 +60,7 @@ const useStyles = makeStyles((theme) => ({
     pointerEvents: 'auto',
     gridArea: '1 / 1',
     zIndex: 4,
+    background: '#FFFFFF',
   },
 }));
 
@@ -79,10 +81,15 @@ const MainPage = () => {
   const [filteredDevices, setFilteredDevices] = useState([]);
 
   const [keyword, setKeyword] = useState('');
-  const [filter, setFilter] = usePersistedState('filter', {
+  // const [filter, setFilter] = usePersistedState('filter', {
+  //   statuses: [],
+  //   groups: [],
+  // });
+  const [filter, setFilter] = useState({
     statuses: [],
     groups: [],
   });
+
   const [filterSort, setFilterSort] = usePersistedState('filterSort', '');
   const [filterMap, setFilterMap] = usePersistedState('filterMap', false);
 
@@ -99,6 +106,8 @@ const MainPage = () => {
 
   useFilter(keyword, filter, filterSort, filterMap, positions, setFilteredDevices, setFilteredPositions);
 
+
+
   return (
     <div className={classes.root}>
       {desktop && (
@@ -109,7 +118,9 @@ const MainPage = () => {
         />
       )}
       <div className={classes.sidebar}>
-        <Paper square elevation={3} className={classes.header}>
+        <Paper square elevation={3} className={classes.header} sx={{
+          borderRadius: devicesOpen ? '14px 14px 0 0' : '14px',
+        }}>
           <MainToolbar
             filteredDevices={filteredDevices}
             devicesOpen={devicesOpen}
@@ -140,20 +151,22 @@ const MainPage = () => {
         </div>
         {desktop && (
           <div className={classes.footer}>
-            <BottomMenu />
+            <BottomMenu devicesOpen={devicesOpen} />
           </div>
         )}
       </div>
       <EventsDrawer open={eventsOpen} onClose={() => setEventsOpen(false)} />
-      {selectedDeviceId && (
-        <StatusCard
-          deviceId={selectedDeviceId}
-          position={selectedPosition}
-          onClose={() => dispatch(devicesActions.selectId(null))}
-          desktopPadding={theme.dimensions.drawerWidthDesktop}
-        />
-      )}
-    </div>
+      {
+        selectedDeviceId && (
+          <StatusCard
+            deviceId={selectedDeviceId}
+            position={selectedPosition}
+            onClose={() => dispatch(devicesActions.selectId(null))}
+            desktopPadding={theme.dimensions.drawerWidthDesktop}
+          />
+        )
+      }
+    </div >
   );
 };
 

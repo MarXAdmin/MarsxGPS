@@ -293,11 +293,11 @@ const ServerPage = () => {
                 />
               </AccordionDetails>
             </Accordion>
-            <EditAttributesAccordion
+            {/* <EditAttributesAccordion
               attributes={item.attributes}
               setAttributes={(attributes) => setItem({ ...item, attributes })}
               definitions={{ ...commonUserAttributes, ...commonDeviceAttributes, ...serverAttributes }}
-            />
+            /> */}
           </>
         )}
         <div className={classes.buttons}>

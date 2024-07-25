@@ -13,6 +13,11 @@ import ReportsMenu from './components/ReportsMenu';
 import { sessionActions } from '../store';
 
 const useStyles = makeStyles((theme) => ({
+  fontStyle: {
+    '& .MuiTableCell-root': {
+      color: '#FFF'
+    }
+  },
   columnAction: {
     width: '1%',
     paddingLeft: theme.spacing(1),
@@ -45,7 +50,7 @@ const LogsPage = () => {
 
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'statisticsTitle']}>
-      <Table>
+      <Table className={classes.fontStyle}>
         <TableHead>
           <TableRow>
             <TableCell className={classes.columnAction} />
@@ -55,7 +60,7 @@ const LogsPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item, index) => /* eslint-disable react/no-array-index-key */ (
+          {items.map((item, index) => /* eslint-disable react/no-array-index-key */(
             <TableRow key={index}>
               <TableCell className={classes.columnAction} padding="none">
                 {item.deviceId ? (

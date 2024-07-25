@@ -11,16 +11,18 @@ const ColumnSelect = ({
   const classes = useReportStyles();
   const t = useTranslation();
 
+
   return (
     <div className={classes.filterItem}>
       <FormControl fullWidth>
-        <InputLabel>{t('sharedColumns')}</InputLabel>
+        {/* <InputLabel>{t('sharedColumns')}</InputLabel> */}
         <Select
           label={t('sharedColumns')}
           value={columns}
           onChange={(e) => setColumns(e.target.value)}
           multiple
           disabled={disabled}
+          className={classes.selectFieldStyle}
         >
           {columnsArray.map(([key, string]) => (
             <MenuItem key={key} value={key}>{rawValues ? string : t(string)}</MenuItem>
