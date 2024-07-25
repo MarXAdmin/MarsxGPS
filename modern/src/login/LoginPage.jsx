@@ -204,6 +204,7 @@ const LoginPage = () => {
             <Select
               sx={{
                 boxShadow: "none",
+                background: 'transparent',
                 ".MuiOutlinedInput-notchedOutline": { border: 0 },
                 "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
                 {
