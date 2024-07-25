@@ -43,6 +43,9 @@ const useStyles = makeStyles((theme) => ({
     pointerEvents: 'auto',
     zIndex: 6,
     background: '#1F2937',
+    [theme.breakpoints.down('md')]: {
+      borderRadius: '0'
+    },
   },
   footer: {
     pointerEvents: 'auto',

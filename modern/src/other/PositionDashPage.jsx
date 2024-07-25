@@ -19,7 +19,7 @@ import EngineIcon from '../resources/images/data/engine.svg?react';
 import BatterySvgIcon from '../resources/images/data/battery.svg?react';
 import {
   formatVoltage, formatNumber, formatTime, formatNumericHours,
-  } from '../common/util/formatter';
+} from '../common/util/formatter';
 import Avatar from '@mui/material/Avatar';
 import Stack from '@mui/material/Stack';
 import ProgressCircle from '../common/components/ProgressCircle';
@@ -33,6 +33,9 @@ const useStyles = makeStyles((theme) => ({
     height: '100%',
     display: 'flex',
     flexDirection: 'column',
+    '& h5': {
+      color: '#FFF'
+    }
   },
   content: {
     overflow: 'auto',
@@ -65,11 +68,11 @@ const PositionDashPage = () => {
 
   const { id } = useParams();
   const deviceId = useSelector((state) => state.devices.selectedId);
-  const from =  dayjs().startOf('day');
+  const from = dayjs().startOf('day');
   const to = dayjs().endOf('day');
 
   const hours12 = false;
-  
+
   const [item, setItem] = useState();
   const [hours, setHours] = useState();
   const [fuel, setFuel] = useState();
@@ -79,7 +82,7 @@ const PositionDashPage = () => {
   const [fixtime, setFixtime] = useState();
   const [workhours, setWorkhours] = useState(0);
 
-  const workprogress = (workhours / 3600000) / 24 ;
+  const workprogress = (workhours / 3600000) / 24;
 
   //const [uniqueid, setUniqueid] = useState();
   //const [deviceimg, setDeviceimg] = useState();
@@ -87,7 +90,7 @@ const PositionDashPage = () => {
   //const theme = useTheme();
   //const colors = tokens(theme.palette.mode);
 
-  const colors = ( serverDarkMode ? "#1F2A40" : "#e0e0e0" ) // "#e0e0e0"; //"inherit"; e0e0e0 , 1F2A40
+  const colors = (serverDarkMode ? "#1F2A40" : "#e0e0e0") // "#e0e0e0"; //"inherit"; e0e0e0 , 1F2A40
   const coloricon = "#3da58a";
 
   useEffectAsync(async () => {
@@ -108,8 +111,8 @@ const PositionDashPage = () => {
         throw Error(await response.text());
       }
 
-      const sum = await fetch(`/api/reports/summary?deviceId=${deviceId}&from=${from.toISOString()}&to=${to.toISOString()}`,{
-          headers: { Accept: 'application/json' },
+      const sum = await fetch(`/api/reports/summary?deviceId=${deviceId}&from=${from.toISOString()}&to=${to.toISOString()}`, {
+        headers: { Accept: 'application/json' },
       });
       if (sum.ok) {
         const sumdata = await sum.json();
@@ -142,7 +145,7 @@ const PositionDashPage = () => {
     }
     return null;
   });
-  
+
   const uniqueid = useSelector((state) => {
     if (item) {
       const device = state.devices.items[item.deviceId];
@@ -161,7 +164,7 @@ const PositionDashPage = () => {
         return formatNumericHours(item, t);
       case 'fuel':
         if (typeof item === 'number') {
-          return formatNumber(item,1) + ' %';
+          return formatNumber(item, 1) + ' %';
         }
         else {
           return '-';
@@ -169,7 +172,7 @@ const PositionDashPage = () => {
       case 'power':
       case 'battery':
         if (typeof item === 'number') {
-          return formatVoltage(item.toFixed(1),t);
+          return formatVoltage(item.toFixed(1), t);
         }
         else {
           return '-';
@@ -192,9 +195,9 @@ const PositionDashPage = () => {
             <ArrowBackIcon />
           </IconButton>
           <Stack direction="row" spacing={2} >
-            <Avatar alt={deviceName} src={pathdeviceImage}/>
+            <Avatar alt={deviceName} src={pathdeviceImage} />
             <Typography variant="h6">
-              {deviceName + ' (' + formatValue(fixtime,'fixTime') + ')'} 
+              {deviceName + ' (' + formatValue(fixtime, 'fixTime') + ')'}
             </Typography>
           </Stack>
         </Toolbar>
@@ -217,14 +220,14 @@ const PositionDashPage = () => {
               m="-5px"
             >
               <StatBox
-                title={formatValue(ignition,"ignition")}
+                title={formatValue(ignition, "ignition")}
                 subtitle={t('positionIgnition')}
                 icon={
                   <EngineIcon className={classes.icon} />
                 }
               />
             </Box>
-            {!desktop && (<Box m="10px"/>)}
+            {!desktop && (<Box m="10px" />)}
             <Box
               gridColumn="span 3"
               backgroundColor={colors}
@@ -243,7 +246,7 @@ const PositionDashPage = () => {
                 }
               />
             </Box>
-            {!desktop && (<Box m="10px"/>)}
+            {!desktop && (<Box m="10px" />)}
             <Box
               gridColumn="span 3"
               backgroundColor={colors}
@@ -262,7 +265,7 @@ const PositionDashPage = () => {
                 }
               />
             </Box>
-            {!desktop && (<Box m="10px"/>)}
+            {!desktop && (<Box m="10px" />)}
             <Box
               gridColumn="span 3"
               backgroundColor={colors}
@@ -275,18 +278,18 @@ const PositionDashPage = () => {
                 title={formatValue(power, "power")}
                 subtitle={t('positionPower')}
                 icon={
-                  <BatterySvgIcon className={classes.icon}/>
+                  <BatterySvgIcon className={classes.icon} />
                 }
               />
             </Box>
           </Box>
           {/** Row 2 for Line Chart */}
-          <Box m="15px"/>
+          <Box m="15px" />
           <Box
-          display="grid"//{displaybox}
-          gridTemplateColumns={gcolgraph}
-          gridAutoRows="110px"
-          gap="15px"
+            display="grid"//{displaybox}
+            gridTemplateColumns={gcolgraph}
+            gridAutoRows="110px"
+            gap="15px"
           >
             {/**Spent Fuel Chart */}
             <Box
@@ -301,7 +304,7 @@ const PositionDashPage = () => {
                 fontWeight="600"
                 color={coloricon}
               >
-                {t('reportSpentFuel') + ' (%)'} 
+                {t('reportSpentFuel') + ' (%)'}
               </Typography>
               <LineChartAttributesToday attr='fuel' min={0} max={100} interpola='monotone' ></LineChartAttributesToday>
             </Box>
@@ -319,14 +322,14 @@ const PositionDashPage = () => {
                 fontWeight="600"
                 color={coloricon}
               >
-                {t('eventIgnitionOn')} 
+                {t('eventIgnitionOn')}
               </Typography>
               <LineChartAttributesToday attr='ignition' min={0} max={1.5} interpola='step' yaxistick={false} ></LineChartAttributesToday>
             </Box>
 
             {/**Hours today */}
             <Box
-              gridColumn={desktop ? 'span 2':'span 5'}
+              gridColumn={desktop ? 'span 2' : 'span 5'}
               gridRow="span 2"
               backgroundColor={colors}
               m="-5px"
@@ -343,34 +346,35 @@ const PositionDashPage = () => {
                   fontWeight="600"
                   color={coloricon}
                 >
-                  {t('positionHours')+ ' ('+t('reportToday') + ')'}
+                  {t('positionHours') + ' (' + t('reportToday') + ')'}
                 </Typography>
               </Box>
               <Box m="20px 0 0 0" p="0 30px" align='center'>
                 <ProgressCircle progress={workprogress}></ProgressCircle>
                 <Typography
-                    variant="h6"
-                    fontWeight="600"
-                    align='center'
-                  >
-                    {formatValue(workhours, "engineHours")}
-                  </Typography>
-                  
+                  variant="h6"
+                  fontWeight="600"
+                  align='center'
+                  sx={{ color: '#FFF' }}
+                >
+                  {formatValue(workhours, "engineHours")}
+                </Typography>
+
               </Box>
             </Box>
           </Box>
 
           {/** Row 3 for Map his */}
-          <Box m="15px"/>
+          <Box m="15px" />
           <Box
-          display="grid"
-          gridTemplateColumns={gcolgraph}
-          gridAutoRows="140px"
-          gap="15px"
+            display="grid"
+            gridTemplateColumns={gcolgraph}
+            gridAutoRows="140px"
+            gap="15px"
           >
-             {/**Box data1 Position Replay*/}
+            {/**Box data1 Position Replay*/}
             <Box
-              gridColumn={desktop ? 'span 4':'span 5'}
+              gridColumn={desktop ? 'span 4' : 'span 5'}
               gridRow="span 2"
               backgroundColor={colors}
               m="-5px"
@@ -382,20 +386,20 @@ const PositionDashPage = () => {
                 fontWeight="600"
                 color={coloricon}
               >
-                {t('reportReplay')} 
+                {t('reportReplay')}
               </Typography>
-              <Box 
-              height="225px" 
-              m="-5px 0 0 0" 
-              p="0 -10px" 
-              backgroundColor={colors} >
+              <Box
+                height="225px"
+                m="-5px 0 0 0"
+                p="0 -10px"
+                backgroundColor={colors} >
                 <ReplayPageDB></ReplayPageDB>
               </Box>
             </Box>
 
-             {/**Box data2 RPM*/}
+            {/**Box data2 RPM*/}
             <Box
-              gridColumn={desktop ? 'span 4':'span 5'}
+              gridColumn={desktop ? 'span 4' : 'span 5'}
               gridRow="span 2"
               backgroundColor={colors}
               m="-5px"
@@ -406,14 +410,14 @@ const PositionDashPage = () => {
                 fontWeight="600"
                 color={coloricon}
               >
-              {t('positionRpm')} 
+                {t('positionRpm')}
               </Typography>
               <LineChartAttributesToday attr='rpm' min={0} max={6000} ></LineChartAttributesToday>
             </Box>
-            
+
             {/**Box data3 Fuel Consump*/}
             <Box
-              gridColumn={desktop ? 'span 4':'span 5'}
+              gridColumn={desktop ? 'span 4' : 'span 5'}
               gridRow="span 2"
               backgroundColor={colors}
               m="-5px"
@@ -424,50 +428,50 @@ const PositionDashPage = () => {
                 fontWeight="600"
                 color={coloricon}
               >
-              {t('positionFuelConsumption') + ' (' + t('sharedLiterPerHourAbbreviation') + ')'} 
+                {t('positionFuelConsumption') + ' (' + t('sharedLiterPerHourAbbreviation') + ')'}
               </Typography>
               <LineChartAttributesToday attr='fuelConsumption' min={0} max={50} ></LineChartAttributesToday>
             </Box>
           </Box>
         </Box>
-        <Box m="5px"/>  
+        <Box m="5px" />
         {admin &&
-        <Container maxWidth="sm">
-          <Typography
-            variant="h6"
-            fontWeight="600"
-            color={coloricon}
-          >
-            {t('sharedAttributes')}
-          </Typography>
-          <Paper>
-            <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>{t('stateName')}</TableCell>
-                  <TableCell>{t('sharedName')}</TableCell>
-                  <TableCell>{t('stateValue')}</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {item && Object.getOwnPropertyNames(item).filter((it) => it !== 'attributes').map((property) => (
-                  <TableRow key={property}>
-                    <TableCell>{property}</TableCell>
-                    <TableCell><strong>{positionAttributes[property]?.name || property}</strong></TableCell>
-                    <TableCell><PositionValue position={item} property={property} /></TableCell>
+          <Container maxWidth="sm">
+            <Typography
+              variant="h6"
+              fontWeight="600"
+              color={coloricon}
+            >
+              {t('sharedAttributes')}
+            </Typography>
+            <Paper>
+              <Table>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>{t('stateName')}</TableCell>
+                    <TableCell>{t('sharedName')}</TableCell>
+                    <TableCell>{t('stateValue')}</TableCell>
                   </TableRow>
-                ))}
-                {item && Object.getOwnPropertyNames(item.attributes).map((attribute) => (
-                  <TableRow key={attribute}>
-                    <TableCell>{attribute}</TableCell>
-                    <TableCell><strong>{positionAttributes[attribute]?.name || attribute}</strong></TableCell>
-                    <TableCell><PositionValue position={item} attribute={attribute} /></TableCell>
-                  </TableRow>
-                ))}
-              </TableBody>
-            </Table>
-          </Paper>
-        </Container>}
+                </TableHead>
+                <TableBody>
+                  {item && Object.getOwnPropertyNames(item).filter((it) => it !== 'attributes').map((property) => (
+                    <TableRow key={property}>
+                      <TableCell>{property}</TableCell>
+                      <TableCell><strong>{positionAttributes[property]?.name || property}</strong></TableCell>
+                      <TableCell><PositionValue position={item} property={property} /></TableCell>
+                    </TableRow>
+                  ))}
+                  {item && Object.getOwnPropertyNames(item.attributes).map((attribute) => (
+                    <TableRow key={attribute}>
+                      <TableCell>{attribute}</TableCell>
+                      <TableCell><strong>{positionAttributes[attribute]?.name || attribute}</strong></TableCell>
+                      <TableCell><PositionValue position={item} attribute={attribute} /></TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
+            </Paper>
+          </Container>}
       </div>
     </div>
   );
