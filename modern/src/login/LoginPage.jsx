@@ -193,7 +193,8 @@ const LoginPage = () => {
     <LoginLayout>
       <div className={classes.container}>
         <div className={classes.logoGPS}>
-          <LogoImage color={theme.palette.primary.main} />
+          {/* <LogoImage color={theme.palette.primary.main} /> */}
+          <img src='/images/logomarsx2-p-500.png' alt='logo' />
         </div>
         <div className={classes.title}>
           <div>{t('welcomeLoginPage')}<span>MARTAIN</span></div>

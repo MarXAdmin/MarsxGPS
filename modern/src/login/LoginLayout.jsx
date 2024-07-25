@@ -70,7 +70,7 @@ const LoginLayout = ({ children }) => {
     // </main>
     <main className={classes.root}>
       <Paper className={classes.paper}>
-        <img src='src/wallpaperLogin.png' alt='login' className={classes.wallpaperLogin} />
+        <img src='/images/wallpaperLogin.png' alt='login' className={classes.wallpaperLogin} />
         <form className={classes.form}>
           {children}
         </form>
