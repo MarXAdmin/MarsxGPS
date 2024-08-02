@@ -45,9 +45,12 @@ const useStyles = makeStyles((theme) => ({
       '&:hover': {
         borderTopLeftRadius: '16px',
         borderBottomLeftRadius: '16px',
-
       },
-    }
+    },
+    [theme.breakpoints.down('md')]: {
+      border: '2px solid green',
+      borderRadius: '16px',
+    },
   },
   btnShowArrow: {
     border: '0',

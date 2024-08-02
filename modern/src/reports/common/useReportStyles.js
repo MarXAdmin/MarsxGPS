@@ -66,19 +66,33 @@ export default makeStyles((theme) => ({
         fill: '#FFF'
       }
     },
+    [theme.breakpoints.down('md')]: {
+      '& tr': {
+        '& td': {
+          color: '#1F2937',
+          '& svg': {
+            fill: '#1F2937'
+          }
+        }
+      },
+    },
   },
   autocompleteFieldStyle: {
     '& .MuiOutlinedInput-root': {
       borderRadius: '16px',
     },
   },
-  btnShow: {
-    // color: 'red'
-    borderRadius: '16px',
-    border: '1px solid ##999999',
-    background: '#FFF',
-    '&:hover': {
-      background: '#FFF',
-    }
-  }
+  // btnShow: {
+  //   // color: 'red'
+  //   borderRadius: '16px',
+  //   border: '1px solid #999999',
+  //   background: '#FFF',
+  //   '&:hover': {
+  //     background: '#FFF',
+  //   },
+  //   [theme.breakpoints.down('md')]: {
+  //     border: '2px solid green',
+  //     borderRadius: '16px',
+  //   },
+  // }
 }));

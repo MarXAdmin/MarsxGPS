@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  FormControl, InputLabel, Select, MenuItem, Button, TextField, Typography,
+  FormControl, InputLabel, Select, MenuItem, Button, TextField, Typography, useMediaQuery, useTheme
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
@@ -16,6 +16,8 @@ const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignore
   const classes = useReportStyles();
   const dispatch = useDispatch();
   const t = useTranslation();
+  const theme = useTheme();
+  const isMediumOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
 
 
   const readonly = useRestriction('readonly');
@@ -120,7 +122,7 @@ const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignore
         <>
           <div className={classes.filterItem}>
             <FormControl fullWidth>
-              {/* <InputLabel>{t('reportPeriod')}</InputLabel> */}
+              {isMediumOrSmaller ? <InputLabel>{t('reportPeriod')}</InputLabel> : <></>}
               <Select
                 className={classes.selectFieldStyle}
                 label={t('reportPeriod')} value={period} onChange={(e) => dispatch(reportsActions.updatePeriod(e.target.value))}>

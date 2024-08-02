@@ -1,5 +1,5 @@
 import {
-  FormControl, InputLabel, MenuItem, Select, Autocomplete, TextField,
+  FormControl, InputLabel, MenuItem, Select, Autocomplete, TextField, useMediaQuery, useTheme
 } from '@mui/material';
 import React, { useState } from 'react';
 import { useEffectAsync } from '../../reactHelper';
@@ -23,6 +23,8 @@ const SelectField = ({
   const t = useTranslation();
   const [items, setItems] = useState(data);
   const classes = useSelectStyle();
+  const theme = useTheme();
+  const isMediumOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
 
   const getOptionLabel = (option) => {
     if (typeof option !== 'object') {
@@ -47,7 +49,7 @@ const SelectField = ({
       <FormControl fullWidth={fullWidth}>
         {multiple ? (
           <>
-            {value && value.length === 0 ? (
+            {(value && value.length === 0) || isMediumOrSmaller ? (
               <InputLabel>{t('deviceTitle')}</InputLabel>
             ) : (
               <></>

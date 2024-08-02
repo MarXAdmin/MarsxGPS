@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  FormControl, InputLabel, MenuItem, Select,
+  FormControl, InputLabel, MenuItem, Select, useMediaQuery, useTheme
 } from '@mui/material';
 import { useTranslation } from '../../common/components/LocalizationProvider';
 import useReportStyles from '../common/useReportStyles';
@@ -8,6 +8,8 @@ import useReportStyles from '../common/useReportStyles';
 const ColumnSelect = ({
   columns, setColumns, columnsArray, rawValues, disabled,
 }) => {
+  const theme = useTheme();
+  const isMediumOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
   const classes = useReportStyles();
   const t = useTranslation();
 
@@ -15,7 +17,7 @@ const ColumnSelect = ({
   return (
     <div className={classes.filterItem}>
       <FormControl fullWidth>
-        {/* <InputLabel>{t('sharedColumns')}</InputLabel> */}
+        {isMediumOrSmaller && <InputLabel>{t('sharedColumns')}</InputLabel>}
         <Select
           label={t('sharedColumns')}
           value={columns}
