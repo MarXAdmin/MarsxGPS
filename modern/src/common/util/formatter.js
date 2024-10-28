@@ -12,7 +12,9 @@ import {
   volumeFromLiters,
   volumeUnitString,
 } from './converter';
-import { prefixString } from './stringUtils';
+import {
+  prefixString
+} from './stringUtils';
 
 dayjs.extend(duration);
 dayjs.extend(relativeTime);
@@ -103,13 +105,17 @@ export const formatCoordinate = (key, value, unit) => {
   }
 };
 
-export const getStatusColor = (status) => {
+export const getStatusColor = (status, lastUpdate) => {
   switch (status) {
     case 'online':
       return 'success';
     case 'offline':
       return 'error';
     case 'unknown':
+      if (lastUpdate && dayjs().diff(dayjs(lastUpdate), 'day') > 20) {
+        return 'error';
+      }
+      return 'neutral';
     default:
       return 'neutral';
   }

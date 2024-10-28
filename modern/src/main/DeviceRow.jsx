@@ -56,6 +56,7 @@ const DeviceRow = ({ data, index, style }) => {
   const admin = useAdministrator();
 
   const item = data[index];
+  // console.log("🚀 ~ DeviceRow ~ item:", item)
   const position = useSelector((state) => state.session.positions[item.id]);
 
   const events = useSelector((state) => state.events.items.filter((e) => e.deviceId === item.id));
@@ -74,7 +75,7 @@ const DeviceRow = ({ data, index, style }) => {
     return (
       <>
         {deviceSecondary && item[deviceSecondary] && `${item[deviceSecondary]} • `}
-        <span className={classes[getStatusColor(item.status)]}>{status}</span>
+        <span className={classes[getStatusColor(item.status, item.lastUpdate)]}>{status}</span>
       </>
     );
   };
