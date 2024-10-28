@@ -10,7 +10,7 @@ export default defineConfig(() => ({
     proxy: {
       '/api/socket': 'ws://ec2-18-143-114-161.ap-southeast-1.compute.amazonaws.com:8082', //localhost , ec2-18-143-114-161.ap-southeast-1.compute.amazonaws.com
       '/api': 'http://ec2-18-143-114-161.ap-southeast-1.compute.amazonaws.com:8082',
-    },
+    }, 
   },
   build: {
     outDir: '../modern/dist',
