@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     '& img': {
-      width: '64px'
+      width: '120px'
     }
   },
   title: {
@@ -62,10 +62,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     '& span': {
       margin: '0 4px',
-      color: '#EF5713',
-      fontWeight: '700'
+      fontWeight: '700',
+      background: 'linear-gradient(180deg, #004A9C 29.31%, #000008 124.14%)',
+      '-webkit-background-clip': 'text',
+      '-webkit-text-fill-color': 'transparent',
+      backgroundClip: 'text',
+      textFillColor: 'transparent',
     },
   },
+
   titleLogin: {
     fontWeight: '500',
     fontSize: '2rem'
@@ -194,7 +199,7 @@ const LoginPage = () => {
       <div className={classes.container}>
         <div className={classes.logoGPS}>
           {/* <LogoImage color={theme.palette.primary.main} /> */}
-          <img src='/images/logomarsx2-p-500.png' alt='logo' />
+          <img src='../../dist/images/logomarsx3.png' alt='logo' />
         </div>
         <div className={classes.title}>
           <div>{t('welcomeLoginPage')}<span>MARTAIN</span></div>
