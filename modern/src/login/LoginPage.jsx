@@ -102,6 +102,7 @@ const LoginPage = () => {
   const languageEnabled = useSelector((state) => !state.session.server.attributes['ui.disableLoginLanguage']);
   // const changeEnabled = useSelector((state) => !state.session.server.attributes.disableChange);
   const emailEnabled = useSelector((state) => state.session.server.emailEnabled);
+  console.log("🚀 ~ LoginPage ~ emailEnabled:", emailEnabled)
   const openIdEnabled = useSelector((state) => state.session.server.openIdEnabled);
   const openIdForced = useSelector((state) => state.session.server.openIdEnabled && state.session.server.openIdForce);
   const [codeEnabled, setCodeEnabled] = useState(false);
@@ -315,6 +316,14 @@ const LoginPage = () => {
           </Link>
         )}
       </div>
+      <Button
+        className={classes.registerButton}
+        onClick={() => navigate('/register')}
+        disabled={!registrationEnabled}
+        color="secondary"
+      >
+        {t('loginRegister')}
+      </Button>
       <Snackbar
         open={!!announcement && !announcementShown}
         message={announcement}

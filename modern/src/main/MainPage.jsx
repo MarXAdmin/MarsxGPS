@@ -17,6 +17,8 @@ import MainToolbar from './MainToolbar';
 import MainMap from './MainMap';
 import { useAttributePreference } from '../common/util/preferences';
 
+import CustomizedInputBase from './SearchBar';
+
 const useStyles = makeStyles((theme) => ({
   root: {
     height: '100%',
@@ -65,6 +67,14 @@ const useStyles = makeStyles((theme) => ({
     zIndex: 4,
     background: '#FFFFFF',
   },
+  mobileSearchHeader: {
+    margin: '20px',
+    position: 'absolute',
+    background: 'white',
+    width: 'calc(90% - 40px)',
+    borderRadius: '16px',
+
+  }
 }));
 
 const MainPage = () => {
@@ -124,19 +134,25 @@ const MainPage = () => {
         <Paper square elevation={3} className={classes.header} sx={{
           borderRadius: devicesOpen ? '14px 14px 0 0' : '14px',
         }}>
-          <MainToolbar
-            filteredDevices={filteredDevices}
-            devicesOpen={devicesOpen}
-            setDevicesOpen={setDevicesOpen}
-            keyword={keyword}
-            setKeyword={setKeyword}
-            filter={filter}
-            setFilter={setFilter}
-            filterSort={filterSort}
-            setFilterSort={setFilterSort}
-            filterMap={filterMap}
-            setFilterMap={setFilterMap}
-          />
+          {desktop ?
+            <MainToolbar
+              filteredDevices={filteredDevices}
+              devicesOpen={devicesOpen}
+              setDevicesOpen={setDevicesOpen}
+              keyword={keyword}
+              setKeyword={setKeyword}
+              filter={filter}
+              setFilter={setFilter}
+              filterSort={filterSort}
+              setFilterSort={setFilterSort}
+              filterMap={filterMap}
+              setFilterMap={setFilterMap}
+            /> :
+            <div className={classes.mobileSearchHeader} >
+              <CustomizedInputBase />
+            </div>
+          }
+
         </Paper>
         <div className={classes.middle}>
           {!desktop && (
@@ -148,9 +164,10 @@ const MainPage = () => {
               />
             </div>
           )}
-          <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
-            <DeviceList devices={filteredDevices} />
-          </Paper>
+          {desktop &&
+            <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
+              <DeviceList devices={filteredDevices} />
+            </Paper>}
         </div>
         {desktop && (
           <div className={classes.footer}>
