@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     '& img': {
-      width: '120px'
+      width: '60px'
     }
   },
   title: {
@@ -73,13 +73,23 @@ const useStyles = makeStyles((theme) => ({
 
   titleLogin: {
     fontWeight: '500',
-    fontSize: '2rem'
+    fontSize: '2rem',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center'
   },
   iconOnly: {
     '& img': {
       borderRadius: '50%'
     }
   },
+  versionContal: {
+    display: 'flex',
+    justifyContent: 'end',
+    fontWeight: '100',
+    fontSize: '0.6rem',
+    color: '#0F0F0F'
+  }
 }));
 
 const LoginPage = () => {
@@ -198,8 +208,8 @@ const LoginPage = () => {
     <LoginLayout>
       <div className={classes.container}>
         <div className={classes.logoGPS}>
-          {/* <LogoImage color={theme.palette.primary.main} /> */}
-          <img src='../../dist/images/logomarsx3.png' alt='logo' />
+          <LogoImage color={theme.palette.primary.main} />
+          {/* <img src='../../dist/images/logomarsx3.png' alt='logo' /> */}
         </div>
         <div className={classes.title}>
           <div>{t('welcomeLoginPage')}<span>MARTAIN</span></div>
@@ -244,7 +254,17 @@ const LoginPage = () => {
             </Select>
           )}
         </div>
-        <div className={classes.titleLogin}>{t('loginTitle')}</div>
+        <div className={classes.titleLogin}>
+          {t('loginTitle')}
+          <Button
+            className={classes.registerButton}
+            onClick={() => navigate('/register')}
+            disabled={!registrationEnabled}
+            color="secondary"
+          >
+            {t('loginRegister')}
+          </Button>
+        </div>
         <TextField
           required
           error={failed}
@@ -294,6 +314,9 @@ const LoginPage = () => {
         >
           {t('loginLogin')}
         </Button>
+        <div className={classes.versionContal}>
+          Build: 24.11.28
+        </div>
         {openIdEnabled && (
           <Button
             onClick={() => handleOpenIdLogin()}
