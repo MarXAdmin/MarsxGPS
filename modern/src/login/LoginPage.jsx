@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
     justifyContent: 'center',
     alignItems: 'center',
     '& img': {
-      width: '120px'
+      width: '60px'
     }
   },
   title: {
@@ -72,6 +72,9 @@ const useStyles = makeStyles((theme) => ({
   },
 
   titleLogin: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     fontWeight: '500',
     fontSize: '2rem'
   },
@@ -80,6 +83,13 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '50%'
     }
   },
+  versionContal: {
+    display: 'flex',
+    justifyContent: 'end',
+    fontWeight: '100',
+    fontSize: '0.6rem',
+    color: '#0F0F0F'
+  }
 }));
 
 const LoginPage = () => {
@@ -102,7 +112,6 @@ const LoginPage = () => {
   const languageEnabled = useSelector((state) => !state.session.server.attributes['ui.disableLoginLanguage']);
   // const changeEnabled = useSelector((state) => !state.session.server.attributes.disableChange);
   const emailEnabled = useSelector((state) => state.session.server.emailEnabled);
-  console.log("🚀 ~ LoginPage ~ emailEnabled:", emailEnabled)
   const openIdEnabled = useSelector((state) => state.session.server.openIdEnabled);
   const openIdForced = useSelector((state) => state.session.server.openIdEnabled && state.session.server.openIdForce);
   const [codeEnabled, setCodeEnabled] = useState(false);
@@ -199,8 +208,8 @@ const LoginPage = () => {
     <LoginLayout>
       <div className={classes.container}>
         <div className={classes.logoGPS}>
-          {/* <LogoImage color={theme.palette.primary.main} /> */}
-          <img src='../../dist/images/logomarsx3.png' alt='logo' />
+          <LogoImage color={theme.palette.primary.main} />
+          {/* <img src='/images/logomarsx3.png' alt='logo' /> */}
         </div>
         <div className={classes.title}>
           <div>{t('welcomeLoginPage')}<span>MARTAIN</span></div>
@@ -245,7 +254,16 @@ const LoginPage = () => {
             </Select>
           )}
         </div>
-        <div className={classes.titleLogin}>{t('loginTitle')}</div>
+        <div className={classes.titleLogin}>
+          {t('loginTitle')}
+          <Button
+            className={classes.registerButton}
+            onClick={() => navigate('/register')}
+            disabled={!registrationEnabled}
+            color="secondary"
+          >
+            {t('loginRegister')}
+          </Button></div>
         <TextField
           required
           error={failed}
@@ -295,18 +313,9 @@ const LoginPage = () => {
         >
           {t('loginLogin')}
         </Button>
-        <div>
-          <Button
-            className={classes.registerButton}
-            onClick={() => navigate('/register')}
-            disabled={!registrationEnabled}
-            color="secondary"
-          >
-            {t('loginRegister')}
-          </Button>
+        <div className={classes.versionContal}>
+          Build: 24.11.28
         </div>
-
-
         {openIdEnabled && (
           <Button
             onClick={() => handleOpenIdLogin()}
