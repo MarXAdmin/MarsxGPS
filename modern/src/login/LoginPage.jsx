@@ -212,7 +212,7 @@ const LoginPage = () => {
           {/* <img src='../../dist/images/logomarsx3.png' alt='logo' /> */}
         </div>
         <div className={classes.title}>
-          <div>{t('welcomeLoginPage')}<span>MARTAIN</span></div>
+          <div>{t('welcomeLoginPage')}<span>MARSTIAN</span></div>
           {languageEnabled && (
             <Select
               sx={{
