@@ -1,10 +1,8 @@
+import React, { useEffect, useState } from 'react';
 import {
-  FormControl, InputLabel, MenuItem, Select, Autocomplete, TextField, useMediaQuery, useTheme
+  FormControl, InputLabel, MenuItem, Select, Autocomplete, TextField,
 } from '@mui/material';
-import React, { useState } from 'react';
 import { useEffectAsync } from '../../reactHelper';
-import { useTranslation } from '../../common/components/LocalizationProvider';
-import useSelectStyle from '../../reports/common/useReportStyles'
 
 const SelectField = ({
   label,
@@ -18,13 +16,8 @@ const SelectField = ({
   data,
   keyGetter = (item) => item.id,
   titleGetter = (item) => item.name,
-  isInputLabel
 }) => {
-  const t = useTranslation();
-  const [items, setItems] = useState(data);
-  const classes = useSelectStyle();
-  const theme = useTheme();
-  const isMediumOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
+  const [items, setItems] = useState();
 
   const getOptionLabel = (option) => {
     if (typeof option !== 'object') {
@@ -32,6 +25,8 @@ const SelectField = ({
     }
     return option ? titleGetter(option) : emptyTitle;
   };
+
+  useEffect(() => setItems(data), [data]);
 
   useEffectAsync(async () => {
     if (endpoint) {
@@ -49,17 +44,12 @@ const SelectField = ({
       <FormControl fullWidth={fullWidth}>
         {multiple ? (
           <>
-            {(value && value.length === 0) || isMediumOrSmaller ? (
-              <InputLabel>{t('deviceTitle')}</InputLabel>
-            ) : (
-              <></>
-            )}
+            <InputLabel>{label}</InputLabel>
             <Select
               label={label}
               multiple
               value={value}
               onChange={onChange}
-              className={classes.selectFieldStyle}
             >
               {items.map((item) => (
                 <MenuItem key={keyGetter(item)} value={keyGetter(item)}>{titleGetter(item)}</MenuItem>
@@ -68,7 +58,6 @@ const SelectField = ({
           </>
         ) : (
           <Autocomplete
-            className={classes.autocompleteFieldStyle}
             size="small"
             options={items}
             getOptionLabel={getOptionLabel}
@@ -79,7 +68,6 @@ const SelectField = ({
             value={value}
             onChange={(_, value) => onChange({ target: { value: value ? keyGetter(value) : emptyValue } })}
             renderInput={(params) => <TextField {...params} label={label} />}
-
           />
         )}
       </FormControl>

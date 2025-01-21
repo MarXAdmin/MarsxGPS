@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   IconButton,
@@ -10,7 +10,7 @@ import {
   formatDistance, formatVolume, formatTime, formatNumericHours,
 } from '../common/util/formatter';
 import ReportFilter from './components/ReportFilter';
-import { useAttributePreference, usePreference } from '../common/util/preferences';
+import { useAttributePreference } from '../common/util/preferences';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import PageLayout from '../common/components/PageLayout';
 import ReportsMenu from './components/ReportsMenu';
@@ -25,9 +25,7 @@ import AddressValue from '../common/components/AddressValue';
 import TableShimmer from '../common/components/TableShimmer';
 import MapGeofence from '../map/MapGeofence';
 import scheduleReport from './common/scheduleReport';
-import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
-import { useDownloadExcel } from 'react-export-table-to-excel';
-import Tooltip from '@mui/material/Tooltip';
+import MapScale from '../map/MapScale';
 
 const columnsArray = [
   ['startTime', 'reportStartTime'],
@@ -47,7 +45,6 @@ const StopReportPage = () => {
 
   const distanceUnit = useAttributePreference('distanceUnit');
   const volumeUnit = useAttributePreference('volumeUnit');
-  const hours12 = usePreference('twelveHourFormat');
 
   const [columns, setColumns] = usePersistedState('stopColumns', ['startTime', 'endTime', 'startOdometer', 'address']);
   const [items, setItems] = useState([]);
@@ -91,32 +88,27 @@ const StopReportPage = () => {
   });
 
   const formatValue = (item, key) => {
+    const value = item[key];
     switch (key) {
       case 'startTime':
       case 'endTime':
-        return formatTime(item[key], 'minutes', hours12);
+        return formatTime(value, 'minutes');
       case 'startOdometer':
-        return formatDistance(item[key], distanceUnit, t);
+        return formatDistance(value, distanceUnit, t);
       case 'duration':
-        return formatNumericHours(item[key], t);
+        return formatNumericHours(value, t);
       case 'engineHours':
-        return formatNumericHours(item[key], t);
+        return value > 0 ? formatNumericHours(value, t) : null;
       case 'spentFuel':
-        return formatVolume(item[key], volumeUnit, t);
+        return value > 0 ? formatVolume(value, volumeUnit, t) : null;
       case 'address':
-        return (<AddressValue latitude={item.latitude} longitude={item.longitude} originalAddress={item[key]} />);
+        return (<AddressValue latitude={item.latitude} longitude={item.longitude} originalAddress={value} />);
       default:
-        return item[key];
+        return value;
     }
   };
 
   const tableRef = useRef(null);
-
-  const { onDownload } = useDownloadExcel({
-    currentTableRef: tableRef.current,
-    filename: 'StopReport',
-    sheet: 'StopReport'
-  });
 
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportStops']}>
@@ -135,25 +127,20 @@ const StopReportPage = () => {
                 titleField="fixTime"
               />
             </MapView>
+            <MapScale />
             <MapCamera latitude={selectedItem.latitude} longitude={selectedItem.longitude} />
           </div>
         )}
         <div className={classes.containerMain}>
           <div className={classes.header}>
-            <ReportFilter handleSubmit={handleSubmit} handleSchedule={handleSchedule}>
+            <ReportFilter handleSubmit={handleSubmit} handleSchedule={handleSchedule} loading={loading}>
               <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
             </ReportFilter>
           </div>
-          <Table ref={tableRef} stickyHeader aria-label="sticky table" className={classes.tableStyle}>
+          <Table ref={tableRef} stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
-                <TableCell className={classes.columnAction}>
-                  <Tooltip title="Download to excel">
-                    <IconButton size="small" color="info" aria-label="download to excel" onClick={onDownload}>
-                      <ArrowCircleDownIcon />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
+                <TableCell className={classes.columnAction} />
                 {columns.map((key) => (<TableCell key={key}>{t(columnsMap.get(key))}</TableCell>))}
               </TableRow>
             </TableHead>

@@ -49,6 +49,10 @@ export default (t) => useMemo(() => ({
     name: t('attributePopupInfo'),
     type: 'string',
   },
+  googleKey: {
+    name: t('mapGoogleKey'),
+    type: 'string',
+  },
   locationIqKey: {
     name: t('mapLocationIqKey'),
     type: 'string',
@@ -132,5 +136,13 @@ export default (t) => useMemo(() => ({
   iconScale: {
     name: t('sharedIconScale'),
     type: 'number',
+  },
+  navigationAppLink: {
+    name: t('attributeNavigationAppLink'),
+    type: 'string',
+  },
+  navigationAppTitle: {
+    name: t('attributeNavigationAppTitle'),
+    type: 'string',
   },
 }), [t]);

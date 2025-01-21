@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import {
-  useMediaQuery, InputLabel, Select, MenuItem, FormControl, Button, TextField, Link, Snackbar, IconButton, Tooltip, LinearProgress, Box,
+  useMediaQuery, Select, MenuItem, FormControl, Button, TextField, Link, Snackbar, IconButton, Tooltip, Box,
 } from '@mui/material';
 import ReactCountryFlag from 'react-country-flag';
 import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -18,78 +17,35 @@ import usePersistedState from '../common/util/usePersistedState';
 import { handleLoginTokenListeners, nativeEnvironment, nativePostMessage } from '../common/components/NativeInterface';
 import LogoImage from './LogoImage';
 import { useCatch } from '../reactHelper';
+import Loader from '../common/components/Loader';
 
 const useStyles = makeStyles((theme) => ({
   options: {
     position: 'fixed',
-    top: theme.spacing(1),
-    right: theme.spacing(1),
+    top: theme.spacing(2),
+    right: theme.spacing(2),
+    display: 'flex',
+    flexDirection: 'row',
+    gap: theme.spacing(1),
   },
   container: {
     display: 'flex',
     flexDirection: 'column',
-    gap: '24px',
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '26px'
-    },
-    '& button': {
-      borderRadius: '26px',
-    }
+    gap: theme.spacing(2),
   },
   extraContainer: {
     display: 'flex',
-    gap: theme.spacing(2),
+    flexDirection: 'row',
+    justifyContent: 'center',
+    gap: theme.spacing(4),
+    marginTop: theme.spacing(2),
   },
   registerButton: {
     minWidth: 'unset',
   },
-  resetPassword: {
+  link: {
     cursor: 'pointer',
-    textAlign: 'center',
-    marginTop: theme.spacing(2),
   },
-  logoGPS: {
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    '& img': {
-      width: '60px'
-    }
-  },
-  title: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    '& span': {
-      margin: '0 4px',
-      fontWeight: '700',
-      background: 'linear-gradient(180deg, #004A9C 29.31%, #000008 124.14%)',
-      '-webkit-background-clip': 'text',
-      '-webkit-text-fill-color': 'transparent',
-      backgroundClip: 'text',
-      textFillColor: 'transparent',
-    },
-  },
-
-  titleLogin: {
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    fontWeight: '500',
-    fontSize: '2rem'
-  },
-  iconOnly: {
-    '& img': {
-      borderRadius: '50%'
-    }
-  },
-  versionContal: {
-    display: 'flex',
-    justifyContent: 'end',
-    fontWeight: '100',
-    fontSize: '0.6rem',
-    color: '#0F0F0F'
-  }
 }));
 
 const LoginPage = () => {
@@ -110,7 +66,7 @@ const LoginPage = () => {
 
   const registrationEnabled = useSelector((state) => state.session.server.registration);
   const languageEnabled = useSelector((state) => !state.session.server.attributes['ui.disableLoginLanguage']);
-  // const changeEnabled = useSelector((state) => !state.session.server.attributes.disableChange);
+  const changeEnabled = useSelector((state) => !state.session.server.attributes.disableChange);
   const emailEnabled = useSelector((state) => state.session.server.emailEnabled);
   const openIdEnabled = useSelector((state) => state.session.server.openIdEnabled);
   const openIdForced = useSelector((state) => state.session.server.openIdEnabled && state.session.server.openIdForce);
@@ -174,12 +130,6 @@ const LoginPage = () => {
     }
   });
 
-  const handleSpecialKey = (e) => {
-    if (e.keyCode === 13 && email && password && (!codeEnabled || code)) {
-      handlePasswordLogin(e);
-    }
-  };
-
   const handleOpenIdLogin = () => {
     document.location = '/api/session/openid/auth';
   };
@@ -194,76 +144,36 @@ const LoginPage = () => {
 
   if (openIdForced) {
     handleOpenIdLogin();
-    return (<LinearProgress />);
+    return (<Loader />);
   }
-
-  const [selectedLanguage, setSelectedLanguage] = useState(language);
-
-  const handleChange = (event) => {
-    setSelectedLanguage(event.target.value);
-    setLanguage(event.target.value);
-  };
 
   return (
     <LoginLayout>
-      <div className={classes.container}>
-        <div className={classes.logoGPS}>
-          <LogoImage color={theme.palette.primary.main} />
-          {/* <img src='/images/logomarsx3.png' alt='logo' /> */}
-        </div>
-        <div className={classes.title}>
-          <div>{t('welcomeLoginPage')}<span>MARTAIN</span></div>
-          {languageEnabled && (
-            <Select
-              sx={{
-                boxShadow: "none",
-                background: 'transparent',
-                ".MuiOutlinedInput-notchedOutline": { border: 0 },
-                "&.MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
-                {
-                  border: 0,
-                },
-                "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline":
-                {
-                  border: 0,
-                },
-              }}
-              value={selectedLanguage}
-              onChange={handleChange}
-              inputProps={{ 'aria-label': 'Without label' }}
-              renderValue={(selected) => {
-                const selectedItem = languageList.find((item) => item.code === selected);
-                return selectedItem ? (
-                  <Box component="span" className={classes.iconOnly} >
-                    <ReactCountryFlag countryCode={selectedItem.country} svg />
-                  </Box>
-                ) : (
-                  <div>
-                  </div>
-                );
-              }}
-            >
+      <div className={classes.options}>
+        {nativeEnvironment && changeEnabled && (
+          <Tooltip title={t('settingsServer')}>
+            <IconButton onClick={() => navigate('/change-server')}>
+              <LockOpenIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+        {languageEnabled && (
+          <FormControl>
+            <Select value={language} onChange={(e) => setLanguage(e.target.value)}>
               {languageList.map((it) => (
                 <MenuItem key={it.code} value={it.code}>
-                  <Box component="span" sx={{ marginRight: '8px' }}>
+                  <Box component="span" sx={{ mr: 1 }}>
                     <ReactCountryFlag countryCode={it.country} svg />
                   </Box>
                   {it.name}
                 </MenuItem>
               ))}
             </Select>
-          )}
-        </div>
-        <div className={classes.titleLogin}>
-          {t('loginTitle')}
-          <Button
-            className={classes.registerButton}
-            onClick={() => navigate('/register')}
-            disabled={!registrationEnabled}
-            color="secondary"
-          >
-            {t('loginRegister')}
-          </Button></div>
+          </FormControl>
+        )}
+      </div>
+      <div className={classes.container}>
+        {useMediaQuery(theme.breakpoints.down('lg')) && <LogoImage color={theme.palette.primary.main} />}
         <TextField
           required
           error={failed}
@@ -273,7 +183,6 @@ const LoginPage = () => {
           autoComplete="email"
           autoFocus={!email}
           onChange={(e) => setEmail(e.target.value)}
-          onKeyUp={handleSpecialKey}
           helperText={failed && 'Invalid username or password'}
         />
         <TextField
@@ -286,7 +195,6 @@ const LoginPage = () => {
           autoComplete="current-password"
           autoFocus={!!email}
           onChange={(e) => setPassword(e.target.value)}
-          onKeyUp={handleSpecialKey}
         />
         {codeEnabled && (
           <TextField
@@ -297,45 +205,48 @@ const LoginPage = () => {
             value={code}
             type="number"
             onChange={(e) => setCode(e.target.value)}
-            onKeyUp={handleSpecialKey}
           />
         )}
         <Button
           onClick={handlePasswordLogin}
-          onKeyUp={handleSpecialKey}
+          type="submit"
           variant="contained"
-          // color="secondary"
+          color="secondary"
           disabled={!email || !password || (codeEnabled && !code)}
-          sx={{
-            backgroudColor: '#EF5713',
-            color: '#FFF'
-          }}
         >
           {t('loginLogin')}
         </Button>
-        <div className={classes.versionContal}>
-          Build: 24.11.28
-        </div>
         {openIdEnabled && (
           <Button
             onClick={() => handleOpenIdLogin()}
             variant="contained"
+            color="secondary"
           >
             {t('loginOpenId')}
           </Button>
         )}
         <div className={classes.extraContainer}>
+          {registrationEnabled && (
+            <Link
+              onClick={() => navigate('/register')}
+              className={classes.link}
+              underline="none"
+              variant="caption"
+            >
+              {t('loginRegister')}
+            </Link>
+          )}
+          {emailEnabled && (
+            <Link
+              onClick={() => navigate('/reset-password')}
+              className={classes.link}
+              underline="none"
+              variant="caption"
+            >
+              {t('loginReset')}
+            </Link>
+          )}
         </div>
-        {emailEnabled && (
-          <Link
-            onClick={() => navigate('/reset-password')}
-            className={classes.resetPassword}
-            underline="none"
-            variant="caption"
-          >
-            {t('loginReset')}
-          </Link>
-        )}
       </div>
       <Snackbar
         open={!!announcement && !announcementShown}
@@ -346,7 +257,7 @@ const LoginPage = () => {
           </IconButton>
         )}
       />
-    </LoginLayout >
+    </LoginLayout>
   );
 };
 

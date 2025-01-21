@@ -10,6 +10,21 @@
       "sourceMapPathOverrides": {
         "webpack:///src/*": "${webRoot}/*"
       }
+    },
+    {
+      "name": "npm start",
+      "request": "launch",
+      "runtimeArgs": ["start"],
+      "runtimeExecutable": "npm",
+      "type": "node"
+      
+    },
+    {
+      "name": "npm run build",
+      "request": "launch",
+      "runtimeArgs": ["run", "build"],
+      "runtimeExecutable": "npm",
+      "type": "node"
     }
   ]
 }

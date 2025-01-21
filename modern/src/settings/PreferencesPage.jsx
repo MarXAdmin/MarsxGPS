@@ -18,7 +18,7 @@ import useMapStyles from '../map/core/useMapStyles';
 import useMapOverlays from '../map/overlay/useMapOverlays';
 import { useCatch } from '../reactHelper';
 import { sessionActions } from '../store';
-import { useRestriction } from '../common/util/permissions';
+import { useAdministrator, useRestriction } from '../common/util/permissions';
 import useSettingsStyles from './common/useSettingsStyles';
 
 const deviceFields = [
@@ -35,12 +35,13 @@ const PreferencesPage = () => {
   const navigate = useNavigate();
   const t = useTranslation();
 
+  const admin = useAdministrator();
   const readonly = useRestriction('readonly');
 
   const user = useSelector((state) => state.session.user);
   const [attributes, setAttributes] = useState(user.attributes);
 
-  const versionApp = import.meta.env.VITE_APP_VERSION;
+  const versionApp = import.meta.env.VITE_APP_VERSION.slice(0, -2);
   const versionServer = useSelector((state) => state.session.server.version);
   const socket = useSelector((state) => state.session.socket);
 
@@ -86,6 +87,11 @@ const PreferencesPage = () => {
     }
   });
 
+  const handleReboot = useCatch(async () => {
+    const response = await fetch('/api/server/reboot', { method: 'POST' });
+    throw Error(response.statusText);
+  });
+
   return (
     <PageLayout menu={<SettingsMenu />} breadcrumbs={['settingsTitle', 'sharedPreferences']}>
       <Container maxWidth="xs" className={classes.container}>
@@ -102,7 +108,7 @@ const PreferencesPage = () => {
                   <InputLabel>{t('mapActive')}</InputLabel>
                   <Select
                     label={t('mapActive')}
-                    value={attributes.activeMapStyles?.split(',') || ['locationIqStreets', 'osm', 'carto']}
+                    value={attributes.activeMapStyles?.split(',') || ['locationIqStreets', 'locationIqDark', 'openFreeMap']}
                     onChange={(e, child) => {
                       const clicked = mapStyles.find((s) => s.id === child.props.value);
                       if (clicked.available) {
@@ -149,7 +155,7 @@ const PreferencesPage = () => {
                   freeSolo
                   options={Object.keys(positionAttributes)}
                   getOptionLabel={(option) => (positionAttributes[option]?.name || option)}
-                  value={attributes.positionItems?.split(',') || ['speed', 'address', 'totalDistance', 'course']}
+                  value={attributes.positionItems?.split(',') || ['fixTime', 'address', 'speed', 'totalDistance']}
                   onChange={(_, option) => {
                     setAttributes({ ...attributes, positionItems: option.join(',') });
                   }}
@@ -345,6 +351,22 @@ const PreferencesPage = () => {
                   label={t('settingsConnection')}
                   disabled
                 />
+                <Button
+                  variant="outlined"
+                  color="primary"
+                  onClick={() => navigate('/emulator')}
+                >
+                  {t('sharedEmulator')}
+                </Button>
+                {admin && (
+                  <Button
+                    variant="outlined"
+                    color="error"
+                    onClick={handleReboot}
+                  >
+                    {t('serverReboot')}
+                  </Button>
+                )}
               </AccordionDetails>
             </Accordion>
             <div className={classes.buttons}>

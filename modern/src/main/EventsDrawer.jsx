@@ -9,7 +9,6 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import { formatNotificationTitle, formatTime } from '../common/util/formatter';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { eventsActions } from '../store';
-import { usePreference } from '../common/util/preferences';
 
 const useStyles = makeStyles((theme) => ({
   drawer: {
@@ -29,8 +28,6 @@ const EventsDrawer = ({ open, onClose }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useTranslation();
-
-  const hours12 = usePreference('twelveHourFormat');
 
   const devices = useSelector((state) => state.devices.items);
 
@@ -65,8 +62,8 @@ const EventsDrawer = ({ open, onClose }) => {
             disabled={!event.id}
           >
             <ListItemText
-              primary={ event.type == 'maintenance' ? event.id + '•' + event.attributes.message.slice(0,event.attributes.message.length - 23) : `${devices[event.deviceId]?.name} • ${formatType(event)}`}
-              secondary={formatTime(event.eventTime, 'seconds', hours12)}
+              primary={`${devices[event.deviceId]?.name} • ${formatType(event)} ${event.attributes.result ? ' : ' + event.attributes.result : ''}`}
+              secondary={formatTime(event.eventTime, 'seconds')}
             />
             <IconButton size="small" onClick={() => dispatch(eventsActions.delete(event))}>
               <DeleteIcon fontSize="small" className={classes.delete} />

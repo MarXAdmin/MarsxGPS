@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState, useRef } from 'react';
 import { useSelector } from 'react-redux';
 import {
   Table, TableBody, TableCell, TableHead, TableRow,
@@ -9,27 +9,26 @@ import PageLayout from '../common/components/PageLayout';
 import ReportsMenu from './components/ReportsMenu';
 import { useCatch } from '../reactHelper';
 import MapView from '../map/core/MapView';
-import MapRoutePath from '../map/MapRoutePath';
 import useReportStyles from './common/useReportStyles';
 import TableShimmer from '../common/components/TableShimmer';
 import MapCamera from '../map/MapCamera';
 import MapGeofence from '../map/MapGeofence';
 import { formatTime } from '../common/util/formatter';
-import { usePreference } from '../common/util/preferences';
 import { prefixString } from '../common/util/stringUtils';
 import MapMarkers from '../map/MapMarkers';
+import MapRouteCoordinates from '../map/MapRouteCoordinates';
+import MapScale from '../map/MapScale';
 
 const CombinedReportPage = () => {
   const classes = useReportStyles();
   const t = useTranslation();
 
-
   const devices = useSelector((state) => state.devices.items);
-
-  const hours12 = usePreference('twelveHourFormat');
 
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  const itemsCoordinates = useMemo(() => items.flatMap((item) => item.route), [items]);
 
   const createMarkers = () => items.flatMap((item) => item.events
     .map((event) => item.positions.find((p) => event.positionId === p.id))
@@ -56,6 +55,8 @@ const CombinedReportPage = () => {
     }
   });
 
+  const tableRef = useRef(null);
+
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportCombined']}>
       <div className={classes.container}>
@@ -64,22 +65,24 @@ const CombinedReportPage = () => {
             <MapView>
               <MapGeofence />
               {items.map((item) => (
-                <MapRoutePath
+                <MapRouteCoordinates
                   key={item.deviceId}
                   name={devices[item.deviceId].name}
                   coordinates={item.route}
+                  deviceId={item.deviceId}
                 />
               ))}
               <MapMarkers markers={createMarkers()} />
             </MapView>
-            <MapCamera coordinates={items.flatMap((item) => item.route)} />
+            <MapScale />
+            <MapCamera coordinates={itemsCoordinates} />
           </div>
         )}
         <div className={classes.containerMain}>
           <div className={classes.header}>
-            <ReportFilter handleSubmit={handleSubmit} showOnly multiDevice includeGroups />
+            <ReportFilter handleSubmit={handleSubmit} showOnly multiDevice includeGroups loading={loading} />
           </div>
-          <Table stickyHeader aria-label="sticky table" className={classes.tableStyle}>
+          <Table ref={tableRef} stickyHeader aria-label="sticky table">
             <TableHead>
               <TableRow>
                 <TableCell>{t('sharedDevice')}</TableCell>
@@ -91,7 +94,7 @@ const CombinedReportPage = () => {
               {!loading ? items.flatMap((item) => item.events.map((event, index) => (
                 <TableRow key={event.id}>
                   <TableCell>{index ? '' : devices[item.deviceId].name}</TableCell>
-                  <TableCell>{formatTime(event.eventTime, 'seconds', hours12)}</TableCell>
+                  <TableCell>{formatTime(event.eventTime, 'seconds')}</TableCell>
                   <TableCell>{t(prefixString('event', event.type))}</TableCell>
                 </TableRow>
               ))) : (<TableShimmer columns={3} />)}

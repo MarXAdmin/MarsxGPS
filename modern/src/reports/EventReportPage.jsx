@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   FormControl, InputLabel, Select, MenuItem, Table, TableHead, TableRow, TableCell, TableBody, Link, IconButton,
@@ -8,8 +8,8 @@ import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
 import { useSelector } from 'react-redux';
 import { formatSpeed, formatTime } from '../common/util/formatter';
 import ReportFilter from './components/ReportFilter';
-import { prefixString } from '../common/util/stringUtils';
-import { useTranslation } from '../common/components/LocalizationProvider';
+import { prefixString, unprefixString } from '../common/util/stringUtils';
+import { useTranslation, useTranslationKeys } from '../common/components/LocalizationProvider';
 import PageLayout from '../common/components/PageLayout';
 import ReportsMenu from './components/ReportsMenu';
 import usePersistedState from '../common/util/usePersistedState';
@@ -17,15 +17,14 @@ import ColumnSelect from './components/ColumnSelect';
 import { useCatch, useEffectAsync } from '../reactHelper';
 import useReportStyles from './common/useReportStyles';
 import TableShimmer from '../common/components/TableShimmer';
-import { useAttributePreference, usePreference } from '../common/util/preferences';
+import { useAttributePreference } from '../common/util/preferences';
 import MapView from '../map/core/MapView';
 import MapGeofence from '../map/MapGeofence';
 import MapPositions from '../map/MapPositions';
 import MapCamera from '../map/MapCamera';
 import scheduleReport from './common/scheduleReport';
-import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
-import { useDownloadExcel } from 'react-export-table-to-excel';
-import Tooltip from '@mui/material/Tooltip';
+import MapScale from '../map/MapScale';
+import SelectField from '../common/components/SelectField';
 
 const columnsArray = [
   ['eventTime', 'positionFixTime'],
@@ -41,17 +40,21 @@ const EventReportPage = () => {
   const classes = useReportStyles();
   const t = useTranslation();
 
-
   const devices = useSelector((state) => state.devices.items);
   const geofences = useSelector((state) => state.geofences.items);
 
   const speedUnit = useAttributePreference('speedUnit');
-  const hours12 = usePreference('twelveHourFormat');
 
   const [allEventTypes, setAllEventTypes] = useState([['allEvents', 'eventAll']]);
 
+  const alarms = useTranslationKeys((it) => it.startsWith('alarm')).map((it) => ({
+    key: unprefixString('alarm', it),
+    name: t(it),
+  }));
+
   const [columns, setColumns] = usePersistedState('eventColumns', ['eventTime', 'type', 'attributes']);
   const [eventTypes, setEventTypes] = useState(['allEvents']);
+  const [alarmTypes, setAlarmTypes] = useState([]);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -86,6 +89,9 @@ const EventReportPage = () => {
   const handleSubmit = useCatch(async ({ deviceId, from, to, type }) => {
     const query = new URLSearchParams({ deviceId, from, to });
     eventTypes.forEach((it) => query.append('type', it));
+    if (eventTypes[0] !== 'allEvents' && eventTypes.includes('alarm')) {
+      alarmTypes.forEach((it) => query.append('alarm', it));
+    }
     if (type === 'export') {
       window.location.assign(`/api/reports/events/xlsx?${query.toString()}`);
     } else if (type === 'mail') {
@@ -124,19 +130,20 @@ const EventReportPage = () => {
   });
 
   const formatValue = (item, key) => {
+    const value = item[key];
     switch (key) {
       case 'eventTime':
-        return formatTime(item[key], 'seconds', hours12);
+        return formatTime(value, 'seconds');
       case 'type':
-        return t(prefixString('event', item[key]));
+        return t(prefixString('event', value));
       case 'geofenceId':
-        if (item[key] > 0) {
-          const geofence = geofences[item[key]];
+        if (value > 0) {
+          const geofence = geofences[value];
           return geofence && geofence.name;
         }
         return null;
       case 'maintenanceId':
-        return item[key] > 0 ? item[key] > 0 : null;
+        return value > 0 ? value : null;
       case 'attributes':
         switch (item.type) {
           case 'alarm':
@@ -153,17 +160,11 @@ const EventReportPage = () => {
             return '';
         }
       default:
-        return item[key];
+        return value;
     }
   };
 
   const tableRef = useRef(null);
-
-  const { onDownload } = useDownloadExcel({
-    currentTableRef: tableRef.current,
-    filename: 'EventReport',
-    sheet: 'EventReport'
-  });
 
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportEvents']}>
@@ -174,20 +175,21 @@ const EventReportPage = () => {
               <MapGeofence />
               {position && <MapPositions positions={[position]} titleField="fixTime" />}
             </MapView>
+            <MapScale />
             {position && <MapCamera latitude={position.latitude} longitude={position.longitude} />}
           </div>
         )}
         <div className={classes.containerMain}>
           <div className={classes.header}>
-            <ReportFilter handleSubmit={handleSubmit} handleSchedule={handleSchedule}>
+            <ReportFilter handleSubmit={handleSubmit} handleSchedule={handleSchedule} loading={loading}>
               <div className={classes.filterItem}>
                 <FormControl fullWidth>
                   <InputLabel>{t('reportEventTypes')}</InputLabel>
                   <Select
                     label={t('reportEventTypes')}
                     value={eventTypes}
-                    onChange={(event, child) => {
-                      let values = event.target.value;
+                    onChange={(e, child) => {
+                      let values = e.target.value;
                       const clicked = child.props.value;
                       if (values.includes('allEvents') && values.length > 1) {
                         values = [clicked];
@@ -195,7 +197,6 @@ const EventReportPage = () => {
                       setEventTypes(values);
                     }}
                     multiple
-                    className={classes.selectFieldStyle}
                   >
                     {allEventTypes.map(([key, string]) => (
                       <MenuItem key={key} value={key}>{t(string)}</MenuItem>
@@ -203,23 +204,30 @@ const EventReportPage = () => {
                   </Select>
                 </FormControl>
               </div>
+              {eventTypes[0] !== 'allEvents' && eventTypes.includes('alarm') && (
+                <div className={classes.filterItem}>
+                  <SelectField
+                    multiple
+                    value={alarmTypes}
+                    onChange={(e) => setAlarmTypes(e.target.value)}
+                    data={alarms}
+                    keyGetter={(it) => it.key}
+                    label={t('sharedAlarms')}
+                    fullWidth
+                  />
+                </div>
+              )}
               <ColumnSelect columns={columns} setColumns={setColumns} columnsArray={columnsArray} />
             </ReportFilter>
           </div>
           <Table ref={tableRef} stickyHeader aria-label="sticky table">
-            <TableHead className={classes.tableStyle}>
+            <TableHead>
               <TableRow>
-                <TableCell className={classes.columnAction}>
-                  <Tooltip title="Download to excel">
-                    <IconButton size="small" color="info" aria-label="download to excel" onClick={onDownload}>
-                      <ArrowCircleDownIcon />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
+                <TableCell className={classes.columnAction} />
                 {columns.map((key) => (<TableCell key={key}>{t(columnsMap.get(key))}</TableCell>))}
               </TableRow>
             </TableHead>
-            <TableBody className={classes.tableStyle}>
+            <TableBody>
               {!loading ? items.map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className={classes.columnAction} padding="none">

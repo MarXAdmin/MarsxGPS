@@ -18,7 +18,6 @@ const SocketController = () => {
   const navigate = useNavigate();
   const t = useTranslation();
 
-
   const authenticated = useSelector((state) => !!state.session.user);
   const devices = useSelector((state) => state.devices.items);
   const includeLogs = useSelector((state) => state.session.includeLogs);
@@ -36,7 +35,6 @@ const SocketController = () => {
   const connectSocket = () => {
     const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
     const socket = new WebSocket(`${protocol}//${window.location.host}/api/socket`);
-    // const socket = new WebSocket(`${protocol}//${import.meta.env.VITE_SOCKET_URL}/api/socket`);
     socketRef.current = socket;
 
     socket.onopen = () => {
