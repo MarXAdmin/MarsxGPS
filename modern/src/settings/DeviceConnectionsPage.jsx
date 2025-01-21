@@ -1,12 +1,11 @@
 import React from 'react';
-import { useNavigate,useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
   Typography,
   Container,
-  Button,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import LinkField from '../common/components/LinkField';
@@ -18,7 +17,6 @@ import useFeatures from '../common/util/useFeatures';
 import useSettingsStyles from './common/useSettingsStyles';
 
 const DeviceConnectionsPage = () => {
-  const navigate = useNavigate();
   const classes = useSettingsStyles();
   const t = useTranslation();
 
@@ -101,16 +99,6 @@ const DeviceConnectionsPage = () => {
             )}
           </AccordionDetails>
         </Accordion>
-        <div className={classes.buttons}>
-          <Button
-            type="button"
-            color="primary"
-            variant="outlined"
-            onClick={() => navigate(-1)}
-          >
-            {t('sharedSet')}
-          </Button>
-        </div>
       </Container>
     </PageLayout>
   );

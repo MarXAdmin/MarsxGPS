@@ -99,8 +99,9 @@ const LocalizationContext = createContext({
 
 export const LocalizationProvider = ({ children }) => {
   const [language, setLanguage] = usePersistedState('language', getDefaultLanguage());
+  const direction = /^(ar|he|fa)$/.test(language) ? 'rtl' : 'ltr';
 
-  const value = useMemo(() => ({ languages, language, setLanguage }), [languages, language, setLanguage]);
+  const value = useMemo(() => ({ languages, language, setLanguage, direction }), [languages, language, setLanguage, direction]);
 
   useEffect(() => {
     let selected;
@@ -110,7 +111,8 @@ export const LocalizationProvider = ({ children }) => {
       selected = language;
     }
     dayjs.locale(selected);
-  }, [language]);
+    document.dir = direction;
+  }, [language, direction]);
 
   return (
     <LocalizationContext.Provider value={value}>

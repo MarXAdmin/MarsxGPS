@@ -1,6 +1,4 @@
-import {
-  makeStyles
-} from '@mui/styles';
+import { makeStyles } from '@mui/styles';
 
 export default makeStyles((theme) => ({
   container: {
@@ -48,51 +46,4 @@ export default makeStyles((theme) => ({
     flexGrow: 1,
     overflow: 'hidden',
   },
-  selectFieldStyle: {
-    boxShadow: "none",
-    borderRadius: '16px',
-    "&.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
-      border: 0,
-    },
-  },
-  tableStyle: {
-    '& th': {
-      backgroundColor: '#1F2937',
-      color: '#FFF'
-    },
-    '& td': {
-      color: '#FFF',
-      '& svg': {
-        fill: '#FFF'
-      }
-    },
-    [theme.breakpoints.down('md')]: {
-      '& tr': {
-        '& td': {
-          color: '#1F2937',
-          '& svg': {
-            fill: '#1F2937'
-          }
-        }
-      },
-    },
-  },
-  autocompleteFieldStyle: {
-    '& .MuiOutlinedInput-root': {
-      borderRadius: '16px',
-    },
-  },
-  // btnShow: {
-  //   // color: 'red'
-  //   borderRadius: '16px',
-  //   border: '1px solid #999999',
-  //   background: '#FFF',
-  //   '&:hover': {
-  //     background: '#FFF',
-  //   },
-  //   [theme.breakpoints.down('md')]: {
-  //     border: '2px solid green',
-  //     borderRadius: '16px',
-  //   },
-  // }
 }));

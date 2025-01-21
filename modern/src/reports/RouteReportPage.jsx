@@ -6,9 +6,6 @@ import {
 } from '@mui/material';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
-import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
-import { useDownloadExcel } from 'react-export-table-to-excel';
-import Tooltip from '@mui/material/Tooltip';
 import ReportFilter from './components/ReportFilter';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import PageLayout from '../common/components/PageLayout';
@@ -26,8 +23,7 @@ import TableShimmer from '../common/components/TableShimmer';
 import MapCamera from '../map/MapCamera';
 import MapGeofence from '../map/MapGeofence';
 import scheduleReport from './common/scheduleReport';
-import * as XLSX from 'xlsx';
-
+import MapScale from '../map/MapScale';
 
 const RouteReportPage = () => {
   const navigate = useNavigate();
@@ -39,7 +35,7 @@ const RouteReportPage = () => {
   const devices = useSelector((state) => state.devices.items);
 
   const [available, setAvailable] = useState([]);
-  const [columns, setColumns] = useState(['fixTime', 'address', 'hours', 'ignition', 'power', 'fuel']);
+  const [columns, setColumns] = useState(['fixTime', 'latitude', 'longitude', 'speed', 'address']);
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
@@ -102,13 +98,6 @@ const RouteReportPage = () => {
 
   const tableRef = useRef(null);
 
-  const downloadExcel = () => {
-    const ws = XLSX.utils.table_to_sheet(tableRef.current);
-    const wb = XLSX.utils.book_new();
-    XLSX.utils.book_append_sheet(wb, ws, 'RouteReport');
-    XLSX.writeFile(wb, 'RouteReport.xlsx');
-  };
-
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportRoute']}>
       <div className={classes.container}>
@@ -127,12 +116,13 @@ const RouteReportPage = () => {
               })}
               <MapPositions positions={[selectedItem]} titleField="fixTime" />
             </MapView>
+            <MapScale />
             <MapCamera positions={items} />
           </div>
         )}
         <div className={classes.containerMain}>
           <div className={classes.header}>
-            <ReportFilter handleSubmit={handleSubmit} handleSchedule={handleSchedule} multiDevice>
+            <ReportFilter handleSubmit={handleSubmit} handleSchedule={handleSchedule} multiDevice loading={loading}>
               <ColumnSelect
                 columns={columns}
                 setColumns={setColumns}
@@ -142,21 +132,15 @@ const RouteReportPage = () => {
               />
             </ReportFilter>
           </div>
-          <Table ref={tableRef} stickyHeader aria-label="sticky table" >
-            <TableHead className={classes.tableStyle}>
+          <Table ref={tableRef} stickyHeader aria-label="sticky table">
+            <TableHead>
               <TableRow>
-                <TableCell className={classes.columnAction}>
-                  <Tooltip title="Download to excel">
-                    <IconButton size="small" color="info" aria-label="download to excel" onClick={downloadExcel}>
-                      <ArrowCircleDownIcon />
-                    </IconButton>
-                  </Tooltip>
-                </TableCell>
+                <TableCell className={classes.columnAction} />
                 <TableCell>{t('sharedDevice')}</TableCell>
                 {columns.map((key) => (<TableCell key={key}>{positionAttributes[key]?.name || key}</TableCell>))}
               </TableRow>
             </TableHead>
-            <TableBody className={classes.tableStyle}>
+            <TableBody>
               {!loading ? items.slice(0, 4000).map((item) => (
                 <TableRow key={item.id}>
                   <TableCell className={classes.columnAction} padding="none">

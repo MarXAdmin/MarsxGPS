@@ -44,7 +44,7 @@ const useStyles = makeStyles((theme) => ({
   header: {
     pointerEvents: 'auto',
     zIndex: 6,
-    background: '#1F2937',
+    width: '100%',
     [theme.breakpoints.down('md')]: {
       borderRadius: '0'
     },
@@ -65,7 +65,6 @@ const useStyles = makeStyles((theme) => ({
     pointerEvents: 'auto',
     gridArea: '1 / 1',
     zIndex: 4,
-    background: '#FFFFFF',
   },
   mobileSearchHeader: {
     margin: '20px',
@@ -73,7 +72,6 @@ const useStyles = makeStyles((theme) => ({
     background: 'white',
     width: 'calc(90% - 40px)',
     borderRadius: '16px',
-
   }
 }));
 
@@ -94,15 +92,10 @@ const MainPage = () => {
   const [filteredDevices, setFilteredDevices] = useState([]);
 
   const [keyword, setKeyword] = useState('');
-  // const [filter, setFilter] = usePersistedState('filter', {
-  //   statuses: [],
-  //   groups: [],
-  // });
-  const [filter, setFilter] = useState({
+  const [filter, setFilter] = usePersistedState('filter', {
     statuses: [],
     groups: [],
   });
-
   const [filterSort, setFilterSort] = usePersistedState('filterSort', '');
   const [filterMap, setFilterMap] = usePersistedState('filterMap', false);
 
@@ -119,8 +112,6 @@ const MainPage = () => {
 
   useFilter(keyword, filter, filterSort, filterMap, positions, setFilteredDevices, setFilteredPositions);
 
-
-
   return (
     <div className={classes.root}>
       {desktop && (
@@ -131,28 +122,21 @@ const MainPage = () => {
         />
       )}
       <div className={classes.sidebar}>
-        <Paper square elevation={3} className={classes.header} sx={{
-          borderRadius: devicesOpen ? '14px 14px 0 0' : '14px',
-        }}>
-          {desktop ?
-            <MainToolbar
-              filteredDevices={filteredDevices}
-              devicesOpen={devicesOpen}
-              setDevicesOpen={setDevicesOpen}
-              keyword={keyword}
-              setKeyword={setKeyword}
-              filter={filter}
-              setFilter={setFilter}
-              filterSort={filterSort}
-              setFilterSort={setFilterSort}
-              filterMap={filterMap}
-              setFilterMap={setFilterMap}
-            /> :
-            <div className={classes.mobileSearchHeader} >
-              <CustomizedInputBase />
-            </div>
-          }
-
+        <Paper square elevation={3} className={classes.header} 
+          sx={{borderRadius: devicesOpen ? '14px 14px 0 0' : '14px',}}>
+          <MainToolbar
+            filteredDevices={filteredDevices}
+            devicesOpen={devicesOpen}
+            setDevicesOpen={setDevicesOpen}
+            keyword={keyword}
+            setKeyword={setKeyword}
+            filter={filter}
+            setFilter={setFilter}
+            filterSort={filterSort}
+            setFilterSort={setFilterSort}
+            filterMap={filterMap}
+            setFilterMap={setFilterMap}
+            /> 
         </Paper>
         <div className={classes.middle}>
           {!desktop && (
@@ -164,10 +148,9 @@ const MainPage = () => {
               />
             </div>
           )}
-          {desktop &&
-            <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
-              <DeviceList devices={filteredDevices} />
-            </Paper>}
+          <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
+            <DeviceList devices={filteredDevices} />
+          </Paper>
         </div>
         {desktop && (
           <div className={classes.footer}>
@@ -176,17 +159,15 @@ const MainPage = () => {
         )}
       </div>
       <EventsDrawer open={eventsOpen} onClose={() => setEventsOpen(false)} />
-      {
-        selectedDeviceId && (
-          <StatusCard
-            deviceId={selectedDeviceId}
-            position={selectedPosition}
-            onClose={() => dispatch(devicesActions.selectId(null))}
-            desktopPadding={theme.dimensions.drawerWidthDesktop}
-          />
-        )
-      }
-    </div >
+      {selectedDeviceId && (
+        <StatusCard
+          deviceId={selectedDeviceId}
+          position={selectedPosition}
+          onClose={() => dispatch(devicesActions.selectId(null))}
+          desktopPadding={theme.dimensions.drawerWidthDesktop}
+        />
+      )}
+    </div>
   );
 };
 

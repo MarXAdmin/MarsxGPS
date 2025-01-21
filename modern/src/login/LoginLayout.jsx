@@ -30,25 +30,15 @@ const useStyles = makeStyles((theme) => ({
     alignItems: 'center',
     flex: 1,
     boxShadow: '-2px 0px 16px rgba(0, 0, 0, 0.25)',
-    // [theme.breakpoints.up('lg')]: {
-    //   padding: theme.spacing(0, 25, 0, 0),
-    // },
+    [theme.breakpoints.up('lg')]: {
+      padding: theme.spacing(0, 25, 0, 0),
+    },
   },
   form: {
     maxWidth: theme.spacing(52),
     padding: theme.spacing(5),
     width: '100%',
-    background: '#FFF',
-    zIndex: '1',
-    borderRadius: '26px'
   },
-  wallpaperLogin: {
-    width: '100vw',
-    height: '100vh',
-    position: 'absolute',
-    zIndex: '0',
-    objectFit: 'cover'
-  }
 }));
 
 const LoginLayout = ({ children }) => {
@@ -56,21 +46,11 @@ const LoginLayout = ({ children }) => {
   const theme = useTheme();
 
   return (
-    // <main className={classes.root}>
-    //   <div className={classes.sidebar}>
-    //     {!useMediaQuery(theme.breakpoints.down('lg')) &&
-    //       <LogoImage color={theme.palette.secondary.contrastText} />
-    //     }
-    //   </div>
-    //   <Paper className={classes.paper}>
-    //     <form className={classes.form}>
-    //       {children}
-    //     </form>
-    //   </Paper>
-    // </main>
     <main className={classes.root}>
+      <div className={classes.sidebar}>
+        {!useMediaQuery(theme.breakpoints.down('lg')) && <LogoImage color={theme.palette.secondary.contrastText} />}
+      </div>
       <Paper className={classes.paper}>
-        <img src='/images/wallpaperLogin.png' alt='login' className={classes.wallpaperLogin} />
         <form className={classes.form}>
           {children}
         </form>

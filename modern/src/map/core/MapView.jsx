@@ -1,5 +1,8 @@
+// eslint-disable-next-line import/no-unresolved
+import mapboxglRtlTextUrl from '@mapbox/mapbox-gl-rtl-text/mapbox-gl-rtl-text.min?url';
 import 'maplibre-gl/dist/maplibre-gl.css';
 import maplibregl from 'maplibre-gl';
+import { googleProtocol } from 'maplibre-google-maps';
 import React, {
   useRef, useLayoutEffect, useEffect, useState,
 } from 'react';
@@ -14,9 +17,11 @@ element.style.width = '100%';
 element.style.height = '100%';
 element.style.boxSizing = 'initial';
 
+maplibregl.setRTLTextPlugin(mapboxglRtlTextUrl);
+maplibregl.addProtocol('google', googleProtocol);
+
 export const map = new maplibregl.Map({
   container: element,
-  attributionControl: false,
 });
 
 let ready = false;
@@ -75,7 +80,7 @@ const MapView = ({ children }) => {
   const [mapReady, setMapReady] = useState(false);
 
   const mapStyles = useMapStyles();
-  const activeMapStyles = useAttributePreference('activeMapStyles', 'locationIqStreets,osm,carto');
+  const activeMapStyles = useAttributePreference('activeMapStyles', 'locationIqStreets,locationIqDark,openFreeMap');
   const [defaultMapStyle] = usePersistedState('selectedMapStyle', usePreference('map', 'locationIqStreets'));
   const mapboxAccessToken = useAttributePreference('mapboxAccessToken');
   const maxZoom = useAttributePreference('web.maxZoom');

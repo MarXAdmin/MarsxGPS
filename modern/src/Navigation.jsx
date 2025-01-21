@@ -3,7 +3,6 @@ import {
   Route, Routes, useLocation, useNavigate,
 } from 'react-router-dom';
 import { useDispatch } from 'react-redux';
-import { LinearProgress } from '@mui/material';
 import MainPage from './main/MainPage';
 import CombinedReportPage from './reports/CombinedReportPage';
 import RouteReportPage from './reports/RouteReportPage';
@@ -16,7 +15,6 @@ import NotificationPage from './settings/NotificationPage';
 import GroupsPage from './settings/GroupsPage';
 import GroupPage from './settings/GroupPage';
 import PositionPage from './other/PositionPage';
-import PositionDashPage from './other/PositionDashPage';
 import NetworkPage from './other/NetworkPage';
 import EventReportPage from './reports/EventReportPage';
 import ReplayPage from './other/ReplayPage';
@@ -58,6 +56,10 @@ import UserConnectionsPage from './settings/UserConnectionsPage';
 import LogsPage from './reports/LogsPage';
 import SharePage from './settings/SharePage';
 import AnnouncementPage from './settings/AnnouncementPage';
+import EmulatorPage from './other/EmulatorPage';
+import Loader from './common/components/Loader';
+import PositionLivePage from './other/PositionLivePage';
+import TimelinePage from './other/TimelinePage';
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -94,7 +96,7 @@ const Navigation = () => {
   }, [query]);
 
   if (!redirectsHandled) {
-    return (<LinearProgress />);
+    return (<Loader />);
   }
   return (
     <Routes>
@@ -106,11 +108,13 @@ const Navigation = () => {
         <Route index element={<MainPage />} />
 
         <Route path="position/:id" element={<PositionPage />} />
-        <Route path="positiondashboard/:id" element={<PositionDashPage />} />
+        <Route path="positionlive/:id" element={<PositionLivePage />} />
+        <Route path="timeline/:id" element={<TimelinePage />}/>
         <Route path="network/:positionId" element={<NetworkPage />} />
         <Route path="event/:id" element={<EventPage />} />
         <Route path="replay" element={<ReplayPage />} />
         <Route path="geofences" element={<GeofencesPage />} />
+        <Route path="emulator" element={<EmulatorPage />} />
 
         <Route path="settings">
           <Route path="accumulators/:deviceId" element={<AccumulatorsPage />} />

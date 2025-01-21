@@ -25,7 +25,7 @@ import { useCatch } from '../reactHelper';
 import MapCamera from '../map/MapCamera';
 import MapGeofence from '../map/MapGeofence';
 import StatusCard from '../common/components/StatusCard';
-import { usePreference } from '../common/util/preferences';
+import MapScale from '../map/MapScale';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -82,8 +82,6 @@ const ReplayPage = () => {
   const navigate = useNavigate();
   const timerRef = useRef();
 
-  const hours12 = usePreference('twelveHourFormat');
-
   const defaultDeviceId = useSelector((state) => state.devices.selectedId);
 
   const [positions, setPositions] = useState([]);
@@ -94,6 +92,7 @@ const ReplayPage = () => {
   const [to, setTo] = useState();
   const [expanded, setExpanded] = useState(true);
   const [playing, setPlaying] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const deviceName = useSelector((state) => {
     if (selectedDeviceId) {
@@ -133,22 +132,27 @@ const ReplayPage = () => {
   }, [setShowCard]);
 
   const handleSubmit = useCatch(async ({ deviceId, from, to }) => {
+    setLoading(true);
     setSelectedDeviceId(deviceId);
     setFrom(from);
     setTo(to);
     const query = new URLSearchParams({ deviceId, from, to });
-    const response = await fetch(`/api/positions?${query.toString()}`);
-    if (response.ok) {
-      setIndex(0);
-      const positions = await response.json();
-      setPositions(positions);
-      if (positions.length) {
-        setExpanded(false);
+    try {
+      const response = await fetch(`/api/positions?${query.toString()}`);
+      if (response.ok) {
+        setIndex(0);
+        const positions = await response.json();
+        setPositions(positions);
+        if (positions.length) {
+          setExpanded(false);
+        } else {
+          throw Error(t('sharedNoData'));
+        }
       } else {
-        throw Error(t('sharedNoData'));
+        throw Error(await response.text());
       }
-    } else {
-      throw Error(await response.text());
+    } finally {
+      setLoading(false);
     }
   });
 
@@ -167,6 +171,7 @@ const ReplayPage = () => {
           <MapPositions positions={[positions[index]]} onClick={onMarkerClick} titleField="fixTime" />
         )}
       </MapView>
+      <MapScale />
       <MapCamera positions={positions} />
       <div className={classes.sidebar}>
         <Paper elevation={3} square>
@@ -210,11 +215,11 @@ const ReplayPage = () => {
                 <IconButton onClick={() => setIndex((index) => index + 1)} disabled={playing || index >= positions.length - 1}>
                   <FastForwardIcon />
                 </IconButton>
-                {formatTime(positions[index].fixTime, 'seconds', hours12)}
+                {formatTime(positions[index].fixTime, 'seconds')}
               </div>
             </>
           ) : (
-            <ReportFilter handleSubmit={handleSubmit} fullScreen showOnly />
+            <ReportFilter handleSubmit={handleSubmit} fullScreen showOnly loading={loading} />
           )}
         </Paper>
       </div>
