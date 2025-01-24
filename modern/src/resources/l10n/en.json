@@ -634,5 +634,7 @@
     "categoryTelescoplifter": "Telescop lifter",
     "categoryBackfillcompactor":"Backfill compactor",
     "maintenanceStart": "Start",
-    "maintenancePeriod": "Period"
+    "maintenancePeriod": "Period",
+    "welcomeLoginPage": "Welcome to"
+
 }
