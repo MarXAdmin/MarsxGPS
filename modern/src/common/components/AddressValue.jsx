@@ -51,15 +51,15 @@ const AddressValue = ({ latitude, longitude, originalAddress, addressshow = fals
         const fulladdr = road + ' ' + data.subdistrict + ' ' + data.district + ' ' + data.province;
         setAddress(fulladdr);
       } else {
-        throw Error("Failed to fetch address.");
+        console.log("Geccode Longdo API: Failed to fetch address.");
       }
     } catch (err) {
-      throw Error("Error fetching address: " + err.message);
+      //throw Error("Error fetching address: " + err.message);
+      console.log("Geccode Longdo API: Error fetching address: " + err.message);
     }
     
   });
   
-
   if (address) {
     return address;
   }

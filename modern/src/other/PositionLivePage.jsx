@@ -69,8 +69,9 @@ const PositionLivePage = () => {
                 </TableHead>
                 <TableBody>
                 {/* //device attributes*/}
-                {item && Object.getOwnPropertyNames(item).filter((it) => ['fixTime', 'deviceTime' , 'deviceId', 'latitude', 'longitude', 'speed', 'address','serverTime','altitude'].includes(it)).map((property) => (
-                    <TableRow key={property}>
+                {/*{item && Object.getOwnPropertyNames(item).filter((it) => ['fixTime', 'deviceTime' , 'deviceId', 'latitude', 'longitude', 'speed', 'address','serverTime','altitude'].includes(it)).map((property) => (*/}
+                {item && Object.getOwnPropertyNames(item).filter((it) => it !== 'attributes').map((property) => (
+                  <TableRow key={property}>
                     <TableCell><strong>{positionAttributes[property]?.name ? positionAttributes[property]?.name : property }</strong></TableCell>
                     <TableCell><PositionValue position={item} property={property} /></TableCell>
                     </TableRow>
