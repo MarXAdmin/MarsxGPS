@@ -24,6 +24,7 @@ const CustomBottomSheet = ({ isOpen, onClose, children, selectedDevices }) => {
             snapPoints={({ maxHeight }) => [0.15 * maxHeight, 0.5 * maxHeight, 0.8 * maxHeight]}
             defaultSnap={({ maxHeight }) => currentSnap * maxHeight}
             onDismiss={onClose}
+            blocking={false}
         >
             <div style={{ padding: '16px' }}>
                 {children}

@@ -110,8 +110,12 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
     <div style={style}>
       <ListItemButton
         key={item.id}
-        // onClick={() => dispatch(devicesActions.selectId(item.id))}
-        onClick={() => onDeviceClick(item)}
+        onClick={() => {
+          dispatch(devicesActions.selectId(item.id));
+          if (onDeviceClick) {
+            onDeviceClick(item);
+          }
+        }}
         disabled={!admin && item.disabled}
       >
         <ListItemAvatar>
