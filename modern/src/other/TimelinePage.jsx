@@ -142,16 +142,16 @@ const TimelinePage = () => {
       {/** Content State */}
       <div className={classes.content}>
         <Box m="10px">
-        <Box m="15px"/>
+        <Box m="5px"/>
           <Box
-          display="grid"
-          gridTemplateColumns={gcolgraph}
-          gridAutoRows="140px"
-          gap="15px"
+            display="grid"
+            gridTemplateColumns={gcolgraph}
+            gridAutoRows="140px"
+            gap="15px"
           >
              {/**Timeline*/}
             <Box
-              gridColumn={desktop ? 'span 4':'span 5'}
+              gridColumn={desktop ? 'span 12':'span 5'}
               gridRow="span 2"
               //backgroundColor={colors}
               m="-5px"

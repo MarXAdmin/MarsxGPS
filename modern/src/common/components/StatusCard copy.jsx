@@ -21,26 +21,21 @@ import {
   Box,
   Chip,
   Stack,
-  Divider,
-  Switch,
-  TableHead,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
+
 import PublishIcon from '@mui/icons-material/Publish';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import PendingIcon from '@mui/icons-material/Pending';
 import LinkIcon from '@mui/icons-material/Link';
 import TimelineIcon from '@mui/icons-material/Timeline';
-import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
-import DoubleArrowIcon from '@mui/icons-material/DoubleArrow';
 
 import { useTranslation } from './LocalizationProvider';
 import RemoveDialog from './RemoveDialog';
 import PositionValue from './PositionValue';
 import { useDeviceReadonly } from '../util/permissions';
-import { useAdministrator } from '../util/permissions';
 import usePositionAttributes from '../attributes/usePositionAttributes';
 import { devicesActions } from '../../store';
 import { useCatch, useCatchCallback } from '../../reactHelper';
@@ -48,17 +43,14 @@ import { useAttributePreference } from '../util/preferences';
 //import Avatar from '@mui/material/Avatar';
 //import { mapImages, mapImagesKey } from '../../map/core/preloadImages';
 import AddressValue from './AddressValue';
-import { formatNumericHours, formatTime, formatDistance } from '../util/formatter';
-import UpdateIcon from '@mui/icons-material/Update';
+import { formatNumericHours } from '../util/formatter';
 //import GppMaybeIcon from '@mui/icons-material/GppMaybe';
-import { mapIconAttributes, mapIconAttributesKey } from '../attributes/useIconAttributes';
 
 
 const useStyles = makeStyles((theme) => ({
   card: {
     pointerEvents: 'auto',
-    width: theme.dimensions.popupMaxWidth + 60,
-    background: 'linear-gradient(30deg,rgb(245, 204, 143) 10%,rgb(250, 152, 98) 90%)', 
+    width: theme.dimensions.popupMaxWidth + 70,
   },
   media: {
     height: theme.dimensions.popupImageHeight,
@@ -83,9 +75,9 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   icon: {
-    width: '32px',
-    height: '32px',
-    filter: theme.palette.mode === 'dark' ? 'invert(1)' : 'invert(0)',
+    width: '25px',
+    height: '25px',
+    filter: 'brightness(0) invert(1)',
   },
   table: {
     '& .MuiTableCell-sizeSmall': {
@@ -94,15 +86,13 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiTableCell-sizeSmall:first-child': {
       paddingRight: theme.spacing(1),
-    }
+    },
   },
   cell: {
     borderBottom: 'none',
   },
   actions: {
     justifyContent: 'space-between',
-    backgroundColor: '#f5771a',
-    borderRadius: 16,
   },
   root: ({ desktopPadding }) => ({
     pointerEvents: 'none',
@@ -119,9 +109,6 @@ const useStyles = makeStyles((theme) => ({
     },
     transform: 'translateX(-50%)',
   }),
-  success: {
-    color: theme.palette.success.main,
-  },
 }));
 
 const StatusRow = ({ name, content }) => {
@@ -139,18 +126,6 @@ const StatusRow = ({ name, content }) => {
   );
 };
 
-const StatusCell = ({name, content}) => {
-  const classes = useStyles();
-
-  return (
-    <Box>
-      <img className={classes.icon} src={mapIconAttributes[mapIconAttributesKey(content.props.attribute || content.props.property)]} alt={name} />
-      <Typography variant="body2" >{name}</Typography>
-      <Typography variant="body2" color="textSecondary">{content}</Typography>
-    </Box>
-  );
-};
-
 const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPadding = 0, showaddresss = true }) => {
   const classes = useStyles({ desktopPadding });
   const navigate = useNavigate();
@@ -158,30 +133,22 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const t = useTranslation();
 
   const deviceReadonly = useDeviceReadonly();
-  const admin = useAdministrator();
 
   const shareDisabled = useSelector((state) => state.session.server.attributes.disableShare);
   const user = useSelector((state) => state.session.user);
   const device = useSelector((state) => state.devices.items[deviceId]);
-  const defaultItems = useSelector((state) => state.session.server.attributes.positionItems);
 
   const devicecategory = device?.category;
-  const [switchicon, setSwitchIcon] = useState(false);
 
   const positionAttributes = usePositionAttributes(t);
-  const positionItems = useAttributePreference('positionItems', defaultItems );
+  const positionItems = useAttributePreference('positionItems', 'deviceTime,fuel,power,battery,speed');
 
   const navigationAppLink = useAttributePreference('navigationAppLink');
   const navigationAppTitle = useAttributePreference('navigationAppTitle');
 
   const [anchorEl, setAnchorEl] = useState(null);
+
   const [removing, setRemoving] = useState(false);
-
-  const cc = 0;
-
-  const handleChange = (event) => {
-    setSwitchIcon(event.target.checked);
-  };
 
   const handleRemove = useCatch(async (removed) => {
     if (removed) {
@@ -224,7 +191,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const handleHoursClick = () => {
     navigate(`/settings/accumulators/${position.deviceId}`);
   };
-
 
   return (
     <>
@@ -280,75 +246,48 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
               </div>
               {position && (
                 <CardContent className={classes.content}>
-                  <Stack direction="row" spacing={1} >
+                  <Stack direction="row" spacing={2}>
                     <Chip 
                       label={device.status === "online" || device.status === "unknown" ? position.attributes.ignition ? 'WORKING' : 'PARKED' : 'OFFLINE' } 
-                      color={device.status === "offline" ? 'error' : device.status === "unknown" ? 'default' : ( position.attributes.ignition ? 'success' : 'info') }
-                      sx={{boxShadow: 3}}
+                      color={device.status === "offline" ? 'error' : device.status === "unknown" ? 'default' : ( position.attributes.ignition ? 'success' : 'info') } 
+                      //icon={position.attributes.ignition && position.attributes.output === 1 && (
+                      //  <GppMaybeIcon color='error'/>
+                      //)}
                     />
-                    <Chip icon={<WorkHistoryOutlinedIcon />} label={formatNumericHours(position.attributes.hours,t)} color='info' variant="outlined" deleteIcon={!deviceReadonly ? <LinkIcon/> : <div/> } onDelete={handleHoursClick} sx={{border:"unset" }}/>
+                    <Chip label={formatNumericHours(position.attributes.hours,t)} color='info' variant="outlined" deleteIcon={!deviceReadonly ? <LinkIcon/> : <div/> } onDelete={handleHoursClick} sx={{border:"unset" }}/>
                   </Stack>
-                  <Chip icon={<DoubleArrowIcon />} label={formatDistance(position.attributes.totalDistance,0,t)} color='info' variant="outlined" sx={{border:"unset" }}/>
-                  <Chip icon={<UpdateIcon />} label={formatTime(position.deviceTime, 'seconds')} sx={{border:"unset" }} variant="outlined"></Chip>
                   <Table size="small" classes={{ root: classes.table }}>
-                    <TableHead>:<Switch size='small' checked={switchicon} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }}/></TableHead>
-                    {!switchicon ? (
-                      <TableBody>
-                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
-                          <TableCell>
-                            <Stack direction="row" spacing={1} divider={<Divider orientation="vertical" flexItem />}>
-                              {positionItems.split(',').map((key) => key.trim()).filter((key) => position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key)).slice(0,5).map((key) => (
-                                <StatusCell
-                                  key={key}
-                                  name={positionAttributes[key]?.name || key}
-                                  content={(
-                                    <PositionValue
-                                      position={position}
-                                      property={position.hasOwnProperty(key) ? key : null}
-                                      attribute={position.hasOwnProperty(key) ? null : key}
-                                    />
-                                  )}
-                                />                        
-                              ))}
-                            </Stack>
-                          </TableCell>
-                        </TableRow>
-                      </TableBody>
-                    ) : (
-                      <TableBody>
-                        {positionItems.split(',').map((key) => key.trim()).filter((key) => position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key)).map((key) => (
-                          <StatusRow
-                            key={key}
-                            name={positionAttributes[key]?.name || key}
-                            content={(
-                              <PositionValue
-                                position={position}
-                                property={position.hasOwnProperty(key) ? key : null}
-                                attribute={position.hasOwnProperty(key) ? null : key}
-                              />
-                            )}
-                          />
-                        ))}
-                      </TableBody>
-                    )}
-                    { admin && (
-                      <TableFooter>
-                        <TableRow>
-                          <TableCell colSpan={2} className={classes.cell}>
-                            <Typography variant="body2">
-                              <Link component={RouterLink} to={`/positionlive/${deviceId}`}>{t('sharedShowDetails')}</Link>
-                            </Typography>
-                          </TableCell>
-                        </TableRow>
-                      </TableFooter>
-                    )}
+                    <TableBody>
+                      {positionItems.split(',').filter((key) => position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key)).map((key) => (
+                        <StatusRow
+                          key={key}
+                          name={positionAttributes[key]?.name || key}
+                          content={(
+                            <PositionValue
+                              position={position}
+                              property={position.hasOwnProperty(key) ? key : null}
+                              attribute={position.hasOwnProperty(key) ? null : key}
+                            />
+                          )}
+                        />
+                      ))}
+                    </TableBody>
+                    <TableFooter>
+                      <TableRow>
+                        <TableCell colSpan={2} className={classes.cell}>
+                          <Typography variant="body2">
+                            <Link component={RouterLink} to={`/positionlive/${deviceId}`}>{t('sharedShowDetails')}</Link>
+                          </Typography>
+                        </TableCell>
+                      </TableRow>
+                    </TableFooter>
                   </Table>
                 </CardContent>
               )}
               <CardActions classes={{ root: classes.actions }} disableSpacing>
                 <Tooltip title={t('sharedExtra')}>
                   <IconButton
-                    color='inherit'
+                    color="secondary"
                     onClick={(e) => setAnchorEl(e.currentTarget)}
                     disabled={!position}
                   >
@@ -357,7 +296,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={'Timeline'}>
                   <IconButton
-                    color='inherit'
                     onClick={() => navigate(`/timeline/${deviceId}`)}
                     disabled={disableActions || !position}
                   >
@@ -366,16 +304,14 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('commandTitle')}>
                   <IconButton
-                    color='inherit'
                     onClick={() => navigate(`/settings/device/${deviceId}/command`)}
-                    disabled={disableActions || deviceReadonly}
+                    disabled={disableActions}
                   >
                     <PublishIcon />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={t('sharedEdit')}>
                   <IconButton
-                    color='inherit'
                     onClick={() => navigate(`/settings/device/${deviceId}`)}
                     disabled={disableActions || deviceReadonly}
                   >
@@ -384,7 +320,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={`${t("sharedConnections")}`}>
                   <IconButton
-                    color='inherit'
                     onClick={() => navigate(`/settings/device/${deviceId}/connections`)}
                     disabled={disableActions || deviceReadonly}
                   >
