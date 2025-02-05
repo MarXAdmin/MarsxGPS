@@ -1,31 +1,31 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css';
 
-const CustomBottomSheet = ({ isOpen, onClose, children }) => {
+const CustomBottomSheet = ({ isOpen, onClose, children, selectedDevices }) => {
     const [currentSnap, setCurrentSnap] = useState(0.5);
-
+    const sheetRef = useRef();
 
     useEffect(() => {
-        if (!isOpen) {
-            setCurrentSnap(0.5);
+        if (selectedDevices.length > 0) {
+            changeSnap(0.1);
         }
-    }, [isOpen]);
+    }, [selectedDevices]);
+
+    const changeSnap = (snapValue) => {
+        setCurrentSnap(snapValue);
+        sheetRef.current.snapTo(({ maxHeight }) => snapValue * maxHeight);
+    };
 
     return (
         <BottomSheet
             open={isOpen}
+            ref={sheetRef}
             snapPoints={({ maxHeight }) => [0.15 * maxHeight, 0.5 * maxHeight, 0.8 * maxHeight]}
             defaultSnap={({ maxHeight }) => currentSnap * maxHeight}
-            blocking={false}
-            onSpringEnd={({ height }) => {
-                const minHeight = 0.2 * window.innerHeight;
-                if (height <= minHeight) {
-                    onClose();
-                }
-            }}
-            onDismiss={onClose}>
-            <div style={{ padding: '16px', marginBottom: '60px', zIndex: '4' }}>
+            onDismiss={onClose}
+        >
+            <div style={{ padding: '16px' }}>
                 {children}
             </div>
         </BottomSheet>

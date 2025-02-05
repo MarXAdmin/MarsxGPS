@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@mui/styles/makeStyles';
 import {
-  IconButton, Tooltip, Avatar, ListItemAvatar, ListItemText, ListItemButton, 
+  IconButton, Tooltip, Avatar, ListItemAvatar, ListItemText, ListItemButton,
 } from '@mui/material';
 import BatteryFullIcon from '@mui/icons-material/BatteryFull';
 import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { devicesActions } from '../store';
 import {
-  formatAlarm, formatBoolean, formatPercentage, formatStatus, getStatusColor, 
+  formatAlarm, formatBoolean, formatPercentage, formatStatus, getStatusColor,
 } from '../common/util/formatter';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { mapIconKey, mapIcons } from '../map/core/preloadImages';
@@ -51,7 +51,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeviceRow = ({ data, index, style }) => {
+const DeviceRow = ({ data, index, style, onDeviceClick }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const t = useTranslation();
@@ -110,7 +110,8 @@ const DeviceRow = ({ data, index, style }) => {
     <div style={style}>
       <ListItemButton
         key={item.id}
-        onClick={() => dispatch(devicesActions.selectId(item.id))}
+        // onClick={() => dispatch(devicesActions.selectId(item.id))}
+        onClick={() => onDeviceClick(item)}
         disabled={!admin && item.disabled}
       >
         <ListItemAvatar>
@@ -134,17 +135,17 @@ const DeviceRow = ({ data, index, style }) => {
               </Tooltip>
             )}
             {position.attributes.hasOwnProperty('ignition') && (
-              <Tooltip title={position.attributes.output === 1 ? (t('commandEngineStop')) : (`${t('positionIgnition')}: ${formatBoolean(position.attributes.ignition, t)}`) }>
+              <Tooltip title={position.attributes.output === 1 ? (t('commandEngineStop')) : (`${t('positionIgnition')}: ${formatBoolean(position.attributes.ignition, t)}`)}>
                 <IconButton size="small">
                   {position.attributes.ignition ? (
-                    <EngineIcon width={25} height={25} className={position.attributes.output === 1? classes.error : classes.success} />
+                    <EngineIcon width={25} height={25} className={position.attributes.output === 1 ? classes.error : classes.success} />
                   ) : (
-                    <EngineIcon width={20} height={20} className={position.attributes.output === 1? classes.error : classes.neutral} />
+                    <EngineIcon width={20} height={20} className={position.attributes.output === 1 ? classes.error : classes.neutral} />
                   )}
                 </IconButton>
               </Tooltip>
             )}
-            {position.attributes.hasOwnProperty('ignition') && position.attributes.output === 1 && position.attributes.ignition && (  
+            {position.attributes.hasOwnProperty('ignition') && position.attributes.output === 1 && position.attributes.ignition && (
               <Tooltip title={`${t('alarmViolation')}`}>
                 <IconButton size="small">
                   <GppMaybeIcon fontSize="small" className={classes.error} />
@@ -163,10 +164,10 @@ const DeviceRow = ({ data, index, style }) => {
                       ? (<BatteryCharging60Icon fontSize="small" className={classes.warning} />)
                       : (<Battery60Icon fontSize="small" className={classes.warning} />)
                   )) || (
-                    position.attributes.charge
-                      ? (<BatteryCharging20Icon fontSize="small" className={classes.error} />)
-                      : (<Battery20Icon fontSize="small" className={classes.error} />)
-                  )}
+                      position.attributes.charge
+                        ? (<BatteryCharging20Icon fontSize="small" className={classes.error} />)
+                        : (<Battery20Icon fontSize="small" className={classes.error} />)
+                    )}
                 </IconButton>
               </Tooltip>
             )}

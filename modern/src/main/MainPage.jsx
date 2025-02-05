@@ -129,7 +129,18 @@ const MainPage = () => {
 
   useFilter(keyword, filter, filterSort, filterMap, positions, setFilteredDevices, setFilteredPositions);
 
-  const [isOpen, setOpen] = React.useState(true);
+  const [isOpen, setOpen] = useState(true);
+  const [selectedDevices, setSelectedDevices] = useState([]);
+
+  const handleDeviceSelect = (device) => {
+    setSelectedDevices((prevSelectedDevices) => {
+      if (prevSelectedDevices.includes(device)) {
+        return prevSelectedDevices.filter((d) => d !== device);
+      } else {
+        return [...prevSelectedDevices, device];
+      }
+    });
+  };
 
   return (
     <div className={classes.root}>
@@ -183,9 +194,10 @@ const MainPage = () => {
               isOpen={isOpen}
               onDismiss={() => setOpen(false)}
               snapPoints={({ minHeight }) => [minHeight, window.innerHeight * 0.5]}
+              selectedDevices={selectedDevices}
             >
               <div className={classes.assetCount}>{filteredDevices.length} ASSET</div>
-              <DeviceListMobile devices={filteredDevices} />
+              <DeviceListMobile devices={filteredDevices} onDeviceSelect={handleDeviceSelect} />
             </CustomBottomSheet>
           )}
         </div>

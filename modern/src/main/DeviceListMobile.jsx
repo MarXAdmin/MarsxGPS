@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeviceListMobile = ({ devices }) => {
+const DeviceListMobile = ({ devices, onDeviceSelect }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const listInnerEl = useRef(null);
@@ -61,7 +61,15 @@ const DeviceListMobile = ({ devices }) => {
             overscanCount={10}
             innerRef={listInnerEl}
           >
-            {DeviceRow}
+            {/* {DeviceRow} */}
+            {({ index, style }) => (
+              <DeviceRow
+                style={style}
+                data={devices}
+                index={index}
+                onDeviceClick={onDeviceSelect}
+              />
+            )}
           </FixedSizeList>
         )}
       </AutoSizer>
