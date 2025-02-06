@@ -47,8 +47,8 @@ const DeviceListMobile = ({ devices, onDeviceSelect }) => {
     }
   }, []);
 
-  const gap = 8; // 4px gap between items
-  const itemSize = 92 + gap; // Increase item size to account for the gap
+  const gap = 8;
+  const itemSize = 92 + gap;
 
   return (
     <div ref={autoSizerRef} style={{ height: '100vh', width: '100%' }}>

@@ -85,7 +85,6 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
 
   const item = data[index];
   const position = useSelector((state) => state.session.positions[item.id]);
-  console.log("🚀 ~ DeviceRow ~ position:", position)
 
   const devicePrimary = useAttributePreference('devicePrimary', 'name');
   const deviceSecondary = useAttributePreference('deviceSecondary', '');
