@@ -18,7 +18,7 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-const DeviceListMobile = ({ devices }) => {
+const DeviceListMobile = ({ devices, onDeviceSelect }) => {
   const classes = useStyles();
   const dispatch = useDispatch();
   const listInnerEl = useRef(null);
@@ -47,6 +47,9 @@ const DeviceListMobile = ({ devices }) => {
     }
   }, []);
 
+  const gap = 8;
+  const itemSize = 92 + gap;
+
   return (
     <div ref={autoSizerRef} style={{ height: '100vh', width: '100%' }}>
       <AutoSizer disableHeight className={classes.list}>
@@ -57,11 +60,22 @@ const DeviceListMobile = ({ devices }) => {
             height={containerHeight}
             itemCount={devices.length}
             itemData={devices}
-            itemSize={72}
+            itemSize={itemSize}
             overscanCount={10}
             innerRef={listInnerEl}
           >
-            {DeviceRow}
+            {/* {DeviceRow} */}
+            {({ index, style }) => (
+              <DeviceRow
+                style={{
+                  ...style,
+                  top: style.top + gap * index,
+                }}
+                data={devices}
+                index={index}
+                onDeviceClick={onDeviceSelect}
+              />
+            )}
           </FixedSizeList>
         )}
       </AutoSizer>
@@ -70,5 +84,3 @@ const DeviceListMobile = ({ devices }) => {
 };
 
 export default DeviceListMobile;
-
-
