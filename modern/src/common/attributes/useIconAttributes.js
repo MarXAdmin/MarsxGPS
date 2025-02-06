@@ -1,6 +1,6 @@
 import SpeedIcon from '../../resources/images/data/speed.svg';
 import PowerIcon from '../../resources/images/data/power.svg';
-import EngineIcon from '../../resources/images/data/engine1.svg';
+import ignitionIcon from '../../resources/images/data/ignition.svg';
 import fuelIcon from '../../resources/images/data/fuel.svg'
 import batteryIcon from '../../resources/images/data/battery.svg'
 import defaultIcon from '../../resources/images/data/default.svg';
@@ -15,7 +15,7 @@ export const mapIconAttributes = {
     power: PowerIcon,
     battery: batteryIcon,
     speed: SpeedIcon,
-    ignition: EngineIcon,
+    ignition: ignitionIcon,
     rpm: rpmIcon,
     distance: distanceIcon,
     fuelConsumption: fuelConsumptionIcon,
