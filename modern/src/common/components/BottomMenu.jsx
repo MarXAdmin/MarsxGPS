@@ -16,6 +16,11 @@ import { useTranslation } from './LocalizationProvider';
 import { useRestriction } from '../util/permissions';
 import { nativePostMessage } from './NativeInterface';
 
+import routing from "../../resources/images/icon/routing.svg";
+import note from "../../resources/images/icon/note.svg";
+import profile from "../../resources/images/icon/profile.svg";
+
+
 
 const BottomMenu = ({ devicesOpen }) => {
   const navigate = useNavigate();
@@ -30,6 +35,12 @@ const BottomMenu = ({ devicesOpen }) => {
   const socket = useSelector((state) => state.session.socket);
 
   const [anchorEl, setAnchorEl] = useState(null);
+
+  const isHome = location.pathname === "/";
+  const containsReports = location.pathname.split('/').includes('reports');
+  const containsSetting = location.pathname.split('/').includes('settings');
+
+
 
   const currentSelection = () => {
     if (location.pathname === `/settings/user/${user.id}`) {
@@ -112,19 +123,54 @@ const BottomMenu = ({ devicesOpen }) => {
           label={t('mapTitle')}
           icon={(
             <Badge color="error" variant="dot" overlap="circular" invisible={socket !== false}>
-              <MapIcon />
+              {/* <MapIcon /> */}
+              <img src={routing} alt="routing" width={24} height={24} style={{
+                filter: !isHome &&
+                  "grayscale(100%) brightness(40%)"
+              }} />
             </Badge>
           )}
           value="map"
         />
         {!disableReports && (
-          <BottomNavigationAction label={t('reportTitle')} icon={<DescriptionIcon />} value="reports" />
+          <BottomNavigationAction label={t('reportTitle')}
+            icon={
+              // <DescriptionIcon />
+              <img
+                src={note}
+                alt="note"
+                width={24}
+                height={24}
+                style={{
+                  filter: containsReports
+                    ? "invert(51%) sepia(73%) saturate(671%) hue-rotate(334deg) brightness(100%) contrast(101%)" // Approximate #FF8343
+                    : "grayscale(100%) brightness(40%)"
+                }}
+              />
+
+            }
+            value="reports" />
         )}
         {/*<BottomNavigationAction label={t('settingsTitle')} icon={<SettingsIcon />} value="settings" />*/}
         {readonly ? (
           <BottomNavigationAction label={t('loginLogout')} icon={<ExitToAppIcon />} value="logout" />
         ) : (
-          <BottomNavigationAction label={t('settingsUser')} icon={<PersonIcon />} value="account" />
+          <BottomNavigationAction label={t('settingsUser')}
+            icon={
+              // <PersonIcon />
+              <img
+                src={profile}
+                alt="profile"
+                width={24}
+                height={24}
+                style={{
+                  filter: containsSetting
+                    ? "invert(51%) sepia(73%) saturate(671%) hue-rotate(334deg) brightness(100%) contrast(101%)" // Approximate #FF8343
+                    : "grayscale(100%) brightness(40%)"
+                }}
+              />
+            }
+            value="account" />
         )}
       </BottomNavigation>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)} >

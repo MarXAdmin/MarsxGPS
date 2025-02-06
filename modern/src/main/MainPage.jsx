@@ -21,6 +21,7 @@ import CustomizedInputBase from './SearchBar';
 
 import CustomBottomSheet from './BottomSheet';
 import DeviceListMobile from './DeviceListMobile';
+import fa from 'dayjs/locale/fa';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -131,6 +132,8 @@ const MainPage = () => {
 
   const [isOpen, setOpen] = useState(true);
   const [selectedDevices, setSelectedDevices] = useState([]);
+  const [isOpenFull, setOpenFull] = useState(false);
+
 
   const handleDeviceSelect = (device) => {
     setSelectedDevices((prevSelectedDevices) => {
@@ -167,6 +170,7 @@ const MainPage = () => {
               setFilterSort={setFilterSort}
               filterMap={filterMap}
               setFilterMap={setFilterMap}
+              handleShowBottomSheet={setOpenFull}
             />
           </Paper>
         </div>
@@ -195,8 +199,9 @@ const MainPage = () => {
               onDismiss={() => setOpen(false)}
               snapPoints={({ minHeight }) => [minHeight, window.innerHeight * 0.5]}
               selectedDevices={selectedDevices}
+              isOpenFull={isOpenFull}
             >
-              <div className={classes.assetCount}>{filteredDevices.length} ASSET</div>
+              <div className={classes.assetCount}>{filteredDevices.length} Assets</div>
               <DeviceListMobile devices={filteredDevices} onDeviceSelect={handleDeviceSelect} />
             </CustomBottomSheet>
           )}
@@ -214,6 +219,7 @@ const MainPage = () => {
           position={selectedPosition}
           onClose={() => dispatch(devicesActions.selectId(null))}
           desktopPadding={theme.dimensions.drawerWidthDesktop}
+          handleShowBottomSheet={setOpenFull}
         />
       )}
     </div>

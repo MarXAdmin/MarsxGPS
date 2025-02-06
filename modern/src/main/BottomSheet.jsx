@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import 'react-spring-bottom-sheet/dist/style.css';
 
-const CustomBottomSheet = ({ isOpen, onClose, children, selectedDevices }) => {
+const CustomBottomSheet = ({ isOpen, onClose, children, selectedDevices, isOpenFull }) => {
     const [currentSnap, setCurrentSnap] = useState(0.5);
     const sheetRef = useRef();
 
@@ -11,6 +11,12 @@ const CustomBottomSheet = ({ isOpen, onClose, children, selectedDevices }) => {
             changeSnap(0.1);
         }
     }, [selectedDevices]);
+
+    useEffect(() => {
+        if (isOpenFull) {
+            changeSnap(0.8);
+        }
+    }, [isOpenFull]);
 
     const changeSnap = (snapValue) => {
         setCurrentSnap(snapValue);

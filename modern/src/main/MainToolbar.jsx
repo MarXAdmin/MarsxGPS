@@ -132,6 +132,7 @@ const MainToolbar = ({
   setFilterSort,
   filterMap,
   setFilterMap,
+  handleShowBottomSheet
 }) => {
   const classes = useStyles();
   const theme = useTheme();
@@ -180,6 +181,8 @@ const MainToolbar = ({
     }
   };
 
+
+
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
 
   return (
@@ -201,8 +204,18 @@ const MainToolbar = ({
         placeholder={t('sharedSearchDevices')}
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
-        onFocus={() => setDevicesAnchorEl(toolbarRef.current)}
-        onBlur={() => setDevicesAnchorEl(null)}
+        onFocus={() => {
+          desktop ?
+            setDevicesAnchorEl(toolbarRef.current)
+            :
+            handleShowBottomSheet(true)
+        }}
+        onBlur={() => {
+          desktop ?
+            setDevicesAnchorEl(null)
+            :
+            handleShowBottomSheet(false)
+        }}
         startAdornment={(
           <SearchIcon sx={{ color: '#999999' }} />
         )}
@@ -353,11 +366,14 @@ const MainToolbar = ({
           </FormGroup>
         </div>
       </Popover>
-      {/* <IconButton edge="end" onClick={() => navigate('/settings/device')} disabled={deviceReadonly}>
-        <Tooltip open={!deviceReadonly && Object.keys(devices).length === 0} title={t('deviceRegisterFirst')} arrow>
-          <AddIcon className={classes.plusIcon} />
-        </Tooltip>
-      </IconButton> */}
+      {desktop &&
+        <IconButton edge="end" onClick={() => navigate('/settings/device')} disabled={deviceReadonly}>
+          <Tooltip open={!deviceReadonly && Object.keys(devices).length === 0} title={t('deviceRegisterFirst')} arrow>
+            <AddIcon className={classes.plusIcon} />
+          </Tooltip>
+        </IconButton>
+      }
+
     </Toolbar >
   );
 };

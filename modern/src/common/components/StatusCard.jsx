@@ -58,7 +58,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     pointerEvents: 'auto',
     width: theme.dimensions.popupMaxWidth + 60,
-    background: 'linear-gradient(30deg,rgb(245, 204, 143) 10%,rgb(250, 152, 98) 90%)', 
+    background: 'linear-gradient(30deg,rgb(245, 204, 143) 10%,rgb(250, 152, 98) 90%)',
   },
   media: {
     height: theme.dimensions.popupImageHeight,
@@ -139,7 +139,7 @@ const StatusRow = ({ name, content }) => {
   );
 };
 
-const StatusCell = ({name, content}) => {
+const StatusCell = ({ name, content }) => {
   const classes = useStyles();
 
   return (
@@ -151,7 +151,7 @@ const StatusCell = ({name, content}) => {
   );
 };
 
-const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPadding = 0, showaddresss = true }) => {
+const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPadding = 0, showaddresss = true, handleShowBottomSheet }) => {
   const classes = useStyles({ desktopPadding });
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -169,7 +169,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const [switchicon, setSwitchIcon] = useState(false);
 
   const positionAttributes = usePositionAttributes(t);
-  const positionItems = useAttributePreference('positionItems', defaultItems );
+  const positionItems = useAttributePreference('positionItems', defaultItems);
 
   const navigationAppLink = useAttributePreference('navigationAppLink');
   const navigationAppTitle = useAttributePreference('navigationAppTitle');
@@ -233,15 +233,15 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
           <Draggable
             handle={`.${classes.media}, .${classes.header}`}
           >
-            <Card 
-              elevation={3} 
+            <Card
+              elevation={3}
               className={classes.card}
               sx={{
                 position: 'relative',
                 borderRadius: 3,
                 boxShadow: 3,
                 overflow: 'visible',
-                border:0,
+                border: 0,
               }}
             >
               {devicecategory && (
@@ -258,22 +258,27 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     zIndex: 2,
                   }}
                 />
-              ) 
+              )
               }
               <div className={classes.header}>
                 {/*<Avatar alt={device.name} src={`/api/media/${device.uniqueId}/${deviceImage}`}/>*/}
                 <Box width='100%' p="5px">
-                  {device.name}<br/>
+                  {device.name}<br />
                   <Typography variant='body2' color={'textSecondary'}>
                     {position && (
-                      <AddressValue latitude={position.latitude} longitude={position.longitude} originalAddress={position.address} addressshow={showaddresss}/>
+                      <AddressValue latitude={position.latitude} longitude={position.longitude} originalAddress={position.address} addressshow={showaddresss} />
                     )}
                   </Typography>
                 </Box>
                 <IconButton
                   size="small"
-                  onClick={onClose}
-                  onTouchStart={onClose}
+                  onClick={() => {
+                    onClose();
+                  }}
+                  onTouchStart={() => {
+                    handleShowBottomSheet(false);
+                    onClose();
+                  }}
                 >
                   <CloseIcon fontSize="small" />
                 </IconButton>
@@ -281,23 +286,23 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
               {position && (
                 <CardContent className={classes.content}>
                   <Stack direction="row" spacing={1} >
-                    <Chip 
-                      label={device.status === "online" || device.status === "unknown" ? position.attributes.ignition ? 'WORKING' : 'PARKED' : 'OFFLINE' } 
-                      color={device.status === "offline" ? 'error' : device.status === "unknown" ? 'default' : ( position.attributes.ignition ? 'success' : 'info') }
-                      sx={{boxShadow: 3}}
+                    <Chip
+                      label={device.status === "online" || device.status === "unknown" ? position.attributes.ignition ? 'WORKING' : 'PARKED' : 'OFFLINE'}
+                      color={device.status === "offline" ? 'error' : device.status === "unknown" ? 'default' : (position.attributes.ignition ? 'success' : 'info')}
+                      sx={{ boxShadow: 3 }}
                     />
-                    <Chip icon={<WorkHistoryOutlinedIcon />} label={formatNumericHours(position.attributes.hours,t)} color='info' variant="outlined" deleteIcon={!deviceReadonly ? <LinkIcon/> : <div/> } onDelete={handleHoursClick} sx={{border:"unset" }}/>
+                    <Chip icon={<WorkHistoryOutlinedIcon />} label={formatNumericHours(position.attributes.hours, t)} color='info' variant="outlined" deleteIcon={!deviceReadonly ? <LinkIcon /> : <div />} onDelete={handleHoursClick} sx={{ border: "unset" }} />
                   </Stack>
-                  <Chip icon={<DoubleArrowIcon />} label={formatDistance(position.attributes.totalDistance,0,t)} color='info' variant="outlined" sx={{border:"unset" }}/>
-                  <Chip icon={<UpdateIcon />} label={formatTime(position.deviceTime, 'seconds')} sx={{border:"unset" }} variant="outlined"></Chip>
+                  <Chip icon={<DoubleArrowIcon />} label={formatDistance(position.attributes.totalDistance, 0, t)} color='info' variant="outlined" sx={{ border: "unset" }} />
+                  <Chip icon={<UpdateIcon />} label={formatTime(position.deviceTime, 'seconds')} sx={{ border: "unset" }} variant="outlined"></Chip>
                   <Table size="small" classes={{ root: classes.table }}>
-                    <TableHead>:<Switch size='small' checked={switchicon} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }}/></TableHead>
+                    <TableHead>:<Switch size='small' checked={switchicon} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }} /></TableHead>
                     {!switchicon ? (
                       <TableBody>
                         <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                           <TableCell>
                             <Stack direction="row" spacing={1} divider={<Divider orientation="vertical" flexItem />}>
-                              {positionItems.split(',').map((key) => key.trim()).filter((key) => position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key)).slice(0,5).map((key) => (
+                              {positionItems.split(',').map((key) => key.trim()).filter((key) => position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key)).slice(0, 5).map((key) => (
                                 <StatusCell
                                   key={key}
                                   name={positionAttributes[key]?.name || key}
@@ -308,7 +313,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                                       attribute={position.hasOwnProperty(key) ? null : key}
                                     />
                                   )}
-                                />                        
+                                />
                               ))}
                             </Stack>
                           </TableCell>
@@ -331,7 +336,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                         ))}
                       </TableBody>
                     )}
-                    { admin && (
+                    {admin && (
                       <TableFooter>
                         <TableRow>
                           <TableCell colSpan={2} className={classes.cell}>
