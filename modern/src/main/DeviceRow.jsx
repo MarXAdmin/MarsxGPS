@@ -2,7 +2,7 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@mui/styles/makeStyles';
 import {
-  IconButton, Tooltip, Avatar, ListItemAvatar, ListItemText, ListItemButton,
+  IconButton, Tooltip, Avatar, ListItemAvatar, ListItemText, ListItemButton, Chip
 } from '@mui/material';
 import BatteryFullIcon from '@mui/icons-material/BatteryFull';
 import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
@@ -15,7 +15,7 @@ import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { devicesActions } from '../store';
 import {
-  formatAlarm, formatBoolean, formatPercentage, formatStatus, getStatusColor,
+  formatAlarm, formatBoolean, formatPercentage, formatStatus, getStatusColor, formatNumericHours
 } from '../common/util/formatter';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { mapIconKey, mapIcons } from '../map/core/preloadImages';
@@ -23,6 +23,10 @@ import { useAdministrator } from '../common/util/permissions';
 import EngineIcon from '../resources/images/data/engine.svg?react';
 import { useAttributePreference } from '../common/util/preferences';
 import GppMaybeIcon from '@mui/icons-material/GppMaybe';
+import { useTheme } from '@mui/material/styles';
+import useMediaQuery from '@mui/material/useMediaQuery';
+
+
 
 dayjs.extend(relativeTime);
 
@@ -49,6 +53,26 @@ const useStyles = makeStyles((theme) => ({
   neutral: {
     color: theme.palette.neutral.main,
   },
+  nameItemsMobile: {
+    [theme.breakpoints.down('md')]: {
+      display: 'flex',
+      flexDirection: 'column',
+      width: '100%',
+    },
+  },
+  statusItems: {
+    [theme.breakpoints.down('md')]: {
+      display: 'flex',
+      gap: '16px',
+      alignItems: 'center',
+    },
+  },
+  boxShawdowMobile: {
+    borderRadius: '16px',
+    background: '#FFF',
+    boxShadow: '0px 4px 10px 0px rgba(255, 131, 67, 0.10)',
+    margin: '8px',
+  }
 }));
 
 const DeviceRow = ({ data, index, style, onDeviceClick }) => {
@@ -61,11 +85,15 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
 
   const item = data[index];
   const position = useSelector((state) => state.session.positions[item.id]);
+  console.log("🚀 ~ DeviceRow ~ position:", position)
 
   const devicePrimary = useAttributePreference('devicePrimary', 'name');
   const deviceSecondary = useAttributePreference('deviceSecondary', '');
 
   const serverDaysoffline = server?.attributes?.daysoffline;
+
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
   const secondaryText = () => {
     let status;
@@ -105,9 +133,22 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
         return 'gray';
     }
   };
+  const getStatusColor = (status) => {
+    switch (status.toLowerCase()) {
+      case "online":
+        return "green";
+      case "offline":
+        return "red";
+      case "unknown":
+        return "gray";
+      default:
+        return "black";
+    }
+  };
+
 
   return (
-    <div style={style}>
+    <div style={style} className={classes.boxShawdowMobile}>
       <ListItemButton
         key={item.id}
         onClick={() => {
@@ -123,12 +164,48 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
             <img className={classes.icon} src={mapIcons[mapIconKey(item.category)]} alt="" />
           </Avatar>
         </ListItemAvatar>
-        <ListItemText
-          primary={item[devicePrimary]}
-          primaryTypographyProps={{ noWrap: true }}
-          secondary={secondaryText()}
-          secondaryTypographyProps={{ noWrap: true }}
-        />
+
+        {isMobile ?
+          <div className={classes.nameItemsMobile}>
+            <div>{item[devicePrimary]}</div>
+            <div className={classes.statusItems}>
+              {item.model}
+              <div style={{ color: getStatusColor(item.status) }}>
+                {item.status}
+              </div>
+            </div>
+            <div className={classes.statusItems}>
+              <Chip
+                label={
+                  item.status === "online" || item.status === "unknown"
+                    ? position?.attributes?.ignition ? "WORKING" : "PARKED"
+                    : "OFFLINE"
+                }
+                color={
+                  item.status === "offline"
+                    ? "error"
+                    : item.status === "unknown"
+                      ? "default"
+                      : position?.attributes?.ignition
+                        ? "success"
+                        : "info"
+                }
+                sx={{ boxShadow: 3 }}
+              />
+              <div>{formatNumericHours(position?.attributes?.hours, t)}</div>
+            </div>
+
+
+          </div>
+
+          :
+          <ListItemText
+            primary={item[devicePrimary]}
+            primaryTypographyProps={{ noWrap: true }}
+            secondary={secondaryText()}
+            secondaryTypographyProps={{ noWrap: true }}
+          />
+        }
         {position && (
           <>
             {position.attributes.hasOwnProperty('alarm') && (
@@ -178,6 +255,7 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
           </>
         )}
       </ListItemButton>
+
     </div>
   );
 };

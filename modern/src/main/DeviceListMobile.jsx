@@ -47,6 +47,9 @@ const DeviceListMobile = ({ devices, onDeviceSelect }) => {
     }
   }, []);
 
+  const gap = 8; // 4px gap between items
+  const itemSize = 92 + gap; // Increase item size to account for the gap
+
   return (
     <div ref={autoSizerRef} style={{ height: '100vh', width: '100%' }}>
       <AutoSizer disableHeight className={classes.list}>
@@ -57,14 +60,17 @@ const DeviceListMobile = ({ devices, onDeviceSelect }) => {
             height={containerHeight}
             itemCount={devices.length}
             itemData={devices}
-            itemSize={72}
+            itemSize={itemSize}
             overscanCount={10}
             innerRef={listInnerEl}
           >
             {/* {DeviceRow} */}
             {({ index, style }) => (
               <DeviceRow
-                style={style}
+                style={{
+                  ...style,
+                  top: style.top + gap * index,
+                }}
                 data={devices}
                 index={index}
                 onDeviceClick={onDeviceSelect}
@@ -78,5 +84,3 @@ const DeviceListMobile = ({ devices, onDeviceSelect }) => {
 };
 
 export default DeviceListMobile;
-
-
