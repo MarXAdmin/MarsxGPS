@@ -117,8 +117,8 @@ const LineChartAttributes = ( {routesdata, from, to, attr , min, max, interpola 
             >
                 <defs>
                     <linearGradient id="colorPv" x1="0" y1="0" x2="0" y2="1">
-                        <stop offset="5%" stopColor="#82ca9d" stopOpacity={0.8}/>
-                        <stop offset="95%" stopColor="#82ca9d" stopOpacity={0}/>
+                        <stop offset="5%" stopColor="#ffc172" stopOpacity={0.8}/>
+                        <stop offset="95%" stopColor="#ffc172" stopOpacity={0}/>
                     </linearGradient>
                 </defs>
                 <XAxis 
@@ -137,7 +137,7 @@ const LineChartAttributes = ( {routesdata, from, to, attr , min, max, interpola 
                     formatter={(value, key) => [value, positionAttributes[key]?.name || key]}
                     labelFormatter={(value) => formatTime(value, 'seconds')}
                 />
-                <Area type={interpola} dataKey={type} stroke="#3da58a" fillOpacity={1} fill="url(#colorPv)" dot={false} connectNulls={true}/>
+                <Area type={interpola} dataKey={type} stroke="#FF8343" fillOpacity={1} fill="url(#colorPv)" dot={false} connectNulls={true}/>
             </AreaChart>
          </ResponsiveContainer>
     );
