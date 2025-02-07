@@ -25,12 +25,12 @@ import {
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
-import PublishIcon from '@mui/icons-material/Publish';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PendingIcon from '@mui/icons-material/Pending';
-import LinkIcon from '@mui/icons-material/Link';
-import TimelineIcon from '@mui/icons-material/Timeline';
+import PublishIcon from '../../resources/images/data/command.svg?react';
+import EditIcon from '../../resources/images/data/edit.svg?react';
+import DeleteIcon from '../../resources/images/data/delete.svg?react';
+import PendingIcon from '../../resources/images/data/extra.svg?react';
+import LinkIcon from '../../resources/images/data/connection.svg?react';
+import TimelineIcon from '../../resources/images/data/timeline.svg?react';
 import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
 import MileageIcon from '../../resources/images/data/mileage.svg?react';
 import DevicetimeIcon from '../../resources/images/data/devicetime.svg?react';
@@ -53,7 +53,7 @@ const useStyles = makeStyles((theme) => ({
   card: {
     pointerEvents: 'auto',
     width: theme.dimensions.popupMaxWidth + 60,
-    background: 'linear-gradient(180deg,rgb(255, 131, 67) 10%,rgb(255, 191, 0) 70%)', 
+    //background: 'linear-gradient(180deg,rgb(255, 131, 67) 10%,rgb(255, 191, 0) 70%)', 
   },
   media: {
     height: theme.dimensions.popupImageHeight,
@@ -255,7 +255,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
               <div className={classes.header}>
                 {/*<Avatar alt={device.name} src={`/api/media/${device.uniqueId}/${deviceImage}`}/>*/}
                 <Box width='100%' p="5px">
-                  <Typography variant='body1'>
+                  <Typography variant='body1' color={'#FF8343'}>
                     <strong>{device.name}</strong><br/>
                   </Typography>
                   <Typography variant='body2' color={'textSecondary'}>
@@ -293,7 +293,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                       <TableBody>
                         <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
                           <TableCell>
-                            <Stack direction="row" spacing={1} divider={<Divider orientation="vertical" flexItem />}>
+                            <Stack direction="row" spacing={2} >
                               {positionItems.split(',').map((key) => key.trim()).filter((key) => position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key)).slice(0,5).map((key) => (
                                 <StatusCell
                                   key={key}
