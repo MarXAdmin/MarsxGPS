@@ -68,10 +68,12 @@ const useStyles = makeStyles((theme) => ({
     },
   },
   boxShawdowMobile: {
-    borderRadius: '16px',
-    background: '#FFF',
-    boxShadow: '0px 4px 10px 0px rgba(255, 131, 67, 0.10)',
-    margin: '8px',
+    [theme.breakpoints.down('md')]: {
+      borderRadius: '16px',
+      background: '#FFF',
+      boxShadow: '0px 4px 10px 0px rgba(255, 131, 67, 0.10)',
+      margin: '8px',
+    }
   }
 }));
 

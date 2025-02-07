@@ -70,6 +70,7 @@ const DeviceListMobile = ({ devices, onDeviceSelect }) => {
                 style={{
                   ...style,
                   top: style.top + gap * index,
+                  width: '97%',
                 }}
                 data={devices}
                 index={index}
