@@ -2,20 +2,14 @@ import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import makeStyles from '@mui/styles/makeStyles';
 import {
-  IconButton, Tooltip, Avatar, ListItemAvatar, ListItemText, ListItemButton, Chip
+  IconButton, Tooltip, Avatar, ListItemAvatar, ListItemText, ListItemButton, Chip, Typography,
 } from '@mui/material';
-import BatteryFullIcon from '@mui/icons-material/BatteryFull';
-import BatteryChargingFullIcon from '@mui/icons-material/BatteryChargingFull';
-import Battery60Icon from '@mui/icons-material/Battery60';
-import BatteryCharging60Icon from '@mui/icons-material/BatteryCharging60';
-import Battery20Icon from '@mui/icons-material/Battery20';
-import BatteryCharging20Icon from '@mui/icons-material/BatteryCharging20';
 import ErrorIcon from '@mui/icons-material/Error';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
 import { devicesActions } from '../store';
 import {
-  formatAlarm, formatBoolean, formatPercentage, formatStatus, getStatusColor, formatNumericHours
+  formatAlarm, formatBoolean, formatStatus, formatNumericHours
 } from '../common/util/formatter';
 import { useTranslation } from '../common/components/LocalizationProvider';
 import { mapIconKey, mapIcons } from '../map/core/preloadImages';
@@ -58,6 +52,7 @@ const useStyles = makeStyles((theme) => ({
       display: 'flex',
       flexDirection: 'column',
       width: '100%',
+      fontSize: '14px',
     },
   },
   statusItems: {
@@ -137,13 +132,13 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
   const getStatusColor = (status) => {
     switch (status.toLowerCase()) {
       case "online":
-        return "green";
+        return "success";
       case "offline":
-        return "red";
+        return "error";
       case "unknown":
-        return "gray";
+        return "neutral";
       default:
-        return "black";
+        return "neutral";
     }
   };
 
@@ -169,12 +164,7 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
         {isMobile ?
           <div className={classes.nameItemsMobile}>
             <div>{item[devicePrimary]}</div>
-            <div className={classes.statusItems}>
-              {item.model}
-              <div style={{ color: getStatusColor(item.status) }}>
-                {item.status}
-              </div>
-            </div>
+            <div>{secondaryText()}</div>
             <div className={classes.statusItems}>
               <Chip
                 label={
@@ -192,8 +182,9 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
                         : "info"
                 }
                 sx={{ boxShadow: 3 }}
+                size='small'
               />
-              <div>{formatNumericHours(position?.attributes?.hours, t)}</div>
+              <Typography variant='caption'>{formatNumericHours(position?.attributes?.hours, t)}</Typography>
             </div>
 
 
@@ -231,25 +222,6 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
               <Tooltip title={`${t('alarmViolation')}`}>
                 <IconButton size="small">
                   <GppMaybeIcon fontSize="small" className={classes.error} />
-                </IconButton>
-              </Tooltip>
-            )}
-            {position.attributes.hasOwnProperty('batteryLevel') && (
-              <Tooltip title={`${t('positionBatteryLevel')}: ${formatPercentage(position.attributes.batteryLevel)}`}>
-                <IconButton size="small">
-                  {(position.attributes.batteryLevel > 70 && (
-                    position.attributes.charge
-                      ? (<BatteryChargingFullIcon fontSize="small" className={classes.success} />)
-                      : (<BatteryFullIcon fontSize="small" className={classes.success} />)
-                  )) || (position.attributes.batteryLevel > 30 && (
-                    position.attributes.charge
-                      ? (<BatteryCharging60Icon fontSize="small" className={classes.warning} />)
-                      : (<Battery60Icon fontSize="small" className={classes.warning} />)
-                  )) || (
-                      position.attributes.charge
-                        ? (<BatteryCharging20Icon fontSize="small" className={classes.error} />)
-                        : (<Battery20Icon fontSize="small" className={classes.error} />)
-                    )}
                 </IconButton>
               </Tooltip>
             )}

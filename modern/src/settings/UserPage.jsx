@@ -47,6 +47,7 @@ const UserPage = () => {
   const admin = useAdministrator();
   const manager = useManager();
   const fixedEmail = useRestriction('fixedEmail');
+  const readonly = useRestriction('readonly');
 
   const currentUser = useSelector((state) => state.session.user);
   const registrationEnabled = useSelector((state) => state.session.server.registration);
@@ -171,6 +172,7 @@ const UserPage = () => {
               )}
             </AccordionDetails>
           </Accordion>
+          {!readonly && (
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle1">
@@ -270,7 +272,8 @@ const UserPage = () => {
                 label={t('mapPoiLayer')}
               />
             </AccordionDetails>
-          </Accordion>
+          </Accordion> )}
+          {!readonly && (
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle1">
@@ -312,7 +315,8 @@ const UserPage = () => {
                 {t('mapCurrentLocation')}
               </Button>
             </AccordionDetails>
-          </Accordion>
+          </Accordion> )}
+          {!readonly && (
           <Accordion>
             <AccordionSummary expandIcon={<ExpandMoreIcon />}>
               <Typography variant="subtitle1">
@@ -383,15 +387,16 @@ const UserPage = () => {
                 />
               </FormGroup>
             </AccordionDetails>
-          </Accordion>
+          </Accordion>)}
+          {!readonly && (
           <EditAttributesAccordion
             attribute={attribute}
             attributes={item.attributes}
             setAttributes={(attributes) => setItem({ ...item, attributes })}
             definitions={{ ...commonUserAttributes, ...userAttributes }}
             focusAttribute={attribute}
-          />
-          {registrationEnabled && item.id === currentUser.id && !manager && (
+          /> )}
+          {registrationEnabled && item.id === currentUser.id && !manager && !readonly && (
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle1" color="error">

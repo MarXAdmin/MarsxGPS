@@ -4,12 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import {
   Paper, BottomNavigation, BottomNavigationAction, Menu, MenuItem, Typography, Badge,
 } from '@mui/material';
-
-import DescriptionIcon from '@mui/icons-material/Description';
 import SettingsIcon from '@mui/icons-material/Settings';
-import MapIcon from '@mui/icons-material/Map';
-import PersonIcon from '@mui/icons-material/Person';
-import ExitToAppIcon from '@mui/icons-material/ExitToApp';
 
 import { sessionActions } from '../../store';
 import { useTranslation } from './LocalizationProvider';
@@ -151,35 +146,30 @@ const BottomMenu = ({ devicesOpen }) => {
             }
             value="reports" />
         )}
-        {/*<BottomNavigationAction label={t('settingsTitle')} icon={<SettingsIcon />} value="settings" />*/}
-        {readonly ? (
-          <BottomNavigationAction label={t('loginLogout')} icon={<ExitToAppIcon />} value="logout" />
-        ) : (
-          <BottomNavigationAction label={t('settingsUser')}
-            icon={
-              // <PersonIcon />
-              <img
-                src={profile}
-                alt="profile"
-                width={24}
-                height={24}
-                style={{
-                  filter: containsSetting
-                    ? "invert(51%) sepia(73%) saturate(671%) hue-rotate(334deg) brightness(100%) contrast(101%)" // Approximate #FF8343
-                    : "grayscale(100%) brightness(40%)"
-                }}
-              />
-            }
-            value="account" />
-        )}
+        <BottomNavigationAction label={t('settingsUser')}
+          icon={
+            // <PersonIcon />
+            <img
+              src={profile}
+              alt="profile"
+              width={24}
+              height={24}
+              style={{
+                filter: containsSetting
+                  ? "invert(51%) sepia(73%) saturate(671%) hue-rotate(334deg) brightness(100%) contrast(101%)" // Approximate #FF8343
+                  : "grayscale(100%) brightness(40%)"
+              }}
+            />
+          }
+          value="account" />
       </BottomNavigation>
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={() => setAnchorEl(null)} >
         <MenuItem onClick={handleAccount}>
           <Typography color="textPrimary">{t('settingsUser')}</Typography>
         </MenuItem>
-        <MenuItem onClick={handleSetting} IconButton={<SettingsIcon />}>
+        {!readonly && (<MenuItem onClick={handleSetting} IconButton={<SettingsIcon />}>
           <Typography color="textPrimary">{t('settingsTitle')}</Typography>
-        </MenuItem>
+        </MenuItem> )}
         <MenuItem onClick={handleLogout}>
           <Typography color="error">{t('loginLogout')}</Typography>
         </MenuItem>

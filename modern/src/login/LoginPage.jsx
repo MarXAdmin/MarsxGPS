@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import dayjs from 'dayjs';
 import {
-  useMediaQuery, InputLabel, Select, MenuItem, FormControl, Button, TextField, Link, Snackbar, IconButton, Tooltip, LinearProgress, Box,
+  useMediaQuery, Select, MenuItem, Button, TextField, Link, Snackbar, IconButton, LinearProgress, Box,
 } from '@mui/material';
 import ReactCountryFlag from 'react-country-flag';
 import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import ElectricalServicesIcon from '@mui/icons-material/ElectricalServices';
 import { useTheme } from '@mui/material/styles';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
@@ -64,6 +62,15 @@ const useStyles = makeStyles((theme) => ({
       width: 'auto'
     },
     marginTop: '10%'
+  },
+  logoLoingMobile: {
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    '& img': {
+      width: 'auto'
+    },
+    marginTop: '20%'
   },
   title: {
     display: 'flex',
@@ -146,7 +153,7 @@ const useStyles = makeStyles((theme) => ({
     }
   },
   selectButton: {
-    background: '#FF8343',
+    background: theme.palette.primary.main,
     borderRadius: '50px',
     color: '#FFF',
     display: 'flex',
@@ -187,6 +194,8 @@ const LoginPage = () => {
 
   const { languages, language, setLanguage } = useLocalization();
   const languageList = Object.entries(languages).map((values) => ({ code: values[0], country: values[1].country, name: values[1].name }));
+
+  const versionApp = import.meta.env.VITE_APP_VERSION;
 
   const [failed, setFailed] = useState(false);
 
@@ -401,7 +410,7 @@ const LoginPage = () => {
               {t('loginLogin')}
             </Button>
             <div className={classes.versionContal}>
-              Build: 24.11.28
+              Build Version: {versionApp}
             </div>
             {openIdEnabled && (
               <Button
@@ -521,6 +530,9 @@ const LoginPage = () => {
                 onKeyUp={handleSpecialKey}
               />
             </div>
+            <div className={classes.logoLoingMobile}>
+              <img src={'logoLoginMobile.png'} alt="" />
+            </div>
             <div className={classes.loginMobile}>
               <Button
                 onClick={handlePasswordLogin}
@@ -536,7 +548,7 @@ const LoginPage = () => {
                 {t('loginLogin')}
               </Button>
               <div className={classes.versionContal}>
-                Build: 24.11.28
+                Build Version: {versionApp}
               </div>
             </div>
 

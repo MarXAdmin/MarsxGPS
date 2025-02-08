@@ -16,12 +16,9 @@ import useFilter from './useFilter';
 import MainToolbar from './MainToolbar';
 import MainMap from './MainMap';
 import { useAttributePreference } from '../common/util/preferences';
-import Drawer from '@mui/material/Drawer';
-import CustomizedInputBase from './SearchBar';
 
 import CustomBottomSheet from './BottomSheet';
 import DeviceListMobile from './DeviceListMobile';
-import fa from 'dayjs/locale/fa';
 
 const useStyles = makeStyles((theme) => ({
   root: {

@@ -20,7 +20,7 @@ import {
   Box,
   Chip,
   Stack,
-  Divider,
+  //Divider,
   Switch,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
@@ -95,8 +95,8 @@ const useStyles = makeStyles((theme) => ({
   },
   actions: {
     justifyContent: 'space-between',
-    backgroundColor: '#FF8343', 
-    borderRadius: 16,
+    backgroundColor: theme.palette.primary.main, 
+    borderRadius: 11,
   },
   root: ({ desktopPadding }) => ({
     pointerEvents: 'none',
@@ -239,8 +239,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
               {devicecategory && (
                 <Box
                   component="img"
-                  //src={mapImages[mapImagesKey(device.category)]}
-                  src={`/api/media/imges/${devicecategory}.png`}
+                  src={`/images/${devicecategory}.png`}
                   sx={{
                     position: 'absolute',
                     top: -95,
@@ -255,7 +254,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
               <div className={classes.header}>
                 {/*<Avatar alt={device.name} src={`/api/media/${device.uniqueId}/${deviceImage}`}/>*/}
                 <Box width='100%' p="5px">
-                  <Typography variant='body1' color={'#FF8343'}>
+                  <Typography variant='body1' color={'primary'}>
                     <strong>{device.name}</strong><br/>
                   </Typography>
                   <Typography variant='body2' color={'textSecondary'}>
@@ -286,7 +285,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                       sx={{ boxShadow: 3 }}
                     />
                     <strong>
-                      <Chip icon={<WorkHistoryOutlinedIcon />} label={formatNumericHours(position.attributes.hours,t)}  variant="outlined" deleteIcon={!deviceReadonly ? <LinkIcon/> : <div/> } onDelete={handleHoursClick} sx={{border:"unset" }}/>
+                      <Chip icon={<WorkHistoryOutlinedIcon />} label={formatNumericHours(position.attributes.hours,t)}  variant="outlined" onClick={handleHoursClick} sx={{border:"unset" }}/>
                     </strong>
                   </Stack>
                   <Chip icon={<MileageIcon />} label={formatDistance(position.attributes.totalDistance,0,t)} variant="outlined" sx={{border:"unset" }}/>
