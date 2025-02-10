@@ -117,7 +117,7 @@ const CommandDevicePage = () => {
             <Alert onClose={() => navigate(-1)} severity="info">
               {statusText}
             </Alert>
-          </Snackbar>;
+          </Snackbar>
         </div>
       </Container>
     </PageLayout>

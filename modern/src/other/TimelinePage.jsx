@@ -2,10 +2,10 @@ import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 
 import {
-  Typography, AppBar, Toolbar, IconButton, Box,
+  Typography, AppBar, Toolbar, IconButton, Box, Avatar,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
+import ArrowBackIosNew from '@mui/icons-material/ArrowBackIosNew';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useEffectAsync } from '../reactHelper';
 import { useTranslation } from '../common/components/LocalizationProvider';
@@ -19,6 +19,7 @@ import TimelineMap from './TimelineMap';
 import LineChartAttributes from '../common/components/LineChartAttributes';
 import dayjs from 'dayjs';
 import { formatNumericHours } from '../common/util/formatter';
+import TimelineIcon from '../resources/images/data/timeline.svg?react';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -38,10 +39,10 @@ const TimelinePage = () => {
   const navigate = useNavigate();
   const t = useTranslation();
 
-  const positionAttributes = usePositionAttributes(t);
+  //const positionAttributes = usePositionAttributes(t);
 
-  const server = useSelector((state) => state.session.server);
-  const serverDarkMode = server?.attributes?.darkMode;
+  //const server = useSelector((state) => state.session.server);
+  //const colorPrimary = server?.attributes?.colorPrimary;
 
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -125,11 +126,17 @@ const TimelinePage = () => {
 
   return (
     <div className={classes.root}>
-      <AppBar position="sticky" color="inherit">
+      <AppBar 
+        position="sticky" 
+        sx={{backgroundImage:`linear-gradient(280deg, ${theme.palette.primary.main}, #FFFFFF)`}}
+      >
         <Toolbar>
           <IconButton color="inherit" edge="start" sx={{ mr: 2 }} onClick={() => navigate(-1)}>
-            <ArrowBackIcon />
+            <ArrowBackIosNew />
           </IconButton>
+          <Avatar sx={{ bgcolor:theme.palette.primary.main, mr: 1 }}>
+            <TimelineIcon />
+          </Avatar>
           <Typography variant="h6">
             {deviceName}
           </Typography>
