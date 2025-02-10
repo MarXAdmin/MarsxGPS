@@ -408,8 +408,8 @@
     "stateValue": "มูลค่า",
     "commandTitle": "คำสั่ง",
     "commandSend": "ส่ง",
-    "commandSent": "คำสั่ง-ส่งแล้ว",
-    "commandQueued": "คำสั่ง-คิว",
+    "commandSent": "ส่งคำสั่ง-สำเร็จ",
+    "commandQueued": "ส่งคำสั่ง-เข้าคิว",
     "commandUnit": "หน่วย",
     "commandCustom": "คำสั่งกำหนดเอง",
     "commandDeviceIdentification": "หมายเลขอุปกรณ์",
@@ -631,5 +631,7 @@
     "categoryTelescoplifter": "Telescop lifter",
     "categoryBackfillcompactor":"รถอัดดินถมกลับ",
     "maintenanceStart": "เริ่มต้น",
-    "maintenancePeriod": "ระยะเวลา"
+    "maintenancePeriod": "ระยะเวลา",
+    "welcomeLoginPage": "ยินดีต้อนรับเข้าสู่"
+
 }

@@ -27,7 +27,8 @@ const AppThemeProvider = ({ children }) => {
   const serverDarkMode = server?.attributes?.darkMode;
   const preferDarkMode = useMediaQuery('(prefers-color-scheme: dark)');
   const userDarkMode = user?.attributes?.darkMode;
-  const darkMode = serverDarkMode !== undefined ? serverDarkMode : userDarkMode !== undefined ? userDarkMode : preferDarkMode;
+  // const darkMode = serverDarkMode !== undefined ? serverDarkMode : userDarkMode !== undefined ? userDarkMode : preferDarkMode
+  const darkMode = false;
 
   const themeInstance = theme(server, darkMode, direction);
 

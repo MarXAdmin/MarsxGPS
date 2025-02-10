@@ -11,7 +11,7 @@ const useStyles = makeStyles((theme) => ({
     maxHeight: '120px',
     width: 'auto',
     height: 'auto',
-    margin: theme.spacing(2),
+    // margin: theme.spacing(2),
   },
 }));
 
@@ -26,9 +26,9 @@ const LogoImage = ({ color }) => {
 
   if (logo) {
     if (expanded && logoInverted) {
-      return <img className={classes.image} src={logoInverted} alt="" />;
+      return <img className={classes.image} src={logoInverted} alt="1" />;
     }
-    return <img className={classes.image} src={logo} alt="" />;
+    return <img className={classes.image} src={logo} alt="2" />;
   }
   return <Logo className={classes.image} style={{ color }} />;
 };

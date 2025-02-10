@@ -17,7 +17,8 @@ import MainToolbar from './MainToolbar';
 import MainMap from './MainMap';
 import { useAttributePreference } from '../common/util/preferences';
 
-import CustomizedInputBase from './SearchBar';
+import CustomBottomSheet from './BottomSheet';
+import DeviceListMobile from './DeviceListMobile';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -49,6 +50,12 @@ const useStyles = makeStyles((theme) => ({
       borderRadius: '0'
     },
   },
+  headerMobile: {
+    position: 'absolute',
+    zIndex: 6,
+    margin: '20px',
+    width: '80vw'
+  },
   footer: {
     pointerEvents: 'auto',
     zIndex: 5,
@@ -72,6 +79,14 @@ const useStyles = makeStyles((theme) => ({
     background: 'white',
     width: 'calc(90% - 40px)',
     borderRadius: '16px',
+  },
+  assetCount: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    marginLeft: '16px'
+  },
+  assetCountContainer: {
+    overflow: 'hidden'
   }
 }));
 
@@ -112,6 +127,21 @@ const MainPage = () => {
 
   useFilter(keyword, filter, filterSort, filterMap, positions, setFilteredDevices, setFilteredPositions);
 
+  const [isOpen, setOpen] = useState(true);
+  const [selectedDevices, setSelectedDevices] = useState([]);
+  const [isOpenFull, setOpenFull] = useState(false);
+
+
+  const handleDeviceSelect = (device) => {
+    setSelectedDevices((prevSelectedDevices) => {
+      if (prevSelectedDevices.includes(device)) {
+        return prevSelectedDevices.filter((d) => d !== device);
+      } else {
+        return [...prevSelectedDevices, device];
+      }
+    });
+  };
+
   return (
     <div className={classes.root}>
       {desktop && (
@@ -122,22 +152,27 @@ const MainPage = () => {
         />
       )}
       <div className={classes.sidebar}>
-        <Paper square elevation={3} className={classes.header} 
-          sx={{borderRadius: devicesOpen ? '14px 14px 0 0' : '14px',}}>
-          <MainToolbar
-            filteredDevices={filteredDevices}
-            devicesOpen={devicesOpen}
-            setDevicesOpen={setDevicesOpen}
-            keyword={keyword}
-            setKeyword={setKeyword}
-            filter={filter}
-            setFilter={setFilter}
-            filterSort={filterSort}
-            setFilterSort={setFilterSort}
-            filterMap={filterMap}
-            setFilterMap={setFilterMap}
-            /> 
-        </Paper>
+        <div className={!desktop ? classes.headerMobile : ''}>
+          <Paper square elevation={3} className={classes.header}
+            sx={{ borderRadius: devicesOpen ? '14px 14px 0 0' : '14px', }}>
+            <MainToolbar
+              filteredDevices={filteredDevices}
+              devicesOpen={devicesOpen}
+              setDevicesOpen={setDevicesOpen}
+              keyword={keyword}
+              setKeyword={setKeyword}
+              filter={filter}
+              setFilter={setFilter}
+              filterSort={filterSort}
+              setFilterSort={setFilterSort}
+              filterMap={filterMap}
+              setFilterMap={setFilterMap}
+              handleShowBottomSheet={setOpenFull}
+            />
+          </Paper>
+        </div>
+
+
         <div className={classes.middle}>
           {!desktop && (
             <div className={classes.contentMap}>
@@ -148,9 +183,25 @@ const MainPage = () => {
               />
             </div>
           )}
-          <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
+          {/* <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
             <DeviceList devices={filteredDevices} />
-          </Paper>
+          </Paper> */}
+          {desktop ? (
+            <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
+              <DeviceList devices={filteredDevices} />
+            </Paper>
+          ) : (
+            <CustomBottomSheet
+              isOpen={isOpen}
+              onDismiss={() => setOpen(false)}
+              snapPoints={({ minHeight }) => [minHeight, window.innerHeight * 0.5]}
+              selectedDevices={selectedDevices}
+              isOpenFull={isOpenFull}
+            >
+              <div className={classes.assetCount}>{filteredDevices.length} Assets</div>
+              <DeviceListMobile devices={filteredDevices} onDeviceSelect={handleDeviceSelect} />
+            </CustomBottomSheet>
+          )}
         </div>
         {desktop && (
           <div className={classes.footer}>
@@ -165,6 +216,7 @@ const MainPage = () => {
           position={selectedPosition}
           onClose={() => dispatch(devicesActions.selectId(null))}
           desktopPadding={theme.dimensions.drawerWidthDesktop}
+          handleShowBottomSheet={setOpenFull}
         />
       )}
     </div>

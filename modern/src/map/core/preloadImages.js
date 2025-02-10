@@ -49,7 +49,7 @@ import forklift3Svg from '../../resources/images/icon/forklift3.svg';
 import telescoplifterSvg from '../../resources/images/icon/telescoplifter.svg';
 import backfillcompactorSvg from '../../resources/images/icon/backfillcompactor.svg';
 
-import ExcavatorImage from '../../resources/images/excavator.png';
+/*import ExcavatorImage from '../../resources/images/excavator.png';
 import DrumtruckImage from '../../resources/images/dumptruck.png';
 import SmallexcavatorImage from '../../resources/images/smallexcavator.png';
 import GraderImge from '../../resources/images/grader.png';
@@ -60,6 +60,7 @@ import TruckcraneImge from '../../resources/images/truckcrane.png';
 import ContainerReachImge from '../../resources/images/containerreach.png';
 import BobcatImge from '../../resources/images/bobcat.png';
 import RollermachineImge from '../../resources/images/rollermachine.png';
+*/
 
 
 export const mapIcons = {
@@ -120,8 +121,8 @@ export const mapIconKey = (category) => {
   }
 };
 
-export const mapImages = {
-  excavator: ExcavatorImage,
+export const mapImages = {};
+  /*excavator: ExcavatorImage,
   drumtruck: DrumtruckImage,
   excavator2: SmallexcavatorImage,
   grader: GraderImge,
@@ -136,7 +137,7 @@ export const mapImages = {
 
 export const mapImagesKey = (category) => {
   return mapImages.hasOwnProperty(category) ? category : '';
-};
+};*/
 
 const mapPalette = createPalette({
   neutral: { main: grey[500] },

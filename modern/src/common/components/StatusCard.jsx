@@ -14,43 +14,46 @@ import {
   TableCell,
   Menu,
   MenuItem,
-  //CardMedia,
   TableFooter,
   Link,
   Tooltip,
   Box,
   Chip,
   Stack,
+  //Divider,
+  Switch,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
-
-import PublishIcon from '@mui/icons-material/Publish';
-import EditIcon from '@mui/icons-material/Edit';
-import DeleteIcon from '@mui/icons-material/Delete';
-import PendingIcon from '@mui/icons-material/Pending';
-import LinkIcon from '@mui/icons-material/Link';
-import TimelineIcon from '@mui/icons-material/Timeline';
+import PublishIcon from '../../resources/images/data/command.svg?react';
+import EditIcon from '../../resources/images/data/edit.svg?react';
+import DeleteIcon from '../../resources/images/data/delete.svg?react';
+import PendingIcon from '../../resources/images/data/extra.svg?react';
+import LinkIcon from '../../resources/images/data/connection.svg?react';
+import TimelineIcon from '../../resources/images/data/timeline.svg?react';
+import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
+import MileageIcon from '../../resources/images/data/mileage.svg?react';
+import DevicetimeIcon from '../../resources/images/data/devicetime.svg?react';
 
 import { useTranslation } from './LocalizationProvider';
 import RemoveDialog from './RemoveDialog';
 import PositionValue from './PositionValue';
 import { useDeviceReadonly } from '../util/permissions';
+import { useAdministrator } from '../util/permissions';
 import usePositionAttributes from '../attributes/usePositionAttributes';
 import { devicesActions } from '../../store';
 import { useCatch, useCatchCallback } from '../../reactHelper';
 import { useAttributePreference } from '../util/preferences';
-//import Avatar from '@mui/material/Avatar';
-import { mapImages, mapImagesKey } from '../../map/core/preloadImages';
 import AddressValue from './AddressValue';
-import { formatNumericHours } from '../util/formatter';
-//import GppMaybeIcon from '@mui/icons-material/GppMaybe';
+import { formatNumericHours, formatTime, formatDistance } from '../util/formatter';
+import { mapIconAttributes, mapIconAttributesKey } from '../attributes/useIconAttributes';
 
 
 const useStyles = makeStyles((theme) => ({
   card: {
     pointerEvents: 'auto',
-    width: theme.dimensions.popupMaxWidth + 70,
+    width: theme.dimensions.popupMaxWidth + 60,
+    //background: 'linear-gradient(180deg,rgb(255, 131, 67) 10%,rgb(255, 191, 0) 70%)', 
   },
   media: {
     height: theme.dimensions.popupImageHeight,
@@ -75,9 +78,8 @@ const useStyles = makeStyles((theme) => ({
     overflow: 'auto',
   },
   icon: {
-    width: '25px',
-    height: '25px',
-    filter: 'brightness(0) invert(1)',
+    width: '32px',
+    height: '32px',
   },
   table: {
     '& .MuiTableCell-sizeSmall': {
@@ -86,13 +88,15 @@ const useStyles = makeStyles((theme) => ({
     },
     '& .MuiTableCell-sizeSmall:first-child': {
       paddingRight: theme.spacing(1),
-    },
+    }
   },
   cell: {
     borderBottom: 'none',
   },
   actions: {
     justifyContent: 'space-between',
+    backgroundColor: theme.palette.primary.main, 
+    borderRadius: 11,
   },
   root: ({ desktopPadding }) => ({
     pointerEvents: 'none',
@@ -109,6 +113,9 @@ const useStyles = makeStyles((theme) => ({
     },
     transform: 'translateX(-50%)',
   }),
+  success: {
+    color: theme.palette.success.main,
+  },
 }));
 
 const StatusRow = ({ name, content }) => {
@@ -126,29 +133,47 @@ const StatusRow = ({ name, content }) => {
   );
 };
 
-const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPadding = 0 }) => {
+const StatusCell = ({ name, content }) => {
+  const classes = useStyles();
+
+  return (
+    <Box>
+      <img className={classes.icon} src={mapIconAttributes[mapIconAttributesKey(content.props.attribute || content.props.property)]} alt={name} />
+      <Typography variant="body2" >{name}</Typography>
+      <Typography variant="body2" color="textSecondary">{content}</Typography>
+    </Box>
+  );
+};
+
+const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPadding = 0, showaddresss = true, handleShowBottomSheet }) => {
   const classes = useStyles({ desktopPadding });
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const t = useTranslation();
 
   const deviceReadonly = useDeviceReadonly();
+  const admin = useAdministrator();
 
   const shareDisabled = useSelector((state) => state.session.server.attributes.disableShare);
   const user = useSelector((state) => state.session.user);
   const device = useSelector((state) => state.devices.items[deviceId]);
+  const defaultItems = useSelector((state) => state.session.server.attributes.positionItems);
 
-  //const deviceImage = device?.attributes?.deviceImage;
+  const devicecategory = device?.category;
+  const [switchicon, setSwitchIcon] = useState(false);
 
   const positionAttributes = usePositionAttributes(t);
-  const positionItems = useAttributePreference('positionItems', 'deviceTime,fuel,power,battery,speed');
+  const positionItems = useAttributePreference('positionItems', defaultItems);
 
   const navigationAppLink = useAttributePreference('navigationAppLink');
   const navigationAppTitle = useAttributePreference('navigationAppTitle');
 
   const [anchorEl, setAnchorEl] = useState(null);
-
   const [removing, setRemoving] = useState(false);
+
+  const handleChange = (event) => {
+    setSwitchIcon(event.target.checked);
+  };
 
   const handleRemove = useCatch(async (removed) => {
     if (removed) {
@@ -192,6 +217,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
     navigate(`/settings/accumulators/${position.deviceId}`);
   };
 
+
   return (
     <>
       <div className={classes.root}>
@@ -199,91 +225,130 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
           <Draggable
             handle={`.${classes.media}, .${classes.header}`}
           >
-            <Card 
-              elevation={3} 
+            <Card
+              elevation={3}
               className={classes.card}
               sx={{
                 position: 'relative',
                 borderRadius: 3,
                 boxShadow: 3,
                 overflow: 'visible',
-                border:0,
+                border: 0,
               }}
             >
-              <Box
-                component="img"
-                src={mapImages[mapImagesKey(device.category)]}
-                sx={{
-                  position: 'absolute',
-                  top: -95,
-                  left: '30%',
-                  transform: 'translateX(-50%)',
-                  width: 200,
-                  zIndex: 2,
-                }}
-              />
+              {devicecategory && (
+                <Box
+                  component="img"
+                  src={`/images/${devicecategory}.png`}
+                  sx={{
+                    position: 'absolute',
+                    top: -95,
+                    left: '30%',
+                    transform: 'translateX(-50%)',
+                    width: 200,
+                    zIndex: 2,
+                  }}
+                />
+              )
+              }
               <div className={classes.header}>
                 {/*<Avatar alt={device.name} src={`/api/media/${device.uniqueId}/${deviceImage}`}/>*/}
                 <Box width='100%' p="5px">
-                  {device.name}<br/>
-                  <Typography variant='body2' color={'darkgray'}>
+                  <Typography variant='body1' color={'primary'}>
+                    <strong>{device.name}</strong><br/>
+                  </Typography>
+                  <Typography variant='body2' color={'textSecondary'}>
                     {position && (
-                      <AddressValue latitude={position.latitude} longitude={position.longitude} originalAddress={position.address} addressshow={true}/>
+                      <AddressValue latitude={position.latitude} longitude={position.longitude} originalAddress={position.address} addressshow={showaddresss} />
                     )}
                   </Typography>
                 </Box>
                 <IconButton
                   size="small"
-                  onClick={onClose}
-                  onTouchStart={onClose}
+                  onClick={() => {
+                    onClose();
+                  }}
+                  onTouchStart={() => {
+                    handleShowBottomSheet(false);
+                    onClose();
+                  }}
                 >
                   <CloseIcon fontSize="small" />
                 </IconButton>
               </div>
               {position && (
                 <CardContent className={classes.content}>
-                  <Stack direction="row" spacing={2}>
-                    <Chip 
-                      label={device.status === "online" || device.status === "unknown" ? position.attributes.ignition ? 'WORKING' : 'PARKED' : 'OFFLINE' } 
-                      color={device.status === "offline" ? 'error' : device.status === "unknown" ? 'default' : ( position.attributes.ignition ? 'success' : 'info') } 
-                      //icon={position.attributes.ignition && position.attributes.output === 1 && (
-                      //  <GppMaybeIcon color='error'/>
-                      //)}
+                  <Stack direction="row" spacing={1} >
+                    <Chip
+                      label={device.status === "online" || device.status === "unknown" ? position.attributes.ignition ? 'WORKING' : 'PARKED' : 'OFFLINE'}
+                      color={device.status === "offline" ? 'error' : device.status === "unknown" ? 'default' : (position.attributes.ignition ? 'success' : 'info')}
+                      sx={{ boxShadow: 3 }}
                     />
-                    <Chip label={formatNumericHours(position.attributes.hours,t)} color='info' variant="outlined" deleteIcon={!deviceReadonly ? <LinkIcon/> : <div/> } onDelete={handleHoursClick} sx={{border:"unset" }}/>
+                    <strong>
+                      <Chip icon={<WorkHistoryOutlinedIcon />} label={formatNumericHours(position.attributes.hours,t)}  variant="outlined" onClick={handleHoursClick} sx={{border:"unset" }}/>
+                    </strong>
                   </Stack>
+                  <Chip icon={<MileageIcon />} label={formatDistance(position.attributes.totalDistance,0,t)} variant="outlined" sx={{border:"unset" }}/>
+                  <Chip icon={<DevicetimeIcon  />} label={formatTime(position.deviceTime, 'seconds')} sx={{border:"unset" }} variant="outlined"></Chip>
+                  <Switch size='small' checked={switchicon} onChange={handleChange} inputProps={{ 'aria-label': 'controlled' }}/>
                   <Table size="small" classes={{ root: classes.table }}>
-                    <TableBody>
-                      {positionItems.split(',').filter((key) => position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key)).map((key) => (
-                        <StatusRow
-                          key={key}
-                          name={positionAttributes[key]?.name || key}
-                          content={(
-                            <PositionValue
-                              position={position}
-                              property={position.hasOwnProperty(key) ? key : null}
-                              attribute={position.hasOwnProperty(key) ? null : key}
-                            />
-                          )}
-                        />
-                      ))}
-                    </TableBody>
-                    <TableFooter>
-                      <TableRow>
-                        <TableCell colSpan={2} className={classes.cell}>
-                          <Typography variant="body2">
-                            <Link component={RouterLink} to={`/positionlive/${deviceId}`}>{t('sharedShowDetails')}</Link>
-                          </Typography>
-                        </TableCell>
-                      </TableRow>
-                    </TableFooter>
+                    {!switchicon ? (
+                      <TableBody>
+                        <TableRow sx={{ '&:last-child td, &:last-child th': { border: 0 } }}>
+                          <TableCell>
+                            <Stack direction="row" spacing={2} >
+                              {positionItems.split(',').map((key) => key.trim()).filter((key) => position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key)).slice(0,5).map((key) => (
+                                <StatusCell
+                                  key={key}
+                                  name={positionAttributes[key]?.name || key}
+                                  content={(
+                                    <PositionValue
+                                      position={position}
+                                      property={position.hasOwnProperty(key) ? key : null}
+                                      attribute={position.hasOwnProperty(key) ? null : key}
+                                    />
+                                  )}
+                                />
+                              ))}
+                            </Stack>
+                          </TableCell>
+                        </TableRow>
+                      </TableBody>
+                    ) : (
+                      <TableBody>
+                        {positionItems.split(',').map((key) => key.trim()).filter((key) => position.hasOwnProperty(key) || position.attributes.hasOwnProperty(key)).map((key) => (
+                          <StatusRow
+                            key={key}
+                            name={positionAttributes[key]?.name || key}
+                            content={(
+                              <PositionValue
+                                position={position}
+                                property={position.hasOwnProperty(key) ? key : null}
+                                attribute={position.hasOwnProperty(key) ? null : key}
+                              />
+                            )}
+                          />
+                        ))}
+                      </TableBody>
+                    )}
+                    {admin && (
+                      <TableFooter>
+                        <TableRow>
+                          <TableCell colSpan={2} className={classes.cell}>
+                            <Typography variant="body2">
+                              <Link component={RouterLink} to={`/positionlive/${deviceId}`}>{t('sharedShowDetails')}</Link>
+                            </Typography>
+                          </TableCell>
+                        </TableRow>
+                      </TableFooter>
+                    )}
                   </Table>
                 </CardContent>
               )}
               <CardActions classes={{ root: classes.actions }} disableSpacing>
                 <Tooltip title={t('sharedExtra')}>
                   <IconButton
-                    color="secondary"
+                    color='inherit'
                     onClick={(e) => setAnchorEl(e.currentTarget)}
                     disabled={!position}
                   >
@@ -292,6 +357,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={'Timeline'}>
                   <IconButton
+                    color='inherit'
                     onClick={() => navigate(`/timeline/${deviceId}`)}
                     disabled={disableActions || !position}
                   >
@@ -300,14 +366,16 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={t('commandTitle')}>
                   <IconButton
+                    color='inherit'
                     onClick={() => navigate(`/settings/device/${deviceId}/command`)}
-                    disabled={disableActions}
+                    disabled={disableActions || deviceReadonly}
                   >
                     <PublishIcon />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={t('sharedEdit')}>
                   <IconButton
+                    color='inherit'
                     onClick={() => navigate(`/settings/device/${deviceId}`)}
                     disabled={disableActions || deviceReadonly}
                   >
@@ -316,6 +384,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 </Tooltip>
                 <Tooltip title={`${t("sharedConnections")}`}>
                   <IconButton
+                    color='inherit'
                     onClick={() => navigate(`/settings/device/${deviceId}/connections`)}
                     disabled={disableActions || deviceReadonly}
                   >

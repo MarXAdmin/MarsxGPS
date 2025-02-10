@@ -38,8 +38,8 @@ const useStyles = makeStyles((theme) => ({
     flexGrow: 1,
   },
   slider: {
-    width: '95%',
-    left: 10,
+    width: '100%',
+    left: 3,
   },
   controls: {
     display: 'flex',
