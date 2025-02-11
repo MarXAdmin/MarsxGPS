@@ -285,7 +285,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                       sx={{ boxShadow: 3 }}
                     />
                     <strong>
-                      <Chip icon={<WorkHistoryOutlinedIcon />} label={formatNumericHours(position.attributes.hours,t)}  variant="outlined" onClick={handleHoursClick} sx={{border:"unset" }}/>
+                      <Chip icon={<WorkHistoryOutlinedIcon />} label={formatNumericHours(position.attributes.hours,t)}  variant="outlined" onClick={ deviceReadonly ? '' : handleHoursClick} sx={{border:"unset" }}/>
                     </strong>
                   </Stack>
                   <Chip icon={<MileageIcon />} label={formatDistance(position.attributes.totalDistance,0,t)} variant="outlined" sx={{border:"unset" }}/>
