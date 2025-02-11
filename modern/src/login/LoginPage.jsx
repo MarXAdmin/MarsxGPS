@@ -494,6 +494,7 @@ const LoginPage = () => {
                 className={classes.registerButton}
                 onClick={() => navigate('/register')}
                 color="secondary"
+                disabled={!registrationEnabled}
               >
                 {t('loginRegister')}
               </Button>
