@@ -146,7 +146,7 @@ const DevicePage = () => {
               />
             </AccordionDetails>
           </Accordion>
-          {item.id && (
+          {/*item.id && (
             <Accordion>
               <AccordionSummary expandIcon={<ExpandMoreIcon />}>
                 <Typography variant="subtitle1">
@@ -164,7 +164,7 @@ const DevicePage = () => {
                 />
               </AccordionDetails>
             </Accordion>
-          )}
+          )*/}
           <EditAttributesAccordion
             attributes={item.attributes}
             setAttributes={(attributes) => setItem({ ...item, attributes })}
