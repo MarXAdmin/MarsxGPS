@@ -28,6 +28,7 @@ export default (keyword, filter, filterSort, filterMap, positions, setFilteredDe
       case 'name':
         filtered.sort((device1, device2) => device1.name.localeCompare(device2.name));
         break;
+      case '':
       case 'lastUpdate':
         filtered.sort((device1, device2) => {
           const time1 = device1.lastUpdate ? dayjs(device1.lastUpdate).valueOf() : 0;
