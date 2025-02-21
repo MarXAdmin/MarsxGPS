@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import {
-  Button, TextField, Typography, Snackbar, IconButton,
+  useMediaQuery, Button, TextField, Typography, Snackbar, IconButton,
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import { useNavigate } from 'react-router-dom';
@@ -11,12 +11,20 @@ import { useTranslation } from '../common/components/LocalizationProvider';
 import { snackBarDurationShortMs } from '../common/util/duration';
 import { useCatch, useEffectAsync } from '../reactHelper';
 import { sessionActions } from '../store';
+import { useTheme } from '@mui/material/styles';
+
 
 const useStyles = makeStyles((theme) => ({
   container: {
     display: 'flex',
     flexDirection: 'column',
     gap: theme.spacing(2),
+  },
+  containerMobile: {
+    display: 'flex',
+    flexDirection: 'column',
+    gap: theme.spacing(2),
+    padding: '20px'
   },
   header: {
     display: 'flex',
@@ -35,6 +43,8 @@ const RegisterPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const t = useTranslation();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
   const server = useSelector((state) => state.session.server);
   const totpForce = useSelector((state) => state.session.server.attributes.totpForce);
@@ -56,7 +66,8 @@ const RegisterPage = () => {
     }
   }, [totpForce, setTotpKey]);
 
-  const handleSubmit = useCatch(async () => {
+  const handleSubmit = useCatch(async (event) => {
+    event.preventDefault();
     const response = await fetch('/api/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
@@ -71,7 +82,7 @@ const RegisterPage = () => {
 
   return (
     <LoginLayout>
-      <div className={classes.container}>
+      <div className={isMobile ? classes.containerMobile : classes.container}>
         <div className={classes.header}>
           {!server.newServer && (
             <IconButton color="primary" onClick={() => navigate('/login')}>
@@ -124,6 +135,7 @@ const RegisterPage = () => {
           variant="contained"
           color="secondary"
           onClick={handleSubmit}
+          type="submit"
           disabled={!name || !password || !(server.newServer || /(.+)@(.+)\.(.{2,})/.test(email))}
           fullWidth
         >

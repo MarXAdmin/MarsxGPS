@@ -53,11 +53,14 @@ const MaintenancePage = () => {
       setLabels({ ...labels, start: null, period: t('sharedDays') });
     } else if (attribute && attribute.dataType) {
       switch (attribute.dataType) {
+        case 'speed':
+          setLabels({ ...labels, start: t(prefixString('shared', speedUnit)), period: t(prefixString('shared', speedUnit)) });
+          break;
         case 'distance':
           setLabels({ ...labels, start: t(prefixString('shared', distanceUnit)), period: t(prefixString('shared', distanceUnit)) });
           break;
-        case 'speed':
-          setLabels({ ...labels, start: t(prefixString('shared', speedUnit)), period: t(prefixString('shared', speedUnit)) });
+        case 'hours':
+          setLabels({ ...labels, start: t('sharedHours'), period: t('sharedHours') });
           break;
         default:
           setLabels({ ...labels, start: null, period: null });
@@ -70,18 +73,20 @@ const MaintenancePage = () => {
 
   const rawToValue = (start, value) => {
     const attribute = positionAttributes[item.type];
-   /* if (item.type.endsWith('Time')) {
+    if (item.type?.endsWith('Time')) {
       if (start) {
         return dayjs(value).locale('en').format('YYYY-MM-DD');
       }
       return value / 86400000;
-    } */
+    }
     if (attribute && attribute.dataType) {
       switch (attribute.dataType) {
         case 'speed':
           return speedFromKnots(value, speedUnit);
         case 'distance':
           return distanceFromMeters(value, distanceUnit);
+        case 'hours':
+          return value / 3600000;
         default:
           return value;
       }
@@ -91,7 +96,7 @@ const MaintenancePage = () => {
 
   const valueToRaw = (start, value) => {
     const attribute = positionAttributes[item.type];
-    if (item.type.endsWith('Time')) {
+    if (item.type?.endsWith('Time')) {
       if (start) {
         return dayjs(value, 'YYYY-MM-DD').valueOf();
       }
@@ -102,6 +107,8 @@ const MaintenancePage = () => {
           return speedToKnots(value, speedUnit);
         case 'distance':
           return distanceToMeters(value, distanceUnit);
+        case 'hours':
+          return value * 3600000;
         default:
           return value;
       }
@@ -147,7 +154,7 @@ const MaintenancePage = () => {
                 </Select>
               </FormControl>
               <TextField
-                type="number" //{item.type.endsWith('Time') ? 'date' : 'number'}
+                type={item.type?.endsWith('Time') ? 'date' : 'number'}
                 value={rawToValue(true, item.start) || ''}
                 onChange={(e) => setItem({ ...item, start: valueToRaw(true, e.target.value) })}
                 label={labels.start ? `${t('maintenanceStart')} (${labels.start})` : t('maintenanceStart')}

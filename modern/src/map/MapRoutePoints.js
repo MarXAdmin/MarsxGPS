@@ -1,8 +1,15 @@
 import { useId, useCallback, useEffect } from 'react';
 import { map } from './core/MapView';
+import getSpeedColor from '../common/util/colors';
+import { findFonts } from './core/mapUtil';
+import { SpeedLegendControl } from './legend/MapSpeedLegend';
+import { useTranslation } from '../common/components/LocalizationProvider';
+import { useAttributePreference } from '../common/util/preferences';
 
 const MapRoutePoints = ({ positions, onClick }) => {
   const id = useId();
+  const t = useTranslation();
+  const speedUnit = useAttributePreference('speedUnit');
 
   const onMouseEnter = () => map.getCanvas().style.cursor = 'pointer';
   const onMouseLeave = () => map.getCanvas().style.cursor = '';
@@ -27,11 +34,14 @@ const MapRoutePoints = ({ positions, onClick }) => {
       id,
       type: 'symbol',
       source: id,
+      paint: {
+        'text-color': ['get', 'color'],
+      },
       layout: {
-        'icon-image': 'arrow',
-        'icon-allow-overlap': true,
-        'icon-rotate': ['get', 'rotation'],
-        'icon-rotation-alignment': 'map',
+        'text-font': findFonts(map),
+        'text-field': '▲',
+        'text-allow-overlap': true,
+        'text-rotate': ['get', 'rotation'],
       },
     });
 
@@ -54,6 +64,12 @@ const MapRoutePoints = ({ positions, onClick }) => {
   }, [onMarkerClick]);
 
   useEffect(() => {
+    const maxSpeed = positions.map((p) => p.speed).reduce((a, b) => Math.max(a, b), -Infinity);
+    const minSpeed = positions.map((p) => p.speed).reduce((a, b) => Math.min(a, b), Infinity);
+
+    const control = new SpeedLegendControl(positions, speedUnit, t, maxSpeed, minSpeed);
+    map.addControl(control, 'bottom-left');
+
     map.getSource(id)?.setData({
       type: 'FeatureCollection',
       features: positions.map((position, index) => ({
@@ -66,9 +82,11 @@ const MapRoutePoints = ({ positions, onClick }) => {
           index,
           id: position.id,
           rotation: position.course,
+          color: getSpeedColor(position.speed, minSpeed, maxSpeed),
         },
       })),
     });
+    return () => map.removeControl(control);
   }, [onMarkerClick, positions]);
 
   return null;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import {
-  FormControl, InputLabel, Select, MenuItem, Button, TextField, Typography, useMediaQuery, useTheme
+  FormControl, InputLabel, Select, MenuItem, Button, TextField, Typography,
 } from '@mui/material';
 import { useDispatch, useSelector } from 'react-redux';
 import dayjs from 'dayjs';
@@ -11,14 +11,12 @@ import SplitButton from '../../common/components/SplitButton';
 import SelectField from '../../common/components/SelectField';
 import { useRestriction } from '../../common/util/permissions';
 
-
-const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignoreDevice, multiDevice, includeGroups }) => {
+const ReportFilter = ({
+  children, handleSubmit, handleSchedule, showOnly, ignoreDevice, multiDevice, includeGroups, loading,
+}) => {
   const classes = useReportStyles();
   const dispatch = useDispatch();
   const t = useTranslation();
-  const theme = useTheme();
-  const isMediumOrSmaller = useMediaQuery(theme.breakpoints.down('md'));
-
 
   const readonly = useRestriction('readonly');
 
@@ -37,7 +35,7 @@ const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignore
   const [calendarId, setCalendarId] = useState();
 
   const scheduleDisabled = button === 'schedule' && (!description || !calendarId);
-  const disabled = (!ignoreDevice && !deviceId && !deviceIds.length && !groupIds.length) || scheduleDisabled;
+  const disabled = (!ignoreDevice && !deviceId && !deviceIds.length && !groupIds.length) || scheduleDisabled || loading;
 
   const handleClick = (type) => {
     if (type === 'schedule') {
@@ -122,10 +120,8 @@ const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignore
         <>
           <div className={classes.filterItem}>
             <FormControl fullWidth>
-              {isMediumOrSmaller ? <InputLabel>{t('reportPeriod')}</InputLabel> : <></>}
-              <Select
-                className={classes.selectFieldStyle}
-                label={t('reportPeriod')} value={period} onChange={(e) => dispatch(reportsActions.updatePeriod(e.target.value))}>
+              <InputLabel>{t('reportPeriod')}</InputLabel>
+              <Select label={t('reportPeriod')} value={period} onChange={(e) => dispatch(reportsActions.updatePeriod(e.target.value))}>
                 <MenuItem value="today">{t('reportToday')}</MenuItem>
                 <MenuItem value="yesterday">{t('reportYesterday')}</MenuItem>
                 <MenuItem value="thisWeek">{t('reportThisWeek')}</MenuItem>
@@ -189,9 +185,8 @@ const ReportFilter = ({ children, handleSubmit, handleSchedule, showOnly, ignore
             color="secondary"
             disabled={disabled}
             onClick={() => handleClick('json')}
-            className={classes.btnShow}
           >
-            <Typography variant="button" noWrap>{t('reportShow')}</Typography>
+            <Typography variant="button" noWrap>{t(loading ? 'sharedLoading' : 'reportShow')}</Typography>
           </Button>
         ) : (
           <SplitButton

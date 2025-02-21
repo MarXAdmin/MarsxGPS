@@ -17,7 +17,8 @@ import MainToolbar from './MainToolbar';
 import MainMap from './MainMap';
 import { useAttributePreference } from '../common/util/preferences';
 
-import CustomizedInputBase from './SearchBar';
+import CustomBottomSheet from './BottomSheet';
+import DeviceListMobile from './DeviceListMobile';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -44,10 +45,16 @@ const useStyles = makeStyles((theme) => ({
   header: {
     pointerEvents: 'auto',
     zIndex: 6,
-    background: '#1F2937',
+    width: '100%',
     [theme.breakpoints.down('md')]: {
       borderRadius: '0'
     },
+  },
+  headerMobile: {
+    position: 'absolute',
+    zIndex: 6,
+    margin: '20px',
+    width: '80vw'
   },
   footer: {
     pointerEvents: 'auto',
@@ -65,7 +72,6 @@ const useStyles = makeStyles((theme) => ({
     pointerEvents: 'auto',
     gridArea: '1 / 1',
     zIndex: 4,
-    background: '#FFFFFF',
   },
   mobileSearchHeader: {
     margin: '20px',
@@ -73,7 +79,14 @@ const useStyles = makeStyles((theme) => ({
     background: 'white',
     width: 'calc(90% - 40px)',
     borderRadius: '16px',
-
+  },
+  assetCount: {
+    fontSize: '24px',
+    fontWeight: 'bold',
+    marginLeft: '16px'
+  },
+  assetCountContainer: {
+    overflow: 'hidden'
   }
 }));
 
@@ -94,15 +107,10 @@ const MainPage = () => {
   const [filteredDevices, setFilteredDevices] = useState([]);
 
   const [keyword, setKeyword] = useState('');
-  // const [filter, setFilter] = usePersistedState('filter', {
-  //   statuses: [],
-  //   groups: [],
-  // });
-  const [filter, setFilter] = useState({
+  const [filter, setFilter] = usePersistedState('filter', {
     statuses: [],
     groups: [],
   });
-
   const [filterSort, setFilterSort] = usePersistedState('filterSort', '');
   const [filterMap, setFilterMap] = usePersistedState('filterMap', false);
 
@@ -119,7 +127,20 @@ const MainPage = () => {
 
   useFilter(keyword, filter, filterSort, filterMap, positions, setFilteredDevices, setFilteredPositions);
 
+  const [isOpen, setOpen] = useState(true);
+  const [selectedDevices, setSelectedDevices] = useState([]);
+  const [isOpenFull, setOpenFull] = useState(false);
 
+
+  const handleDeviceSelect = (device) => {
+    setSelectedDevices((prevSelectedDevices) => {
+      if (prevSelectedDevices.includes(device)) {
+        return prevSelectedDevices.filter((d) => d !== device);
+      } else {
+        return [...prevSelectedDevices, device];
+      }
+    });
+  };
 
   return (
     <div className={classes.root}>
@@ -131,10 +152,9 @@ const MainPage = () => {
         />
       )}
       <div className={classes.sidebar}>
-        <Paper square elevation={3} className={classes.header} sx={{
-          borderRadius: devicesOpen ? '14px 14px 0 0' : '14px',
-        }}>
-          {desktop ?
+        <div className={!desktop ? classes.headerMobile : ''}>
+          <Paper square elevation={3} className={classes.header}
+            sx={{ borderRadius: devicesOpen ? '14px 14px 0 0' : '14px', }}>
             <MainToolbar
               filteredDevices={filteredDevices}
               devicesOpen={devicesOpen}
@@ -147,13 +167,12 @@ const MainPage = () => {
               setFilterSort={setFilterSort}
               filterMap={filterMap}
               setFilterMap={setFilterMap}
-            /> :
-            <div className={classes.mobileSearchHeader} >
-              <CustomizedInputBase />
-            </div>
-          }
+              handleShowBottomSheet={setOpenFull}
+            />
+          </Paper>
+        </div>
 
-        </Paper>
+
         <div className={classes.middle}>
           {!desktop && (
             <div className={classes.contentMap}>
@@ -164,10 +183,25 @@ const MainPage = () => {
               />
             </div>
           )}
-          {desktop &&
+          {/* <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
+            <DeviceList devices={filteredDevices} />
+          </Paper> */}
+          {desktop ? (
             <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
               <DeviceList devices={filteredDevices} />
-            </Paper>}
+            </Paper>
+          ) : (
+            <CustomBottomSheet
+              isOpen={isOpen}
+              onDismiss={() => setOpen(false)}
+              snapPoints={({ minHeight }) => [minHeight, window.innerHeight * 0.5]}
+              selectedDevices={selectedDevices}
+              isOpenFull={isOpenFull}
+            >
+              <div className={classes.assetCount}>{filteredDevices.length} Assets</div>
+              <DeviceListMobile devices={filteredDevices} onDeviceSelect={handleDeviceSelect} />
+            </CustomBottomSheet>
+          )}
         </div>
         {desktop && (
           <div className={classes.footer}>
@@ -176,17 +210,16 @@ const MainPage = () => {
         )}
       </div>
       <EventsDrawer open={eventsOpen} onClose={() => setEventsOpen(false)} />
-      {
-        selectedDeviceId && (
-          <StatusCard
-            deviceId={selectedDeviceId}
-            position={selectedPosition}
-            onClose={() => dispatch(devicesActions.selectId(null))}
-            desktopPadding={theme.dimensions.drawerWidthDesktop}
-          />
-        )
-      }
-    </div >
+      {selectedDeviceId && (
+        <StatusCard
+          deviceId={selectedDeviceId}
+          position={selectedPosition}
+          onClose={() => dispatch(devicesActions.selectId(null))}
+          desktopPadding={theme.dimensions.drawerWidthDesktop}
+          handleShowBottomSheet={setOpenFull}
+        />
+      )}
+    </div>
   );
 };
 

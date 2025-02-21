@@ -57,4 +57,12 @@ export default (t) => useMemo(() => ({
     name: t('attributeMailSmtpPassword'),
     type: 'string',
   },
+  termsAccepted: {
+    name: t('userTermsAccepted'),
+    type: 'boolean',
+  },
+  darkMode: {
+    name: 'Dark Mode',
+    type: 'boolean',
+  }
 }), [t]);

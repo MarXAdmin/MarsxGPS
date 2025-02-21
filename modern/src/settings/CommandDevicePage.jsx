@@ -7,6 +7,8 @@ import {
   Typography,
   Container,
   Button,
+  Snackbar,
+  Alert,
 } from '@mui/material';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import { useTranslation } from '../common/components/LocalizationProvider';
@@ -18,6 +20,7 @@ import { useCatch } from '../reactHelper';
 import { useRestriction } from '../common/util/permissions';
 import useSettingsStyles from './common/useSettingsStyles';
 
+
 const CommandDevicePage = () => {
   const navigate = useNavigate();
   const classes = useSettingsStyles();
@@ -27,7 +30,9 @@ const CommandDevicePage = () => {
 
   const [savedId, setSavedId] = useState(0);
   const [item, setItem] = useState({});
-
+  const [openSnackbar, setOpenSnackbar] = useState(false);
+  const [statusText, setStatusText] = useState();
+  
   const limitCommands = useRestriction('limitCommands');
 
   const handleSend = useCatch(async () => {
@@ -52,7 +57,8 @@ const CommandDevicePage = () => {
     });
 
     if (response.ok) {
-      navigate(-1);
+      setStatusText(`${response.status} ${response.statusText} ${command.type} ${ response.status === 202 ? t('commandQueued') : t('commandSent') }`);
+      setOpenSnackbar(true);
     } else {
       throw Error(await response.text());
     }
@@ -98,10 +104,20 @@ const CommandDevicePage = () => {
             color="primary"
             variant="contained"
             onClick={handleSend}
-            disabled={!validate()}
+            disabled={!validate() || openSnackbar}
           >
             {t('commandSend')}
           </Button>
+          <Snackbar
+            open={openSnackbar}
+            autoHideDuration={8000} 
+            onClose={() => navigate(-1)}
+            anchorOrigin={{ vertical: "top", horizontal: "center" }}
+          >
+            <Alert onClose={() => navigate(-1)} severity="info">
+              {statusText}
+            </Alert>
+          </Snackbar>
         </div>
       </Container>
     </PageLayout>

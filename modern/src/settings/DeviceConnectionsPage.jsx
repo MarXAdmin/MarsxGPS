@@ -1,5 +1,5 @@
 import React from 'react';
-import { useNavigate,useParams } from 'react-router-dom';
+import { useParams,useNavigate } from 'react-router-dom';
 import {
   Accordion,
   AccordionSummary,
@@ -18,9 +18,9 @@ import useFeatures from '../common/util/useFeatures';
 import useSettingsStyles from './common/useSettingsStyles';
 
 const DeviceConnectionsPage = () => {
-  const navigate = useNavigate();
   const classes = useSettingsStyles();
   const t = useTranslation();
+  const navigate = useNavigate();
 
   const { id } = useParams();
 
@@ -108,7 +108,7 @@ const DeviceConnectionsPage = () => {
             variant="outlined"
             onClick={() => navigate(-1)}
           >
-            {t('sharedSet')}
+            {t('sharedAccept')}
           </Button>
         </div>
       </Container>

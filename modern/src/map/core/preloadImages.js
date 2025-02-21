@@ -2,7 +2,6 @@ import { grey } from '@mui/material/colors';
 import createPalette from '@mui/material/styles/createPalette';
 import { loadImage, prepareIcon } from './mapUtil';
 
-import arrowSvg from '../../resources/images/arrow.svg';
 import directionSvg from '../../resources/images/direction.svg';
 import backgroundSvg from '../../resources/images/background.svg';
 import animalSvg from '../../resources/images/icon/animal.svg';
@@ -13,18 +12,19 @@ import carSvg from '../../resources/images/icon/car.svg';
 import camperSvg from '../../resources/images/icon/camper.svg';
 import craneSvg from '../../resources/images/icon/crane.svg';
 import defaultSvg from '../../resources/images/icon/default.svg';
+import startSvg from '../../resources/images/icon/start.svg';
+import finishSvg from '../../resources/images/icon/finish.svg';
 import helicopterSvg from '../../resources/images/icon/helicopter.svg';
 import motorcycleSvg from '../../resources/images/icon/motorcycle.svg';
-import offroadSvg from '../../resources/images/icon/offroad.svg';
 import personSvg from '../../resources/images/icon/person.svg';
 import pickupSvg from '../../resources/images/icon/pickup.svg';
 import planeSvg from '../../resources/images/icon/plane.svg';
 import scooterSvg from '../../resources/images/icon/scooter.svg';
 import shipSvg from '../../resources/images/icon/ship.svg';
 import tractorSvg from '../../resources/images/icon/tractor.svg';
+import trailerSvg from '../../resources/images/icon/trailer.svg';
 import trainSvg from '../../resources/images/icon/train.svg';
 import tramSvg from '../../resources/images/icon/tram.svg';
-import trolleybusSvg from '../../resources/images/icon/trolleybus.svg';
 import truckSvg from '../../resources/images/icon/truck.svg';
 import vanSvg from '../../resources/images/icon/van.svg';
 import suvSvg from '../../resources/images/icon/suv.svg';
@@ -49,6 +49,20 @@ import forklift3Svg from '../../resources/images/icon/forklift3.svg';
 import telescoplifterSvg from '../../resources/images/icon/telescoplifter.svg';
 import backfillcompactorSvg from '../../resources/images/icon/backfillcompactor.svg';
 
+/*import ExcavatorImage from '../../resources/images/excavator.png';
+import DrumtruckImage from '../../resources/images/dumptruck.png';
+import SmallexcavatorImage from '../../resources/images/smallexcavator.png';
+import GraderImge from '../../resources/images/grader.png';
+import BulldozerImge from '../../resources/images/bulldozer.png';
+import TrailertruckImge from '../../resources/images/trailertruck.png';
+import ConcretetruckImge from '../../resources/images/concretetruck.png';
+import TruckcraneImge from '../../resources/images/truckcrane.png';
+import ContainerReachImge from '../../resources/images/containerreach.png';
+import BobcatImge from '../../resources/images/bobcat.png';
+import RollermachineImge from '../../resources/images/rollermachine.png';
+*/
+
+
 export const mapIcons = {
   animal: animalSvg,
   bicycle: bicycleSvg,
@@ -58,18 +72,19 @@ export const mapIcons = {
   camper: camperSvg,
   crane: craneSvg,
   default: defaultSvg,
+  finish: finishSvg,
   helicopter: helicopterSvg,
   motorcycle: motorcycleSvg,
-  offroad: offroadSvg,
   person: personSvg,
   pickup: pickupSvg,
   plane: planeSvg,
   scooter: scooterSvg,
   ship: shipSvg,
+  start: startSvg,
   tractor: tractorSvg,
+  trailer: trailerSvg,
   train: trainSvg,
   tram: tramSvg,
-  trolleybus: trolleybusSvg,
   truck: truckSvg,
   van: vanSvg,
   suv: suvSvg,
@@ -95,9 +110,34 @@ export const mapIcons = {
   backfillcompactor: backfillcompactorSvg,
 };
 
-export const mapIconKey = (category) => (mapIcons.hasOwnProperty(category) ? category : 'default');
+export const mapIconKey = (category) => {
+  switch (category) {
+    case 'offroad':
+      return 'car';
+    case 'trolleybus':
+      return 'bus';
+    default:
+      return mapIcons.hasOwnProperty(category) ? category : 'default';
+  }
+};
 
 export const mapImages = {};
+  /*excavator: ExcavatorImage,
+  drumtruck: DrumtruckImage,
+  excavator2: SmallexcavatorImage,
+  grader: GraderImge,
+  bulldozer: BulldozerImge,
+  trailertruck: TrailertruckImge,
+  concretetruck: ConcretetruckImge,
+  truckcrane: TruckcraneImge,
+  forklift2: ContainerReachImge,
+  loader: BobcatImge,
+  rollermachine: RollermachineImge,
+};
+
+export const mapImagesKey = (category) => {
+  return mapImages.hasOwnProperty(category) ? category : '';
+};*/
 
 const mapPalette = createPalette({
   neutral: { main: grey[500] },
@@ -107,7 +147,6 @@ export default async () => {
   const background = await loadImage(backgroundSvg);
   mapImages.background = await prepareIcon(background);
   mapImages.direction = await prepareIcon(await loadImage(directionSvg));
-  mapImages.arrow = await prepareIcon(await loadImage(arrowSvg));
   await Promise.all(Object.keys(mapIcons).map(async (category) => {
     const results = [];
     ['info', 'success', 'error', 'neutral'].forEach((color) => {

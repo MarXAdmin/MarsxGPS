@@ -13,20 +13,9 @@ import ReportsMenu from './components/ReportsMenu';
 import { sessionActions } from '../store';
 
 const useStyles = makeStyles((theme) => ({
-  fontStyle: {
-    '& .MuiTableCell-root': {
-      color: '#FFF'
-    }
-  },
   columnAction: {
     width: '1%',
     paddingLeft: theme.spacing(1),
-  },
-  success: {
-    color: theme.palette.success.main,
-  },
-  error: {
-    color: theme.palette.error.main,
   },
 }));
 
@@ -50,7 +39,7 @@ const LogsPage = () => {
 
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'statisticsTitle']}>
-      <Table className={classes.fontStyle}>
+      <Table>
         <TableHead>
           <TableRow>
             <TableCell className={classes.columnAction} />
@@ -60,17 +49,17 @@ const LogsPage = () => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {items.map((item, index) => /* eslint-disable react/no-array-index-key */(
+          {items.map((item, index) => /* eslint-disable react/no-array-index-key */ (
             <TableRow key={index}>
               <TableCell className={classes.columnAction} padding="none">
                 {item.deviceId ? (
-                  <IconButton size="small" disabled>
-                    <CheckCircleOutlineIcon fontSize="small" className={classes.success} />
+                  <IconButton color="success" size="small" disabled>
+                    <CheckCircleOutlineIcon fontSize="small" />
                   </IconButton>
                 ) : (
                   <Tooltip title={t('loginRegister')}>
-                    <IconButton size="small" onClick={() => registerDevice(item.uniqueId)}>
-                      <HelpOutlineIcon fontSize="small" className={classes.error} />
+                    <IconButton color="error" size="small" onClick={() => registerDevice(item.uniqueId)}>
+                      <HelpOutlineIcon fontSize="small" />
                     </IconButton>
                   </Tooltip>
                 )}
