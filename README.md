@@ -1,4 +1,4 @@
-# marsx-telematics app
+# Marstian marsx GPS telematics app
 
 https://marstian.com
 
