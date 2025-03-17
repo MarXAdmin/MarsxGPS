@@ -19,6 +19,7 @@ import { useAttributePreference } from '../common/util/preferences';
 import GppMaybeIcon from '@mui/icons-material/GppMaybe';
 import { useTheme } from '@mui/material/styles';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import BuildCircleIcon from '@mui/icons-material/BuildCircle';
 
 
 
@@ -82,6 +83,9 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
 
   const item = data[index];
   const position = useSelector((state) => state.session.positions[item.id]);
+
+  const events = useSelector((state) => state.events.items.filter((e) =>  e.deviceId === item.id));
+  const eventid = events[0];
 
   const devicePrimary = useAttributePreference('devicePrimary', 'name');
   const deviceSecondary = useAttributePreference('deviceSecondary', '');
@@ -206,6 +210,18 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
                   <ErrorIcon fontSize="small" className={classes.error} />
                 </IconButton>
               </Tooltip>
+            )}
+            {/**Add Events Maintenance */}
+            {eventid &&  (
+              <>
+                { (eventid.hasOwnProperty('type') && eventid.type === "maintenance" && eventid.deviceId === item.id) && (
+                  <Tooltip title={`${eventid.attributes.message}`}>
+                    <IconButton size="small">
+                      <BuildCircleIcon fontSize="medium" className={classes.warning} />
+                    </IconButton>
+                  </Tooltip>
+                )}
+              </>
             )}
             {position.attributes.hasOwnProperty('ignition') && (
               <Tooltip title={position.attributes.output === 1 ? (t('commandEngineStop')) : (`${t('positionIgnition')}: ${formatBoolean(position.attributes.ignition, t)}`)}>
