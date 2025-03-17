@@ -17,7 +17,7 @@ import CalendarLine from '../common/components/CalendarLine';
 import TimelineMap from './TimelineMap';
 import LineChartAttributes from '../common/components/LineChartAttributes';
 import dayjs from 'dayjs';
-import { formatNumericHours, formatPercentage } from '../common/util/formatter';
+import { formatNumericHours, formatPercentage, formatSpeed } from '../common/util/formatter';
 import TimelineIcon from '../resources/images/data/timeline.svg?react';
 import { useAttributePreference } from '../common/util/preferences';
 import { speedUnitString } from '../common/util/converter';
@@ -65,6 +65,8 @@ const TimelinePage = () => {
 
   const [enginehours, setEnginehours] = useState(0);
   const [spentfuel, setSpentfuel] = useState(0);
+  const [avgspeed, setAvgSpeed] = useState(0);
+  const [maxspeed, setMaxSpeed] = useState(0);
 
   useEffectAsync(async () => {
       if (deviceId) {
@@ -103,6 +105,8 @@ const TimelinePage = () => {
           const sumdata = await sum.json();
           setEnginehours(sumdata[0].engineHours);
           setSpentfuel(sumdata[0].spentFuel);
+          setAvgSpeed(sumdata[0].averageSpeed);
+          setMaxSpeed(sumdata[0].maxSpeed);
         } else {
           throw Error(await sum.text());
         }
@@ -245,7 +249,7 @@ const TimelinePage = () => {
                 variant="h6"
                 fontWeight="600"
               >
-              {t('positionSpeed') + ' ('+ speedUnitString(speedUnit, t) +')'} 
+              {t('positionSpeed') + ' [Max: ' + formatSpeed(maxspeed, speedUnit, t)  +']'} 
               </Typography>
               <LineChartAttributes routesdata={routes} from={from} to={to} attr='speed' min={0} max={0} />
             </Box>
