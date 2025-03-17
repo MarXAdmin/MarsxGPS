@@ -42,7 +42,7 @@ const LineChartAttributes = ( {routesdata, from, to, attr , min, max, interpola 
                     //formatted[key] = value;
                     switch (key) {
                         case 'speed':
-                            formatted[key] = speedFromKnots(value, speedUnit);
+                            formatted[key] = speedFromKnots(value, speedUnit).toFixed(2);
                             break;
                         default:
                             formatted[key] = value.toFixed(2);
@@ -134,7 +134,7 @@ const LineChartAttributes = ( {routesdata, from, to, attr , min, max, interpola 
                 <Tooltip 
                     //content={<CustomTooltip />}
                     contentStyle={{ backgroundColor: theme.palette.background.default, color: theme.palette.text.primary }}
-                    formatter={(value, key) => [value, positionAttributes[key]?.name || key]}
+                    formatter={(value , key) => [value, positionAttributes[key]?.name || key]}
                     labelFormatter={(value) => formatTime(value, 'seconds')}
                 />
                 <Area type={interpola} dataKey={type} stroke="#FF8343" fillOpacity={1} fill="url(#colorPv)" dot={false} connectNulls={true}/>
