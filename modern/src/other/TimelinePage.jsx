@@ -10,7 +10,6 @@ import { useNavigate, useParams } from 'react-router-dom';
 import { useEffectAsync } from '../reactHelper';
 import { useTranslation } from '../common/components/LocalizationProvider';
 //import PositionValue from '../common/components/PositionValue';
-import usePositionAttributes from '../common/attributes/usePositionAttributes';
 import useMediaQuery from '@mui/material/useMediaQuery';
 import { useTheme } from '@mui/material/styles';
 import { useCatch } from '../reactHelper';
@@ -18,8 +17,10 @@ import CalendarLine from '../common/components/CalendarLine';
 import TimelineMap from './TimelineMap';
 import LineChartAttributes from '../common/components/LineChartAttributes';
 import dayjs from 'dayjs';
-import { formatNumericHours } from '../common/util/formatter';
+import { formatNumericHours, formatPercentage, formatSpeed } from '../common/util/formatter';
 import TimelineIcon from '../resources/images/data/timeline.svg?react';
+import { useAttributePreference } from '../common/util/preferences';
+import { speedUnitString } from '../common/util/converter';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -51,6 +52,7 @@ const TimelinePage = () => {
   //const colors = ( serverDarkMode ? "#1F2A40" : "#e0e0e0" ) // "#e0e0e0"; //"inherit"; e0e0e0 , 1F2A40
   const dayslistcalendar = desktop ? 10 : 4; 
   //const coloricon = "#3da58a";
+  const speedUnit = useAttributePreference('speedUnit');
 
   const { id } = useParams(); //Get Device ID Params
   const deviceId  = id;
@@ -63,6 +65,8 @@ const TimelinePage = () => {
 
   const [enginehours, setEnginehours] = useState(0);
   const [spentfuel, setSpentfuel] = useState(0);
+  const [avgspeed, setAvgSpeed] = useState(0);
+  const [maxspeed, setMaxSpeed] = useState(0);
 
   useEffectAsync(async () => {
       if (deviceId) {
@@ -101,6 +105,8 @@ const TimelinePage = () => {
           const sumdata = await sum.json();
           setEnginehours(sumdata[0].engineHours);
           setSpentfuel(sumdata[0].spentFuel);
+          setAvgSpeed(sumdata[0].averageSpeed);
+          setMaxSpeed(sumdata[0].maxSpeed);
         } else {
           throw Error(await sum.text());
         }
@@ -222,9 +228,30 @@ const TimelinePage = () => {
                 variant="h6"
                 fontWeight="600"
               >
-              {t('reportSpentFuel') + ' ['+ spentfuel.toFixed(2) +'%]'} 
+              {t('reportSpentFuel') + ' ['+ formatPercentage(spentfuel) +']'} 
               </Typography>
               <LineChartAttributes routesdata={routes} from={from} to={to} attr='fuel' min={0} max={100} />
+            </Box>
+
+            {/**Speed Chart*/}
+            <Box
+              gridColumn={desktop ? 'span 4':'span 5'}
+              gridRow="span 2"
+              //backgroundColor={colors}
+              m="-5px"
+              p="0 10px"
+              sx={{
+                borderRadius: 3,
+                border:1,
+              }}
+            >
+              <Typography
+                variant="h6"
+                fontWeight="600"
+              >
+              {t('positionSpeed') + ' [Max: ' + formatSpeed(maxspeed, speedUnit, t)  +']'} 
+              </Typography>
+              <LineChartAttributes routesdata={routes} from={from} to={to} attr='speed' min={0} max={0} />
             </Box>
 
             {/**Power Chart*/}
@@ -243,7 +270,7 @@ const TimelinePage = () => {
                 variant="h6"
                 fontWeight="600"
               >
-              {t('positionPower') + ' (V)'} 
+              {t('positionPower') + ' (' + t('sharedVoltAbbreviation') + ')'} 
               </Typography>
               <LineChartAttributes routesdata={routes} from={from} to={to} attr='power' min={0} max={36} />
             </Box>
