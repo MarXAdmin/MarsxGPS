@@ -25,12 +25,14 @@ import {
 } from '@mui/material';
 import makeStyles from '@mui/styles/makeStyles';
 import CloseIcon from '@mui/icons-material/Close';
-import PublishIcon from '../../resources/images/data/command.svg?react';
-import EditIcon from '../../resources/images/data/edit.svg?react';
-import DeleteIcon from '../../resources/images/data/delete.svg?react';
-import PendingIcon from '../../resources/images/data/extra.svg?react';
-import LinkIcon from '../../resources/images/data/connection.svg?react';
-import TimelineIcon from '../../resources/images/data/timeline.svg?react';
+
+import PublishIcon from '@mui/icons-material/Publish';
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import PendingIcon from '@mui/icons-material/Pending';
+import LinkIcon from '@mui/icons-material/Link';
+import TimelineIcon from '@mui/icons-material/Timeline';
+
 import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
 import MileageIcon from '../../resources/images/data/mileage.svg?react';
 import DevicetimeIcon from '../../resources/images/data/devicetime.svg?react';
