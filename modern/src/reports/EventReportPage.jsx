@@ -25,6 +25,8 @@ import MapCamera from '../map/MapCamera';
 import scheduleReport from './common/scheduleReport';
 import MapScale from '../map/MapScale';
 import SelectField from '../common/components/SelectField';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const columnsArray = [
   ['eventTime', 'positionFixTime'],
@@ -93,7 +95,8 @@ const EventReportPage = () => {
       alarmTypes.forEach((it) => query.append('alarm', it));
     }
     if (type === 'export') {
-      window.location.assign(`/api/reports/events/xlsx?${query.toString()}`);
+      //window.location.assign(`/api/reports/events/xlsx?${query.toString()}`);
+      handleExport();
     } else if (type === 'mail') {
       const response = await fetch(`/api/reports/events/mail?${query.toString()}`);
       if (!response.ok) {
@@ -166,6 +169,18 @@ const EventReportPage = () => {
 
   const tableRef = useRef(null);
 
+  const handleExport = () => {
+    if (!tableRef.current) return;
+
+    // Export table directly from DOM
+    const worksheet = XLSX.utils.table_to_sheet(tableRef.current);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(blob, 'Events_export.xlsx');
+  };
+
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportEvents']}>
       <div className={classes.container}>
@@ -224,6 +239,7 @@ const EventReportPage = () => {
             <TableHead>
               <TableRow>
                 <TableCell className={classes.columnAction} />
+                <TableCell>{t('sharedDevice')}</TableCell>
                 {columns.map((key) => (<TableCell key={key}>{t(columnsMap.get(key))}</TableCell>))}
               </TableRow>
             </TableHead>
@@ -241,6 +257,7 @@ const EventReportPage = () => {
                       </IconButton>
                     ))) || ''}
                   </TableCell>
+                  <TableCell>{devices[item.deviceId].name}</TableCell>
                   {columns.map((key) => (
                     <TableCell key={key}>
                       {formatValue(item, key)}

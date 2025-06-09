@@ -18,6 +18,8 @@ import { useCatch } from '../reactHelper';
 import useReportStyles from './common/useReportStyles';
 import TableShimmer from '../common/components/TableShimmer';
 import scheduleReport from './common/scheduleReport';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const columnsArray = [
   ['startTime', 'reportStartDate'],
@@ -54,7 +56,8 @@ const SummaryReportPage = () => {
     deviceIds.forEach((deviceId) => query.append('deviceId', deviceId));
     groupIds.forEach((groupId) => query.append('groupId', groupId));
     if (type === 'export') {
-      window.location.assign(`/api/reports/summary/xlsx?${query.toString()}`);
+      //window.location.assign(`/api/reports/summary/xlsx?${query.toString()}`);
+      handleExport();
     } else if (type === 'mail') {
       const response = await fetch(`/api/reports/summary/mail?${query.toString()}`);
       if (!response.ok) {
@@ -105,7 +108,8 @@ const SummaryReportPage = () => {
       case 'engineHours':
       case 'startHours':
       case 'endHours':
-        return value > 0 ? formatNumericHours(value, t) : null;
+        //return value > 0 ? formatNumericHours(value, t) : null;
+        return value > 0 ? (value / 3600000).toFixed(2) : null;
       case 'spentFuel':
         return value > 0 ? formatPercentage(value) : null;
       default:
@@ -114,6 +118,18 @@ const SummaryReportPage = () => {
   };
 
   const tableRef = useRef(null);
+
+  const handleExport = () => {
+    if (!tableRef.current) return;
+
+    // Export table directly from DOM
+    const worksheet = XLSX.utils.table_to_sheet(tableRef.current);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(blob, 'Summary_export.xlsx');
+  };
 
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportSummary']}>
