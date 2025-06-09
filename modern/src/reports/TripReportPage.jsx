@@ -26,6 +26,8 @@ import MapCamera from '../map/MapCamera';
 import MapGeofence from '../map/MapGeofence';
 import scheduleReport from './common/scheduleReport';
 import MapScale from '../map/MapScale';
+import * as XLSX from 'xlsx';
+import { saveAs } from 'file-saver';
 
 const columnsArray = [
   ['startTime', 'reportStartTime'],
@@ -96,7 +98,8 @@ const TripReportPage = () => {
   const handleSubmit = useCatch(async ({ deviceId, from, to, type }) => {
     const query = new URLSearchParams({ deviceId, from, to });
     if (type === 'export') {
-      window.location.assign(`/api/reports/trips/xlsx?${query.toString()}`);
+      //window.location.assign(`/api/reports/trips/xlsx?${query.toString()}`);
+      handleExport();
     } else if (type === 'mail') {
       const response = await fetch(`/api/reports/trips/mail?${query.toString()}`);
       if (!response.ok) {
@@ -157,6 +160,18 @@ const TripReportPage = () => {
 
   const tableRef = useRef(null);
 
+  const handleExport = () => {
+    if (!tableRef.current) return;
+
+    // Export table directly from DOM
+    const worksheet = XLSX.utils.table_to_sheet(tableRef.current);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, 'Sheet1');
+    const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
+    const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
+    saveAs(blob, 'Trip_export.xlsx');
+  };
+
   return (
     <PageLayout menu={<ReportsMenu />} breadcrumbs={['reportTitle', 'reportTrips']}>
       <div className={classes.container}>
@@ -185,6 +200,7 @@ const TripReportPage = () => {
             <TableHead>
               <TableRow>
                 <TableCell className={classes.columnAction} />
+                <TableCell>{t('sharedDevice')}</TableCell>
                 {columns.map((key) => (<TableCell key={key}>{t(columnsMap.get(key))}</TableCell>))}
               </TableRow>
             </TableHead>
@@ -202,6 +218,7 @@ const TripReportPage = () => {
                       </IconButton>
                     )}
                   </TableCell>
+                  <TableCell>{items[0].deviceName}</TableCell>
                   {columns.map((key) => (
                     <TableCell key={key}>
                       {formatValue(item, key)}
