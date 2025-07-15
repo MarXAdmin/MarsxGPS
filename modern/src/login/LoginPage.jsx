@@ -412,9 +412,6 @@ const LoginPage = () => {
             <div className={classes.versionContal}>
               Build Version: {versionApp}
             </div>
-            <div className={classes.versionContal}>
-              Build Version: 1.0.1
-            </div>
             {openIdEnabled && (
               <Button
                 onClick={() => handleOpenIdLogin()}
