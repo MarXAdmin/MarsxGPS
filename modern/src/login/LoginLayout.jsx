@@ -72,7 +72,7 @@ const LoginLayout = ({ children }) => {
   return (
     <main className={classes.root}>
       <Paper className={isMobile ? classes.paperMobile : classes.paper}>
-        {!isMobile && <img src='wallpaperLogin.png' alt='login' className={classes.wallpaperLogin} />}
+        {!isMobile && <img src='https://marstian.com/wallpaperLogin.png' alt='login' className={classes.wallpaperLogin} />}
         <form className={isMobile ? classes.formMobile : classes.form}>
           {children}
         </form>
