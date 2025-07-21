@@ -111,7 +111,7 @@ const SummaryReportPage = () => {
         //return value > 0 ? formatNumericHours(value, t) : null;
         return value > 0 ? (value / 3600000).toFixed(2) : null;
       case 'spentFuel':
-        return value > 0 ? formatPercentage(value) : null;
+        return formatPercentage(value);
       default:
         return value;
     }
