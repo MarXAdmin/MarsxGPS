@@ -21,7 +21,7 @@ const SearchHeader = ({ keyword, setKeyword }) => {
   const classes = useStyles();
   const t = useTranslation();
 
-  const phone = useMediaQuery(theme.breakpoints.down('sm'));
+  const phone = true; //useMediaQuery(theme.breakpoints.down('sm'));
 
   return phone ? (
     <div className={classes.header}>
