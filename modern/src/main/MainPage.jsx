@@ -17,8 +17,8 @@ import MainToolbar from './MainToolbar';
 import MainMap from './MainMap';
 import { useAttributePreference } from '../common/util/preferences';
 
-import CustomBottomSheet from './BottomSheet';
-import DeviceListMobile from './DeviceListMobile';
+//import CustomBottomSheet from './BottomSheet';
+//import DeviceListMobile from './DeviceListMobile';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -152,7 +152,7 @@ const MainPage = () => {
         />
       )}
       <div className={classes.sidebar}>
-        <div className={!desktop ? classes.headerMobile : ''}>
+        <div >
           <Paper square elevation={3} className={classes.header}
             sx={{ borderRadius: devicesOpen ? '14px 14px 0 0' : '14px', }}>
             <MainToolbar
@@ -183,10 +183,10 @@ const MainPage = () => {
               />
             </div>
           )}
-          {/* <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
+          <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
             <DeviceList devices={filteredDevices} />
-          </Paper> */}
-          {desktop ? (
+          </Paper> 
+          {/*desktop ? (
             <Paper square className={classes.contentList} style={devicesOpen ? {} : { visibility: 'hidden' }}>
               <DeviceList devices={filteredDevices} />
             </Paper>
@@ -201,7 +201,7 @@ const MainPage = () => {
               <div className={classes.assetCount}>{filteredDevices.length} Assets</div>
               <DeviceListMobile devices={filteredDevices} onDeviceSelect={handleDeviceSelect} />
             </CustomBottomSheet>
-          )}
+          )*/}
         </div>
         {desktop && (
           <div className={classes.footer}>

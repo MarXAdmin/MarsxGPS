@@ -19,6 +19,7 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
+import { useAdministrator } from '../common/util/permissions';
 
 
 const StatusCheckbox = ({ value, label, onChange }) => (
@@ -137,6 +138,7 @@ const MainToolbar = ({
   const navigate = useNavigate();
   const t = useTranslation();
 
+  const admin = useAdministrator();
   const deviceReadonly = useDeviceReadonly();
 
   const groups = useSelector((state) => state.groups.items);
@@ -185,35 +187,24 @@ const MainToolbar = ({
 
   return (
     <Toolbar ref={toolbarRef} className={classes.toolbar}>
-      {desktop &&
-        <IconButton edge="start" onClick={() => setDevicesOpen(!devicesOpen)}>
-          {devicesOpen
-            ?
-            <MapOutlinedIcon sx={{ color: '#EF5713' }} />
-            :
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-              <path d="M3 12H21M3 6H21M3 18H21" stroke="#EF5713" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-            </svg>
-          }
-        </IconButton>
-      }
+      <IconButton edge="start" onClick={() => setDevicesOpen(!devicesOpen)}>
+        {devicesOpen
+          ?
+          <MapOutlinedIcon sx={{ color: '#EF5713' }} />
+          :
+          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M3 12H21M3 6H21M3 18H21" stroke="#EF5713" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        }
+      </IconButton>
+      
       <OutlinedInput
         ref={inputRef}
         placeholder={t('sharedSearchDevices')}
         value={keyword}
         onChange={(e) => setKeyword(e.target.value)}
-        onFocus={() => {
-          desktop ?
-            setDevicesAnchorEl(toolbarRef.current)
-            :
-            handleShowBottomSheet(true)
-        }}
-        onBlur={() => {
-          desktop ?
-            setDevicesAnchorEl(null)
-            :
-            handleShowBottomSheet(false)
-        }}
+        onFocus={() => setDevicesAnchorEl(toolbarRef.current)}
+        onBlur={() => setDevicesAnchorEl(null)}
         startAdornment={(
           <SearchIcon sx={{ color: '#999999' }} />
         )}
@@ -362,9 +353,10 @@ const MainToolbar = ({
               label={t('sharedFilterMap')}
             />
           </FormGroup>
+          <div>Total: {filteredDevices.length}</div>
         </div>
       </Popover>
-      {desktop &&
+      {desktop && admin &&
         <IconButton edge="end" onClick={() => navigate('/settings/device')} disabled={deviceReadonly}>
           <Tooltip open={!deviceReadonly && Object.keys(devices).length === 0} title={t('deviceRegisterFirst')} arrow>
             <AddIcon className={classes.plusIcon} />
