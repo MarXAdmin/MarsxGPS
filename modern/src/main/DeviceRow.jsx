@@ -88,12 +88,12 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
   const eventid = events[0];
 
   const devicePrimary = useAttributePreference('devicePrimary', 'name');
-  const deviceSecondary = useAttributePreference('deviceSecondary', '');
+  const deviceSecondary = useAttributePreference('deviceSecondary', 'model');
 
   const serverDaysoffline = server?.attributes?.daysoffline;
 
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const isMobile = false; //useMediaQuery(theme.breakpoints.down('md'));
 
   const secondaryText = () => {
     let status;
@@ -148,7 +148,7 @@ const DeviceRow = ({ data, index, style, onDeviceClick }) => {
 
 
   return (
-    <div style={style} className={classes.boxShawdowMobile}>
+    <div style={style} > {/*className={classes.boxShawdowMobile}>*/}
       <ListItemButton
         key={item.id}
         onClick={() => {

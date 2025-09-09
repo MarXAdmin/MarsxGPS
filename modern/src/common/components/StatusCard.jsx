@@ -32,6 +32,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import PendingIcon from '@mui/icons-material/Pending';
 import LinkIcon from '@mui/icons-material/Link';
 import TimelineIcon from '@mui/icons-material/Timeline';
+import RouteIcon from '@mui/icons-material/Route';
 
 import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
 import MileageIcon from '../../resources/images/data/mileage.svg?react';
@@ -65,13 +66,15 @@ const useStyles = makeStyles((theme) => ({
   },
   mediaButton: {
     color: theme.palette.primary.contrastText,
-    mixBlendMode: 'difference',
+    display: 'flex',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-start',
   },
   header: {
     display: 'flex',
     justifyContent: 'space-between',
     alignItems: 'center',
-    padding: theme.spacing(7, 1, 0, 2),
+    padding: theme.spacing(3, 1, 0, 2),
   },
   content: {
     paddingTop: theme.spacing(1),
@@ -225,7 +228,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
       <div className={classes.root}>
         {device && (
           <Draggable
-            handle={`.${classes.media}, .${classes.header}`}
+            handle={`.${classes.media}, .${classes.header}, .${classes.mediaButton}`}
           >
             <Card
               elevation={3}
@@ -244,15 +247,30 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                   src={`/images/${devicecategory}.png`}
                   sx={{
                     position: 'absolute',
-                    top: -95,
-                    left: '30%',
+                    top: -30,
+                    left: '20%',
                     transform: 'translateX(-50%)',
-                    width: 200,
+                    width: 120,
                     zIndex: 2,
                   }}
+                  draggable={false}
                 />
               )
               }
+              <div className={classes.mediaButton}>
+                <IconButton 
+                    size="small"
+                    onClick={() => {
+                      onClose();
+                    }}
+                    onTouchStart={() => {
+                      handleShowBottomSheet(false);
+                      onClose();
+                    }}
+                >
+                    <CloseIcon fontSize="medium" />
+                </IconButton>
+              </div>
               <div className={classes.header}>
                 {/*<Avatar alt={device.name} src={`/api/media/${device.uniqueId}/${deviceImage}`}/>*/}
                 <Box width='100%' p="5px">
@@ -265,18 +283,6 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     )}
                   </Typography>
                 </Box>
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    onClose();
-                  }}
-                  onTouchStart={() => {
-                    handleShowBottomSheet(false);
-                    onClose();
-                  }}
-                >
-                  <CloseIcon fontSize="small" />
-                </IconButton>
               </div>
               {position && (
                 <CardContent className={classes.content}>
@@ -364,6 +370,15 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                     disabled={disableActions || !position}
                   >
                     <TimelineIcon />
+                  </IconButton>
+                </Tooltip>
+                <Tooltip title={t('reportReplay')}>
+                  <IconButton
+                    color='inherit'
+                    onClick={() => navigate('/replay')}
+                    disabled={disableActions || !position}
+                  >
+                    <RouteIcon />
                   </IconButton>
                 </Tooltip>
                 <Tooltip title={t('commandTitle')}>
