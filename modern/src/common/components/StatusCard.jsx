@@ -33,6 +33,7 @@ import PendingIcon from '@mui/icons-material/Pending';
 import LinkIcon from '@mui/icons-material/Link';
 import TimelineIcon from '@mui/icons-material/Timeline';
 import RouteIcon from '@mui/icons-material/Route';
+import BlockIcon from '@mui/icons-material/Block';
 
 import WorkHistoryOutlinedIcon from '@mui/icons-material/WorkHistoryOutlined';
 import MileageIcon from '../../resources/images/data/mileage.svg?react';
@@ -288,8 +289,9 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                 <CardContent className={classes.content}>
                   <Stack direction="row" spacing={1} >
                     <Chip
-                      label={device.status === "online" || device.status === "unknown" ? position.attributes.ignition ? 'WORKING' : 'PARKED' : 'OFFLINE'}
-                      color={device.status === "offline" ? 'error' : device.status === "unknown" ? 'default' : (position.attributes.ignition ? 'success' : 'info')}
+                      icon={position.attributes.output === 1 ? <BlockIcon /> : null}
+                      label={position.attributes.output === 1 ? "BLOCKED" : device.status === "online" || device.status === "unknown" ? position.attributes.ignition ? 'WORKING' : 'PARKED' : 'OFFLINE'}
+                      color={device.status === "offline" || position.attributes.output === 1 ? 'error' : device.status === "unknown" ? 'default' : (position.attributes.ignition ? 'success' : 'info')}
                       sx={{ boxShadow: 3 }}
                     />
                     <strong>
@@ -432,6 +434,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
           {!shareDisabled && !user.temporary && (
             <MenuItem onClick={() => navigate(`/settings/device/${deviceId}/share`)}><Typography color="secondary">{t('deviceShare')}</Typography></MenuItem>
           )}
+          <MenuItem onClick={() => navigate(`/settings/device/${deviceId}/blockdevice`)}><Typography color="red">{t('deviceBlockUsageMenu')}</Typography></MenuItem>
         </Menu>
       )}
       <RemoveDialog

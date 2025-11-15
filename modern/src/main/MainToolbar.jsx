@@ -40,7 +40,7 @@ const DeviceStatusAccordionDetails = ({ items, onChange }) => (
 const useStyles = makeStyles((theme) => ({
   toolbar: {
     display: 'flex',
-    gap: theme.spacing(1),
+    gap: theme.spacing(0.5),
   },
   filterPanel: {
     display: 'flex',
@@ -206,7 +206,7 @@ const MainToolbar = ({
         onFocus={() => setDevicesAnchorEl(toolbarRef.current)}
         onBlur={() => setDevicesAnchorEl(null)}
         startAdornment={(
-          <SearchIcon sx={{ color: '#999999' }} />
+          <SearchIcon sx={{ color: '#999999', fontSize: 20 }} />
         )}
         endAdornment={(
           <InputAdornment position="end">

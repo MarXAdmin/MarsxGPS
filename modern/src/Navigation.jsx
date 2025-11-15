@@ -60,6 +60,7 @@ import EmulatorPage from './other/EmulatorPage';
 import Loader from './common/components/Loader';
 import PositionLivePage from './other/PositionLivePage';
 import TimelinePage from './other/TimelinePage';
+import BlockDevicePage from './settings/BlockDevicePage';
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -131,6 +132,7 @@ const Navigation = () => {
           <Route path="devices" element={<DevicesPage />} />
           <Route path="device/:id/connections" element={<DeviceConnectionsPage />} />
           <Route path="device/:id/command" element={<CommandDevicePage />} />
+          <Route path="device/:id/blockdevice" element={<BlockDevicePage />} />
           <Route path="device/:id/share" element={<SharePage />} />
           <Route path="device/:id" element={<DevicePage />} />
           <Route path="device" element={<DevicePage />} />

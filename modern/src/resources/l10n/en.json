@@ -221,7 +221,7 @@
     "deviceStatusOffline": "Offline",
     "deviceStatusUnknown": "Unknown",
     "deviceRegisterFirst": "Register your first device",
-    "deviceIdentifierHelp": "IMEI, serial number or other id. It has to match the identifier device reports to the server.",
+    "deviceIdentifierHelp": "IMEI number on the back of the GPS device",
     "deviceShare": "Share Device",
     "groupDialog": "Group",
     "groupParent": "Group",
@@ -635,6 +635,11 @@
     "categoryBackfillcompactor":"Backfill compactor",
     "maintenanceStart": "Start",
     "maintenancePeriod": "Period",
-    "welcomeLoginPage": "Welcome to"
+    "welcomeLoginPage": "Welcome to",
+    "deviceBlockUsageMenu":"Block Engine Start",
+    "commandBlock":"Block",
+    "commandUnBlock":"UnBlock",
+    "confirmBlock":"Confirm Block?",
+    "confirmUnBlock": "Confirm UnBlock?"
 
 }

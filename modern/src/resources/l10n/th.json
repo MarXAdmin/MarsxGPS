@@ -82,7 +82,7 @@
     "sharedPreferences": "การตั้งค่า",
     "sharedPermissions": "สิทธิ์",
     "sharedConnections": "การเชื่อมต่อ",
-    "sharedExtra": "พิเศษ",
+    "sharedExtra": "ข้อมูลเพิ่มเติม",
     "sharedPrimary": "หลัก",
     "sharedSecondary": "รอง",
     "sharedTypeString": "ตัวอักษร",
@@ -218,7 +218,7 @@
     "deviceStatusOffline": "ออฟไลน์",
     "deviceStatusUnknown": "ไม่รู้จัก",
     "deviceRegisterFirst": "ลงทะเบียนอุปกรณ์เครื่องแรกของคุณ",
-    "deviceIdentifierHelp": "IMEI หมายเลขซีเรียลหรือรหัสอื่นๆ จะต้องตรงกับรายงานอุปกรณ์ระบุไปยังเซิร์ฟเวอร์",
+    "deviceIdentifierHelp": "หมายเลข IMEI หลังอุปกรณ์ GPS",
     "deviceShare": "แบ่งปันอุปกรณ์",
     "groupDialog": "กลุ่ม",
     "groupParent": "กลุ่ม",
@@ -632,6 +632,11 @@
     "categoryBackfillcompactor":"รถอัดดินถมกลับ",
     "maintenanceStart": "เริ่มต้น",
     "maintenancePeriod": "ระยะเวลา",
-    "welcomeLoginPage": "ยินดีต้อนรับเข้าสู่"
+    "welcomeLoginPage": "ยินดีต้อนรับเข้าสู่",
+    "deviceBlockUsageMenu":"บล็อคสตาร์ทเครื่องยนต์",
+    "commandBlock":"บล็อค",
+    "commandUnBlock":"ปลดบล็อค",
+    "confirmBlock":"ยืนยันบล็อค?",
+    "confirmUnBlock": "ยืนยันปลดบล็อค?"
 
 }
