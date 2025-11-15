@@ -28,7 +28,7 @@ const LogoImage = ({ color }) => {
     if (expanded && logoInverted) {
       return <img className={classes.image} src={logoInverted} alt="1" />;
     }
-    return <img className={classes.image} src={logo} alt="2" />;
+    return <img className={classes.image} src="https://marstian.com/logo600.png" alt="2" />;
   }
   return <Logo className={classes.image} style={{ color }} />;
 };
