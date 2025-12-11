@@ -19,7 +19,7 @@ import MuiAccordionSummary from '@mui/material/AccordionSummary';
 import MuiAccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
 import useMediaQuery from '@mui/material/useMediaQuery';
-import { useAdministrator } from '../common/util/permissions';
+//import { useAdministrator } from '../common/util/permissions';
 
 
 const StatusCheckbox = ({ value, label, onChange }) => (
@@ -138,7 +138,7 @@ const MainToolbar = ({
   const navigate = useNavigate();
   const t = useTranslation();
 
-  const admin = useAdministrator();
+  //const admin = useAdministrator();
   const deviceReadonly = useDeviceReadonly();
 
   const groups = useSelector((state) => state.groups.items);
@@ -356,7 +356,7 @@ const MainToolbar = ({
           <div>Total: {filteredDevices.length}</div>
         </div>
       </Popover>
-      {desktop && admin &&
+      {
         <IconButton edge="end" onClick={() => navigate('/settings/device')} disabled={deviceReadonly}>
           <Tooltip open={!deviceReadonly && Object.keys(devices).length === 0} title={t('deviceRegisterFirst')} arrow>
             <AddIcon className={classes.plusIcon} />

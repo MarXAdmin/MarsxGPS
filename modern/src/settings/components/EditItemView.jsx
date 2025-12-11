@@ -9,7 +9,7 @@ import PageLayout from '../../common/components/PageLayout';
 import useSettingsStyles from '../common/useSettingsStyles';
 
 const EditItemView = ({
-  children, endpoint, item, setItem, defaultItem, validate, onItemSaved, menu, breadcrumbs,
+  children, endpoint, item, setItem, defaultItem, validate, onItemSaved, menu, breadcrumbs, keycode,
 }) => {
   const navigate = useNavigate();
   const classes = useSettingsStyles();
@@ -34,6 +34,19 @@ const EditItemView = ({
 
   const handleSave = useCatch(async () => {
     let url = `/api/${endpoint}`;
+    let patchedItem = { ...item };
+
+    if (endpoint === 'users' && !id) {
+      patchedItem = {
+        ...patchedItem,
+        attributes: {
+          ...patchedItem.attributes,
+          keycode: keycode,
+        },
+      };
+      item = patchedItem;
+    } 
+
     if (id) {
       url += `/${id}`;
     }

@@ -530,9 +530,16 @@ const LoginPage = () => {
                 onChange={(e) => setPassword(e.target.value)}
                 onKeyUp={handleSpecialKey}
               />
-            </div>
-            <div className={classes.logoLoingMobile}>
-              <img src={'logoLoginMobile.png'} alt="" />
+              {emailEnabled && (
+                <Link
+                  onClick={() => navigate('/reset-password')}
+                  className={classes.resetPassword}
+                  underline="none"
+                  variant="caption"
+                >
+                  {t('loginReset')}
+                </Link>
+              )}
             </div>
             <div className={classes.loginMobile}>
               <Button

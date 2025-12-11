@@ -48,6 +48,7 @@ const RegisterPage = () => {
 
   const server = useSelector((state) => state.session.server);
   const totpForce = useSelector((state) => state.session.server.attributes.totpForce);
+  const keyCodeRegis = useSelector((state) => state.session.server.attributes.regiskey);
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
@@ -71,7 +72,9 @@ const RegisterPage = () => {
     const response = await fetch('/api/users', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ name, email, password, totpKey }),
+      body: JSON.stringify({ name, email, password, totpKey, attributes: {
+                              keycode: keyCodeRegis, 
+                            }, }),
     });
     if (response.ok) {
       setSnackbarOpen(true);
