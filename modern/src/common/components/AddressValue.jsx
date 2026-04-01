@@ -64,7 +64,7 @@ const AddressValue = ({ latitude, longitude, originalAddress, addressshow = fals
     return address;
   }
   if (addressEnabled) {
-    return (<Link href="#" onClick={showAddress}>{t('sharedShowAddress')}</Link>);
+    return (<Link href="#" onClick={RevGeocodingLongDo}>{t('sharedShowAddress')}</Link>);
   }
   return '';
 };

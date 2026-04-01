@@ -20,6 +20,7 @@ import TableShimmer from '../common/components/TableShimmer';
 import scheduleReport from './common/scheduleReport';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import AddressValue from '../common/components/AddressValue';
 
 const columnsArray = [
   ['startTime', 'reportStartDate'],
@@ -32,6 +33,8 @@ const columnsArray = [
   ['startHours', 'reportStartEngineHours'],
   ['endHours', 'reportEndEngineHours'],
   ['spentFuel', 'reportSpentFuel'],
+  ['startAddress', 'reportStartAddress'],
+  ['endAddress', 'reportEndAddress'],
 ];
 const columnsMap = new Map(columnsArray);
 
@@ -108,10 +111,14 @@ const SummaryReportPage = () => {
       case 'engineHours':
       case 'startHours':
       case 'endHours':
-        //return value > 0 ? formatNumericHours(value, t) : null;
-        return value > 0 ? (value / 3600000).toFixed(2) : null;
+        //return value > 0 ? formatNumericHours(value, t) : 0;
+        return value > 0 ? (value / 3600000).toFixed(2) : 0;
       case 'spentFuel':
         return formatPercentage(value);
+      case 'startAddress':
+        return (<AddressValue latitude={item.startLat} longitude={item.startLon} originalAddress={null} addressshow={true}/>);
+      case 'endAddress':
+        return (<AddressValue latitude={item.endLat} longitude={item.endLon} originalAddress={null} addressshow={true}/>);
       default:
         return value;
     }
