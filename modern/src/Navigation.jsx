@@ -61,6 +61,7 @@ import Loader from './common/components/Loader';
 import PositionLivePage from './other/PositionLivePage';
 import TimelinePage from './other/TimelinePage';
 import BlockDevicePage from './settings/BlockDevicePage';
+import AuditPage from './reports/AuditPage';
 
 const Navigation = () => {
   const navigate = useNavigate();
@@ -170,6 +171,7 @@ const Navigation = () => {
           <Route path="trip" element={<TripReportPage />} />
           <Route path="scheduled" element={<ScheduledPage />} />
           <Route path="statistics" element={<StatisticsPage />} />
+          <Route path="audit" element={<AuditPage />} />
           <Route path="logs" element={<LogsPage />} />
         </Route>
       </Route>

@@ -13,6 +13,7 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
   const id = useId();
   const clusters = `${id}-clusters`;
   const selected = `${id}-selected`;
+  //const ringLayerId = `plusRing-${selected}`; // for Animation plusRing
 
   const theme = useTheme();
   const desktop = useMediaQuery(theme.breakpoints.up('md'));
@@ -44,7 +45,7 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
       name: device.name,
       fixTime: formatTime(position.fixTime, 'seconds'),
       category: mapIconKey(device.category),
-      color: showStatus ? position.attributes.color || getStatusColor(device.status) : 'neutral',
+      color: showStatus ? iconColor(device.status , position.attributes.color || getStatusColor(device.status) , position.attributes.ignition ) : 'neutral',
       rotation: position.course,
       direction: showDirection,
     };
@@ -91,6 +92,40 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
     });
   }, [clusters]);
 
+  /* // --- ส่วนที่เพิ่มใหม่: plusRing Animation Logic ---
+  useEffect(() => {
+    let requestRef;
+    
+    const animatePulse = (timestamp) => {
+      if (!map.getLayer(ringLayerId)) return; // เช็คว่า layer พร้อมใช้งานไหม
+
+      const duration = 2000;
+      const t = (timestamp % duration) / duration;
+
+      // คำนวณค่ารัศมี (ขยายจากฐาน 20 ไปอีก 5 หน่วย)
+      const radius = (20 * iconScale) + (t * 5);
+      // คำนวณความจาง (ยิ่งกว้างยิ่งจาง)
+      const opacity = 1 - t;
+
+      try {
+        map.setPaintProperty(ringLayerId, 'circle-radius', radius);
+        map.setPaintProperty(ringLayerId, 'circle-stroke-opacity', opacity);
+        map.setPaintProperty(ringLayerId, 'circle-opacity', opacity * 0.18);
+      } catch (e) {
+        // ป้องกัน Error กรณี Map กำลังโหลดหรือ Layer ถูกลบ
+      }
+
+      requestRef = requestAnimationFrame(animatePulse);
+    };
+
+    requestRef = requestAnimationFrame(animatePulse);
+
+    return () => {
+      if (requestRef) cancelAnimationFrame(requestRef);
+    };
+  }, [ringLayerId, iconScale]); // ทำงานใหม่ถ้า iconScale เปลี่ยน
+  // ---------------------------- // */
+
   useEffect(() => {
     map.addSource(id, {
       type: 'geojson',
@@ -110,6 +145,21 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
       },
     });
     [id, selected].forEach((source) => {
+      if (source === selected) {
+        map.addLayer({
+          id: `plusRing-${source}`,
+          type: 'circle',
+          source,
+          filter: ['!has', 'point_count'],
+          paint: {
+            'circle-radius': 22 * iconScale,
+            'circle-color': 'rgba(33, 150, 243, 0.18)',
+            'circle-stroke-color': '#2196f3',
+            'circle-stroke-width': 3,
+            'circle-stroke-opacity': 1,
+          },
+        });
+      }
       map.addLayer({
         id: source,
         type: 'symbol',
@@ -189,6 +239,9 @@ const MapPositions = ({ positions, onClick, showStatus, selectedPosition, titleF
 
         if (map.getLayer(source)) {
           map.removeLayer(source);
+        }
+        if (map.getLayer(`plusRing-${source}`)) {
+          map.removeLayer(`plusRing-${source}`);
         }
         if (map.getLayer(`direction-${source}`)) {
           map.removeLayer(`direction-${source}`);

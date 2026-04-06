@@ -3,8 +3,9 @@ import { useSelector } from 'react-redux';
 import { Link } from '@mui/material';
 import { useTranslation } from './LocalizationProvider';
 import { useCatch } from '../../reactHelper';
+import geocodingQueue from '../util/geocodingQueue';
 
-const AddressValue = ({ latitude, longitude, originalAddress, addressshow = false }) => {
+const AddressValue = ({ latitude, longitude, originalAddress, addressshow = false, useQueue = true }) => {
   const t = useTranslation();
   const server = useSelector((state) => state.session.server);
 
@@ -39,32 +40,31 @@ const AddressValue = ({ latitude, longitude, originalAddress, addressshow = fals
     }
   });
 
-  //Reverse Geocoding for LongDo map
+  const fetchLongDo = async () => {
+    const url = `https://api.longdo.com/map/services/address?lon=${longitude}&lat=${latitude}&noelevation=1&key=${longdoAPIKey}`;
+    const response = await fetch(url);
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
+  };
+
+  //Reverse Geocoding for LongDo map (optionally rate-limited via geocodingQueue)
   const RevGeocodingLongDo = useCatch(async () => {
     try {
-      const url = `https://api.longdo.com/map/services/address?lon=${longitude}&lat=${latitude}&noelevation=1&key=${longdoAPIKey}`;
-      const response = await fetch(url);
-
-      if (response.ok) {
-        const data = await response.json();
-        const road = data.road ?  data.road : '';
-        const fulladdr = road + ' ' + data.subdistrict + ' ' + data.district + ' ' + data.province;
-        setAddress(fulladdr);
-      } else {
-        console.log("Geccode Longdo API: Failed to fetch address.");
-      }
+      const data = await (useQueue ? geocodingQueue.enqueue(fetchLongDo) : fetchLongDo());
+      const road = data.road ? data.road : '';
+      const fulladdr = `${road} ${data.subdistrict} ${data.district} ${data.province}`.trim();
+      setAddress(fulladdr);
     } catch (err) {
-      //throw Error("Error fetching address: " + err.message);
-      console.log("Geccode Longdo API: Error fetching address: " + err.message);
+      console.log("Geocode Longdo API: Error fetching address: " + err.message);
     }
-    
   });
-  
+
   if (address) {
     return address;
   }
-  if (addressEnabled) {
-    return (<Link href="#" onClick={RevGeocodingLongDo}>{t('sharedShowAddress')}</Link>);
+  if (longdogeoEnable || addressEnabled) {
+    const handleClick = longdogeoEnable ? RevGeocodingLongDo : showAddress;
+    return (<Link href="#" onClick={handleClick}>{t('sharedShowAddress')}</Link>);
   }
   return '';
 };

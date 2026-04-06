@@ -169,7 +169,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
   const [switchicon, setSwitchIcon] = useState(false);
 
   const positionAttributes = usePositionAttributes(t);
-  const positionItems = useAttributePreference('positionItems', defaultItems);
+  const positionItems = useAttributePreference('positionItems', defaultItems || 'speed,address,totalDistance,course');
 
   const navigationAppLink = useAttributePreference('navigationAppLink');
   const navigationAppTitle = useAttributePreference('navigationAppTitle');
@@ -280,7 +280,7 @@ const StatusCard = ({ deviceId, position, onClose, disableActions, desktopPaddin
                   </Typography>
                   <Typography variant='body2' color={'textSecondary'}>
                     {position && (
-                      <AddressValue latitude={position.latitude} longitude={position.longitude} originalAddress={position.address} addressshow={showaddresss} />
+                      <AddressValue latitude={position.latitude} longitude={position.longitude} originalAddress={position.address} addressshow={showaddresss} useQueue={false} />
                     )}
                   </Typography>
                 </Box>

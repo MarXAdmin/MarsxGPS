@@ -1,7 +1,7 @@
 import React, { useState, useRef  } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
-  IconButton, Table, TableBody, TableCell, TableHead, TableRow,
+  IconButton, Table, TableBody, TableCell, TableHead, TableRow, Checkbox,
 } from '@mui/material';
 import GpsFixedIcon from '@mui/icons-material/GpsFixed';
 import LocationSearchingIcon from '@mui/icons-material/LocationSearching';
@@ -28,6 +28,7 @@ import scheduleReport from './common/scheduleReport';
 import MapScale from '../map/MapScale';
 import * as XLSX from 'xlsx';
 import { saveAs } from 'file-saver';
+import { Label } from 'recharts';
 
 const columnsArray = [
   ['startTime', 'reportStartTime'],
@@ -146,13 +147,13 @@ const TripReportPage = () => {
       case 'maxSpeed':
         return value > 0 ? formatSpeed(value, speedUnit, t) : null;
       case 'duration':
-        return formatNumericHours(value, t);
+        return formatNumericHours(value, t, 'h:m');
       case 'spentFuel':
         return value > 0 ? formatVolume(value, volumeUnit, t) : null;
       case 'startAddress':
-        return (<AddressValue latitude={item.startLat} longitude={item.startLon} originalAddress={value} />);
+        return (<AddressValue latitude={item.startLat} longitude={item.startLon} originalAddress={null} addressshow={true} useQueue={items.length > 31} />);
       case 'endAddress':
-        return (<AddressValue latitude={item.endLat} longitude={item.endLon} originalAddress={value} />);
+        return (<AddressValue latitude={item.endLat} longitude={item.endLon} originalAddress={null} addressshow={true} useQueue={items.length > 31} />);
       default:
         return value;
     }
@@ -170,6 +171,10 @@ const TripReportPage = () => {
     const excelBuffer = XLSX.write(workbook, { bookType: 'xlsx', type: 'array' });
     const blob = new Blob([excelBuffer], { type: 'application/octet-stream' });
     saveAs(blob, 'Trip_export.xlsx');
+  };
+
+  const handleChange = (event) => {
+    setAddressshow(event.target.checked);
   };
 
   return (

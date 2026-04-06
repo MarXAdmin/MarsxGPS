@@ -35,7 +35,7 @@ export const formatTime = (value, format) => {
   if (value) {
     const d = dayjs(value).toDate();
     const dateConfig = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    const minuteConfig = { hour: '2-digit', minute: '2-digit' };
+    const minuteConfig = { hour: '2-digit', minute: '2-digit', hour12: false };
     const secondConfig = { ...minuteConfig, second: '2-digit' };
     switch (format) {
       case 'date':
@@ -79,10 +79,20 @@ export const formatSpeed = (value, unit, t) => `${speedFromKnots(value, unit).to
 
 export const formatVolume = (value, unit, t) => `${volumeFromLiters(value, unit).toFixed(2)} ${volumeUnitString(unit, t)}`;
 
-export const formatNumericHours = (value, t) => {
+export const formatNumericHours = (value, t, sformat) => {
   const hours = Math.floor(value / 3600000);
   const minutes = Math.floor((value % 3600000) / 60000);
-  return `${hours} ${t('sharedHourAbbreviation')} ${minutes} ${t('sharedMinuteAbbreviation')}`;
+  
+  switch (sformat) {
+    case 'h':
+      return `${(value / 3600000).toFixed(2)}`;
+    case 'h:m':
+      return `${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}`;
+    default:
+      return `${hours} ${t('sharedHourAbbreviation')} ${minutes} ${t('sharedMinuteAbbreviation')}`;
+  }
+
+  
 };
 
 export const formatCoordinate = (key, value, unit) => {

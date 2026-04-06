@@ -111,14 +111,13 @@ const SummaryReportPage = () => {
       case 'engineHours':
       case 'startHours':
       case 'endHours':
-        //return value > 0 ? formatNumericHours(value, t) : 0;
-        return value > 0 ? (value / 3600000).toFixed(2) : 0;
+        return value > 0 ? formatNumericHours(value, t, 'h') : 0;
       case 'spentFuel':
         return formatPercentage(value);
       case 'startAddress':
-        return (<AddressValue latitude={item.startLat} longitude={item.startLon} originalAddress={null} addressshow={true}/>);
+        return (<AddressValue latitude={item.startLat} longitude={item.startLon} originalAddress={null} addressshow={true} useQueue={items.length > 31} />);
       case 'endAddress':
-        return (<AddressValue latitude={item.endLat} longitude={item.endLon} originalAddress={null} addressshow={true}/>);
+        return (<AddressValue latitude={item.endLat} longitude={item.endLon} originalAddress={null} addressshow={true} useQueue={items.length > 31}/>);
       default:
         return value;
     }

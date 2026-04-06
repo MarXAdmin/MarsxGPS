@@ -105,7 +105,7 @@ const StopReportPage = () => {
       case 'spentFuel':
         return value > 0 ? formatVolume(value, volumeUnit, t) : null;
       case 'address':
-        return (<AddressValue latitude={item.latitude} longitude={item.longitude} originalAddress={value} />);
+        return (<AddressValue latitude={item.latitude} longitude={item.longitude} originalAddress={null} addressshow={true} useQueue={items.length > 62} />);
       default:
         return value;
     }
